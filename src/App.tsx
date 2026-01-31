@@ -4,26 +4,20 @@ import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GalleryPage from './pages/GalleryPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useAuthStore } from './store/authStore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import { useEffect } from 'react';
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#9c27b0',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-  },
-});
+import { useThemeStore } from './store/themeStore';
+import { lightTheme, darkTheme } from './style/theme';
+import { CssBaseline } from '@mui/material';
+import SharedLayout from './layout/Shared.layout';
 
 function App() {
+  const { themeMode } = useThemeStore();
+  const theme = themeMode === 'light' ? lightTheme : darkTheme;
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -40,14 +34,16 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/" element={<SharedLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -26,8 +26,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, pass);
       set({ user: userCredential.user, isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error) {
+      if (error instanceof Error) {
+        set({ error: error.message, isLoading: false });
+      }
     }
   },
   loginWithGoogle: async () => {
@@ -36,8 +38,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       set({ user: userCredential.user, isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error) {
+      if (error instanceof Error) {
+        set({ error: error.message, isLoading: false });
+      }
     }
   },
   logout: async () => {
@@ -45,8 +49,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await signOut(auth);
       set({ user: null, isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error) {
+      if (error instanceof Error) {
+        set({ error: error.message, isLoading: false });
+      }
     }
   },
 }));

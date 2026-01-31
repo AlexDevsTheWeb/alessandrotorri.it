@@ -27,7 +27,7 @@ const GalleryPage: React.FC = () => {
       </Typography>
       <Grid container spacing={4}>
         {images?.map((image) => (
-          <Grid key={image.url} size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid key={image.url} size={{xs: 12, sm: 6, md: 4}}>
             <Card>
               <CardMedia
                 component="img"

@@ -3,14 +3,20 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Box } from '@mui/mater
 import { Link } from 'react-router-dom';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useThemeStore } from '../store/themeStore';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
 
 const Navbar: React.FC = () => {
   const { themeMode, toggleTheme } = useThemeStore();
 
   return (
-    <AppBar position="sticky" elevation={0} sx={{ backgroundColor: 'transparent' }}>
+    <AppBar 
+      position="sticky" 
+      elevation={0} 
+      sx={{ 
+        backgroundColor: 'background.default',
+        color: 'text.primary'
+      }}
+    >
       <Toolbar>
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
           <Button color="inherit" component={Link} to="/gallery">
@@ -25,9 +31,6 @@ const Navbar: React.FC = () => {
         </Box>
 
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton onClick={toggleTheme} color="inherit">
-            {themeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
           <IconButton
             color="inherit"
             href="https://www.instagram.com/alessandrotorri/"
@@ -35,6 +38,9 @@ const Navbar: React.FC = () => {
             rel="noopener noreferrer"
           >
             <InstagramIcon />
+          </IconButton>
+          <IconButton onClick={toggleTheme} color="inherit">
+            {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
         </Box>
       </Toolbar>

@@ -9,6 +9,7 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <Box
         sx={{
+          position: 'relative',
           height: '60vh',
           backgroundImage: 'url(https://source.unsplash.com/random?landscape)',
           backgroundSize: 'cover',
@@ -18,9 +19,18 @@ const HomePage: React.FC = () => {
           justifyContent: 'center',
           color: 'white',
           textAlign: 'center',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
         }}
       >
-        <Container>
+        <Container sx={{ position: 'relative', zIndex: 1 }}>
           <Typography variant="h2" component="h1" gutterBottom>
             Alessio Torri Photography
           </Typography>
@@ -46,21 +56,21 @@ const HomePage: React.FC = () => {
           Featured Work
         </Typography>
         <Grid container spacing={4}>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{xs: 12, sm: 6, md: 4}}>
             <img
               src="https://source.unsplash.com/random?nature"
               alt="Nature"
               style={{ width: '100%', height: 'auto' }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{xs: 12, sm: 6, md: 4}}>
             <img
               src="https://source.unsplash.com/random?city"
               alt="City"
               style={{ width: '100%', height: 'auto' }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{xs: 12, sm: 6, md: 4}}>
             <img
               src="https://source.unsplash.com/random?people"
               alt="People"
