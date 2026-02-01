@@ -14,19 +14,31 @@ This document outlines the plan and progress for a personal photography portfoli
 
 ## Implemented Features
 
-*   Project setup with initial dependencies.
+*   **Project Setup:** Initialized with React, Vite, and essential dependencies.
+*   **Authentication:** Secure login for the administrator.
+*   **Image Management:**
+    *   `Image` interface with properties: `id`, `name`, `url`, `metadata`, `collection`, `isFavorite`, `isLatestWork`, `isCoverImage`, and `order`.
+    *   Image upload functionality.
+*   **Collections:**
+    *   Images are grouped into collections.
+    *   `CollectionList` component on the admin dashboard to display all collections.
+    *   `CollectionDetailPage` for viewing and managing images within a collection.
+    *   Drag-and-drop reordering of images within a collection.
+    *   Editing of image properties (name, metadata, favorite, latest work, cover image).
+*   **Admin Dashboard:**
+    *   Centralized location for managing site content.
+    *   Includes image upload and collection management.
 
-## Current Plan: Admin Login
+## Current Plan: UI/UX and Public-Facing Gallery
 
-The immediate goal is to create a secure login page for the site administrator. This will provide access to photo management features.
+With the core admin functionality in place, the next focus is on the public-facing gallery and improving the overall user experience.
 
-### Steps:
+### Next Steps:
 
-1.  **DONE:** Install necessary npm packages: `@mui/material`, `@emotion/react`, `@emotion/styled`, `zustand`, `react-router-dom`, `firebase`.
-2.  **NEXT:** Create a `firebase.ts` configuration file. I will need you to provide your Firebase project configuration for this step.
-3.  Create a `blueprint.md` file to document the project.
-4.  Set up basic application structure with routing (`react-router-dom`).
-5.  Create a dedicated `LoginPage` component with a form using Material-UI components.
-6.  Implement a Zustand store to manage the authentication state.
-7.  Connect the login form to a (initially mocked) authentication function.
-8.  Set up protected routes to restrict access to the admin area.
+1.  **DONE:** Implement a "Cover Image" property for images.
+2.  **DONE:** Create a `CollectionList` component for the admin dashboard.
+3.  **DONE:** Create a `CollectionDetailPage` with drag-and-drop reordering.
+4.  **NEXT:** Design and build the public-facing `GalleryPage` to display collections and images.
+5.  **NEXT:** Create a public-facing `CollectionPage` to display the images of a specific collection.
+6.  **NEXT:** Implement a visually appealing theme and layout for the entire site.
+7.  **NEXT:** Ensure the site is fully responsive and accessible.

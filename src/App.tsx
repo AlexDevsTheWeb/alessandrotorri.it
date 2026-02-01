@@ -3,7 +3,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GalleryPage from './pages/GalleryPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import CollectionPage from './pages/CollectionPage';
+import CollectionDetailPage from './pages/CollectionDetailPage';
 import { ThemeProvider } from '@mui/material/styles';
 import { useAuthStore } from './store/authStore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -41,9 +42,11 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route element={<ProtectedRoute />}>
+            <Route path="/gallery/:collectionName" element={<CollectionPage />} />
+            {/* <Route element={<ProtectedRoute />}> */}
               <Route path="/admin" element={<AdminDashboard />} />
-            </Route>
+              <Route path="/admin/collection/:collectionName" element={<CollectionDetailPage />} />
+            {/* </Route> */}
           </Route>
         </Routes>
       </BrowserRouter>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Typography, Box } from '@mui/material';
 import { useAuthStore } from '../store/authStore';
 import ImageUpload from '../components/ImageUpload';
+import CollectionList from '../components/CollectionList';
 
 const AdminDashboard: React.FC = () => {
   const { logout } = useAuthStore();
@@ -15,6 +16,7 @@ const AdminDashboard: React.FC = () => {
         <Typography variant="body1" gutterBottom>
           Welcome to your admin dashboard. Here you will be able to manage your photos, albums, and collections.
         </Typography>
+        <CollectionList />
         <Box my={4}>
           <Typography variant="h5" component="h2" gutterBottom>
             Upload New Image
