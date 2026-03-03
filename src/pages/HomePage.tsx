@@ -1,22 +1,18 @@
-import React from 'react';
-import { Box, Button, Container, Typography, Grid } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import type { IImage } from '../types/image.types';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
-  const [latestWork, loading, error] = useCollectionData<IImage>(
-    query(
-      collection(db, 'images'),
-      where('isLatestWork', '==', true),
-      where('isVisible', '==', true),
-      orderBy('createdAt', 'desc'),
-    ),
-    { idField: 'id' }
-  );
+  // const [latestWork, loading, error] = useCollectionData<IImage>(
+  //   query(
+  //     collection(db, 'images'),
+  //     where('isLatestWork', '==', true),
+  //     where('isVisible', '==', true),
+  //     orderBy('createdAt', 'desc'),
+  //   ),
+  //   { idField: 'id' }
+  // );
 
   return (
     <Box>
@@ -63,11 +59,11 @@ const HomePage: React.FC = () => {
               size="large"
               component={Link}
               to="/gallery"
-              sx={{ 
-                mt: 4, 
-                borderRadius: '50px', 
-                px: 5, 
-                py: 1.5, 
+              sx={{
+                mt: 4,
+                borderRadius: '50px',
+                px: 5,
+                py: 1.5,
                 boxShadow: '0px 10px 30px rgba(0, 99, 255, 0.3)',
                 transition: 'transform 0.3s ease-in-out',
                 '&:hover': {
@@ -86,10 +82,10 @@ const HomePage: React.FC = () => {
         <Typography variant="h3" align="center" gutterBottom sx={{ mb: 6, fontWeight: 600 }}>
           Latest Work
         </Typography>
-        {loading && <Typography>Loading...</Typography>}
-        {error && <Typography color="error">Error: {error.message}</Typography>}
+        {/* {loading && <Typography>Loading...</Typography>} */}
+        {/* {error && <Typography color="error">Error: {error.message}</Typography>} */}
         <Grid container spacing={4} justifyContent="center">
-          {latestWork?.map((image, index) => (
+          {/* {latestWork?.map((image, index) => (
             <Grid item key={image.id} xs={12} sm={6} md={4}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -140,7 +136,7 @@ const HomePage: React.FC = () => {
                 </Box>
               </motion.div>
             </Grid>
-          ))}
+          ))} */}
         </Grid>
       </Container>
     </Box>

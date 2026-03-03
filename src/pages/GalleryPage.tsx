@@ -1,39 +1,31 @@
-import React from 'react';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
-import { Link } from 'react-router-dom';
-import { 
-  Container, 
-  Typography, 
-  Grid, 
-  Box 
+import {
+  Container,
+  Typography
 } from '@mui/material';
-import { motion } from 'framer-motion';
-import type { IImage } from '../types/image.types';
+import React from 'react';
 
 const GalleryPage: React.FC = () => {
-  const [images, loading, error] = useCollectionData<IImage>(
-    query(collection(db, 'images'), where('isVisible', '==', true), orderBy('collection')),
-    { idField: 'id' }
-  );
+  // const [images, loading, error] = useCollectionData<IImage>(
+  //   query(collection(db, 'images'), where('isVisible', '==', true), orderBy('collection')),
+  //   { idField: 'id' }
+  // );
 
-  const collections = images?.reduce((acc: { [key: string]: IImage[] }, image) => {
-    if (!acc[image.collection]) {
-      acc[image.collection] = [];
-    }
-    acc[image.collection].push(image as IImage);
-    return acc;
-  }, {});
+  // const collections = images?.reduce((acc: { [key: string]: IImage[] }, image) => {
+  //   if (!acc[image.collection]) {
+  //     acc[image.collection] = [];
+  //   }
+  //   acc[image.collection].push(image as IImage);
+  //   return acc;
+  // }, {});
 
   return (
     <Container maxWidth="lg" sx={{ py: 8 }}>
       <Typography variant="h2" component="h1" align="center" gutterBottom sx={{ mb: 6, fontWeight: 600 }}>
         Explore the Collections
       </Typography>
-      {loading && <Typography align="center">Loading collections...</Typography>}
-      {error && <Typography color="error" align="center">Error: {error.message}</Typography>}
-      {collections && (
+      {/* {loading && <Typography align="center">Loading collections...</Typography>} */}
+      {/* {error && <Typography color="error" align="center">Error: {error.message}</Typography>} */}
+      {/* {collections && (
         <Grid container spacing={5}>
           {Object.entries(collections).map(([collectionName, images], index) => {
             const coverImage = images.find((image) => image.isCoverImage) || images[0];
@@ -92,7 +84,7 @@ const GalleryPage: React.FC = () => {
             );
           })}
         </Grid>
-      )}
+      )} */}
     </Container>
   );
 };
