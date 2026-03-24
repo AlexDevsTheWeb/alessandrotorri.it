@@ -1,41 +1,74 @@
 import { createTheme } from '@mui/material/styles';
 
-// Light Theme
+const baseTypography = {
+  // Font di default per tutto il corpo del testo, menu, bottoni
+  fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
+  
+  // Font specifico per i titoli
+  h1: { fontFamily: '"Playfair Display", serif', letterSpacing: '-0.02em' },
+  h2: { fontFamily: '"Playfair Display", serif', fontWeight: 700 },
+  h3: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
+  h4: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
+  h5: { fontFamily: '"Inter", sans-serif', fontWeight: 500 }, // Titoli piccoli più moderni
+  h6: { fontFamily: '"Inter", sans-serif', fontWeight: 500 },
+  
+  button: {
+    textTransform: 'none' as const, // Toglie il tutto maiuscolo automatico, molto più moderno
+    fontWeight: 500,
+    letterSpacing: '0.02em',
+  },
+};
+
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: {
-      main: '#6d6d6d', // A slightly darker gray for primary elements
-    },
-    secondary: {
-      main: '#a56d4d', // A warm, earthy secondary color
-    },
+    primary: { main: '#1a1a1a' }, // Nero quasi puro per testi e icone
     background: {
-      default: '#f5f5f5', // A warm off-white
-      paper: '#ffffff',
+      default: '#ffffff', // Bianco puro per la massima pulizia
+      paper: '#fafafa',
     },
   },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
-  },
+  typography: baseTypography,
+  shape: { borderRadius: 0 }, // Angoli netti = look più moderno e architettonico
 });
 
-// Dark Theme
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: {
-      main: '#9c27b0',
+    primary: { main: '#ffffff' },
+    // Questo resetta i colori di "azione" (hover, selected, etc.)
+    action: {
+      hover: 'rgba(255, 255, 255, 0.08)', 
+      selected: 'rgba(255, 255, 255, 0.16)',
     },
-    secondary: {
-      main: '#f48fb1',
-    },
-    background: {
-      default: '#121212', // A nice dark gray
-      paper: '#1e1e1e',
-    },
+    background: { default: '#0a0a0a', paper: '#121212' },
   },
-  typography: {
-    fontFamily: 'Roboto, sans-serif',
+  typography: baseTypography,
+  // --- AGGIUNGI QUESTA SEZIONE ---
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true, // Toglie l'animazione a cerchio ovunque
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          // Rimuove il background grigio/viola di default su tutti i bottoni text
+          '&:hover': {
+            backgroundColor: 'transparent',
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: 'transparent',
+          },
+        },
+      },
+    },
   },
 });

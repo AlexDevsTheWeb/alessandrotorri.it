@@ -3,6 +3,7 @@ import {
   Typography
 } from '@mui/material';
 import React from 'react';
+import PhotoGallery from '../components/PhotoGallery.component';
 
 const GalleryPage: React.FC = () => {
   // const [images, loading, error] = useCollectionData<IImage>(
@@ -85,6 +86,7 @@ const GalleryPage: React.FC = () => {
           })}
         </Grid>
       )} */}
+      <PhotoGallery />
     </Container>
   );
 };
