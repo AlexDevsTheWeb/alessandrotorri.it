@@ -1,21 +1,12 @@
-import { create } from 'zustand';
-import type { User } from 'firebase/auth';
 import {
-  signInWithEmailAndPassword,
-  signOut,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
 } from 'firebase/auth';
+import { create } from 'zustand';
 import { auth } from '../firebase';
-
-interface AuthState {
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-  login: (email: string, pass: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  logout: () => Promise<void>;
-}
+import type { AuthState } from '../types/auth.types';
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,

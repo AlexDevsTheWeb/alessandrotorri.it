@@ -78,7 +78,7 @@ const HomePage: React.FC = () => {
       </Box>
 
       {/* Latest Work Section */}
-      <Container sx={{ py: 8 }} maxWidth="lg">
+      <Container sx={{ py: 8, height: '3000px' }} maxWidth="lg">
         <Typography variant="h3" align="center" gutterBottom sx={{ mb: 6, fontWeight: 600 }}>
           Latest Work
         </Typography>

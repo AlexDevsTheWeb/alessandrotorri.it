@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { collection, query, where, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { db } from '../firebase';
-import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  TextField, 
-  Checkbox, 
-  FormControlLabel, 
-  Button, 
-  Card, 
-  CardMedia 
+import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
+import {
+  Box,
+  Button,
+  Card,
+  CardMedia,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  TextField,
+  Typography
 } from '@mui/material';
+import { collection, doc, query, updateDoc, where, writeBatch } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useParams } from 'react-router-dom';
+import { db } from '../firebase';
 import type { IImage } from '../types/image.types';
 
 
@@ -88,10 +88,10 @@ const CollectionDetailPage: React.FC = () => {
                 {images.map((image, index) => (
                   <Draggable key={image.id} draggableId={image.id} index={index}>
                     {(provided) => (
-                      <Card 
-                        ref={provided.innerRef} 
-                        {...provided.draggableProps} 
-                        {...provided.dragHandleProps} 
+                      <Card
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
                         sx={{ mb: 2, p: 2, display: 'flex', alignItems: 'center' }}
                       >
                         <CardMedia
@@ -108,7 +108,7 @@ const CollectionDetailPage: React.FC = () => {
                             fullWidth
                             margin="normal"
                           />
-                           <TextField
+                          <TextField
                             label="Metadata"
                             defaultValue={image.metadata}
                             onBlur={(e) => handleImageUpdate(image.id, 'metadata', e.target.value)}
@@ -142,7 +142,7 @@ const CollectionDetailPage: React.FC = () => {
                             }
                             label="Cover Image"
                           />
-                           <FormControlLabel
+                          <FormControlLabel
                             control={
                               <Checkbox
                                 checked={image.isVisible}
@@ -151,7 +151,7 @@ const CollectionDetailPage: React.FC = () => {
                             }
                             label="Visible"
                           />
-                           <Button variant="outlined" color="error" onClick={() => handleDeleteImage(image.id)}>
+                          <Button variant="outlined" color="error" onClick={() => handleDeleteImage(image.id)}>
                             Delete
                           </Button>
                         </Box>

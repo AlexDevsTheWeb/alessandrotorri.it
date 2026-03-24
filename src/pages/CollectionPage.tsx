@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
-import { 
-  Container, 
-  Typography, 
-  Grid, 
-  Box, 
-  Modal 
+import {
+  Box,
+  Container,
+  Grid,
+  Modal,
+  Typography
 } from '@mui/material';
+import { collection, orderBy, query, where } from 'firebase/firestore';
 import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useParams } from 'react-router-dom';
+import { db } from '../firebase';
 import type { IImage } from '../types/image.types';
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
   const [images, loading, error] = useCollectionData<IImage>(
     query(
-      collection(db, 'images'), 
-      where('collection', '==', collectionName), 
-      where('isVisible', '==', true), 
+      collection(db, 'images'),
+      where('collection', '==', collectionName),
+      where('isVisible', '==', true),
       orderBy('order')
     ),
     { idField: 'id' }
@@ -58,7 +58,7 @@ const CollectionPage: React.FC = () => {
       {images && (
         <Grid container spacing={4}>
           {images.map((image, index) => (
-            <Grid item key={image.id} xs={12} sm={6} md={4} lg={3}>
+            <Grid key={image.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
