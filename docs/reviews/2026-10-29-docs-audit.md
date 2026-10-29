@@ -15,6 +15,8 @@ sources:
 
 The charter asks to inspect the documents already in `docs/` and decide whether they are usable, need updating, or should be trashed. This review covers every file present before the 2026-10-29 loop, plus root-level files that acted as documentation.
 
+OKF structural conformance applies to the wiki layer (`docs/` excluding `docs/raw/`). `docs/raw/` is the immutable llm-wiki source layer and intentionally has no frontmatter.
+
 # Verdicts
 
 | Document | Verdict | Reason / action |

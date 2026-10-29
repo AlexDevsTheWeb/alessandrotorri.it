@@ -10,11 +10,11 @@ React 19 · Vite 7 · TypeScript · MUI 7 · Zustand · Firebase (Auth, Firestor
 
 ```bash
 npm install
-cp .env.example .env   # if present; otherwise create .env with the variables below
+cp .env.example .env
 npm run dev
 ```
 
-Required environment variables (Firebase web config):
+Required environment variables (Firebase web config) are listed in `.env.example`:
 
 ```bash
 VITE_FIREBASE_API_KEY=
