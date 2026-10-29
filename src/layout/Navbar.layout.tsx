@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
         <StyledToolbar>
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <NavLink component={Link} to="/gallery" disableRipple>
+              <NavLink component={Link} to="/gallery" disableRipple nativeButton={false}>
                 Gallerie
               </NavLink>
             </Box>
@@ -110,7 +110,7 @@ const Navbar: React.FC = () => {
           </Box>
 
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-            <LogoLink component={Link} to="/" disableRipple>
+            <LogoLink component={Link} to="/" disableRipple nativeButton={false}>
               Alessandro Torri
             </LogoLink>
           </Box>
@@ -160,6 +160,7 @@ const Navbar: React.FC = () => {
                 component={Link}
                 to="/gallery"
                 disableRipple
+                nativeButton={false}
                 onClick={() => setDrawerOpen(false)}
               >
                 Gallerie

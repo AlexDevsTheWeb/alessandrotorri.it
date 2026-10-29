@@ -127,18 +127,17 @@ const PhotoGallery: React.FC = () => {
         fullScreen
         open={!!selectedPhoto}
         onClose={handleClosePhoto}
-        PaperProps={{
-          sx: {
-            backgroundColor: 'rgba(0,0,0,0.85)', // Sfondo scuro per far risaltare i colori
-            backgroundImage: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative'
-          },
-        }}
-        // --- EFFETTO SFOCATO SFONDO ---
         slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: 'rgba(0,0,0,0.85)',
+              backgroundImage: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+            },
+          },
           backdrop: {
             sx: { backdropFilter: 'blur(15px)' }
           }
@@ -173,8 +172,7 @@ const PhotoGallery: React.FC = () => {
         {selectedPhoto && (
           <Stack
             spacing={2}
-            alignItems="center"
-            sx={{ width: '100%', height: '100%', justifyContent: 'center', p: 3 }}
+            sx={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', p: 3 }}
           >
             <Box
               component="img"
