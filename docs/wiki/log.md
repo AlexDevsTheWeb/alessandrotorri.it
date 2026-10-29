@@ -1,6 +1,15 @@
 # Knowledge Bundle Update Log
 
 ## 2026-10-29
+* **Issue #1 / dependencies**: applied all in-range updates with `npm update` (19 packages, including React 19.3.1, MUI 7.3.11, Vite 7.3.7, Firebase 12.19.0, Router 7.18.5, Zustand 5.0.16). `package-lock.json` only; `package.json` ranges unchanged.
+* **Security**: `npm audit` still reports 4 high advisories in `@grpc/grpc-js@1.9.16` (Firebase transitive). `npm audit fix --force` would downgrade Firebase to 9.14.0, so it was not applied; tracked in issue #5.
+* **Decision**: [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md); majors deferred to issue #6.
+* **Wiki**: added [source summary for issue #1](/sources/2026-10-29-gh-issue-1.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Bundle is 1.35 MB (418.89 kB gzip); phase 5 code splitting is now a priority.
+* **PR**: [#7](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/7) — draft in-range dependency refresh.
+* **Next**: public rebuild phase 3 (issue #2).
+
+## 2026-10-29
 * **Ingested**: `docs/raw/2026-10-29-rebuild.md` as [source summary](/sources/2026-10-29-rebuild.md); extracted 10 requirements (wiki, docs audit, blueprint, multi-agent schema, libraries, clone, GitHub tooling).
 * **Archived**: root `blueprint.md` moved to `docs/raw/2026-03-03-blueprint.md` and summarized as deprecated history ([decision 0002](/decisions/0002-archive-blueprint.md)).
 * **Decision**: [0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md) (OKF v0.2, immutable raw, one `AGENTS.md`); [0003 — Exact look & feel](/decisions/0003-exact-look-and-feel.md) (visual parity, modern implementation).

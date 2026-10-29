@@ -114,5 +114,6 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 - Public rebuild: phases 0–2 done, phase 3 next. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
-- Next: dependency refresh (issue #1), public site phases 3–5 (issue #2), admin protection (issue #3).
+- Dependencies: in-range refresh done 2026-10-29; majors in issue #6, grpc advisory in issue #5.
+- Next: public site phases 3–5 (issue #2); admin protection (issue #3).
 - Admin is currently reachable without auth; do not "improve" it until issue #3, but never expose new admin routes.
