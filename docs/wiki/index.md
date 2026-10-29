@@ -20,13 +20,15 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 ## Sources
 
-* [Source summaries](/sources/index.md) - One page per ingested raw source.
+* [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
+* [2026-10-29 — GitHub issue #1](/sources/2026-10-29-gh-issue-1.md) - Dependency refresh: in-range updates, deferred majors, security note.
 * [2026-03-03 — Blueprint](/sources/2026-03-03-blueprint.md) - Original feature blueprint (deprecated history).
 
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md) - In-range now, majors deferred, no force fixes.
 * [0004 — Wiki layout under docs/wiki](/decisions/0004-wiki-layout.md) - Raw and wiki as siblings; fixed section layout.
 * [0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md) - OKF v0.2 wiki, immutable raw layer, one `AGENTS.md`.
 * [0002 — Archive blueprint.md](/decisions/0002-archive-blueprint.md) - Blueprint moved to `docs/raw/`.
