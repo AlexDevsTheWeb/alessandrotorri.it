@@ -5,24 +5,27 @@ import {
   Modal,
   Typography
 } from '@mui/material';
-import { collection, orderBy, query, where } from 'firebase/firestore';
+import { collection, orderBy, query, where, type Query } from 'firebase/firestore';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import React, { useMemo, useState } from 'react';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import type { IImage } from '../types/image.types';
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
-  const [images, loading, error] = useCollectionData<IImage>(
+  const [snapshot, loading, error] = useCollection(
     query(
       collection(db, 'images'),
       where('collection', '==', collectionName),
       where('isVisible', '==', true),
       orderBy('order')
-    ),
-    { idField: 'id' }
+    ) as Query<IImage>
+  );
+  const images = useMemo(
+    () => snapshot?.docs.map((document) => ({ ...document.data(), id: document.id })) ?? [],
+    [snapshot]
   );
 
   const [open, setOpen] = useState(false);
