@@ -50,6 +50,7 @@ After the first public rebuild the owner listed layout and visual issues. This l
 # Links
 
 - [Raw source](../../raw/2026-10-29-layout-improvements.md)
+- [Pull request #10](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/10)
 - [Decision 0008 — Visual refinements](/decisions/0008-visual-refinements.md)
 - [Design System](/concepts/design-system.md)
 - [Gallery System](/concepts/gallery-system.md)

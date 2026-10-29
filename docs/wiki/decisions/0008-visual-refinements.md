@@ -45,6 +45,7 @@ This refines [Decision 0003](/decisions/0003-exact-look-and-feel.md) for the spe
 # Links
 
 - [Source summary](/sources/2026-10-29-layout-improvements.md)
+- [Pull request #10](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/10)
 - [Design System](/concepts/design-system.md)
 - [Gallery System](/concepts/gallery-system.md)
 - [Site Architecture](/concepts/site-architecture.md)

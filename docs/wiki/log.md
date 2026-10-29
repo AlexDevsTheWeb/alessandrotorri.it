@@ -6,6 +6,7 @@
 * **Decision**: [0008 — Visual refinements](/decisions/0008-visual-refinements.md), refining the visual specifics of decision 0003.
 * **Wiki**: added [source summary](/sources/2026-10-29-layout-improvements.md); updated [Design System](/concepts/design-system.md), [Gallery System](/concepts/gallery-system.md), [Site Architecture](/concepts/site-architecture.md), [Rebuild Plan](/rebuild-plan.md), indexes and AGENTS.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.357 MB / 420.96 kB gzip.
+* **PR**: [#10](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/10) — draft layout/visual refinements.
 * **Next**: phase 4 — collection feed, captions, and lightbox (`/gallery/:slug`).
 
 ## 2026-10-29
