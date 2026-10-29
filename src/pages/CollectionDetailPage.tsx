@@ -10,9 +10,9 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { collection, doc, query, updateDoc, where, writeBatch } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { collection, doc, query, updateDoc, where, writeBatch, type Query } from 'firebase/firestore';
+import React, { useMemo, useState } from 'react';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase';
 import type { IImage } from '../types/image.types';
@@ -20,31 +20,36 @@ import type { IImage } from '../types/image.types';
 
 const CollectionDetailPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
-  const [images, setImages] = useState<IImage[]>([]);
+  const [reorderedImages, setReorderedImages] = useState<{ collection: string; images: IImage[] } | null>(null);
 
-  const [collectionData, loading, error] = useCollectionData<IImage>(
-    query(collection(db, 'images'), where('collection', '==', collectionName), where('isVisible', '==', true)),
-    { idField: 'id' }
+  const [snapshot, loading, error] = useCollection(
+    query(
+      collection(db, 'images'),
+      where('collection', '==', collectionName),
+      where('isVisible', '==', true)
+    ) as Query<IImage>
   );
 
-  useEffect(() => {
-    if (collectionData) {
-      const sortedImages = [...collectionData].sort((a, b) => a.order - b.order);
-      setImages(sortedImages);
+  const images = useMemo(() => {
+    const sortedImages = [...(snapshot?.docs.map((document) => ({ ...document.data(), id: document.id })) ?? [])]
+      .sort((a, b) => a.order - b.order);
+    if (reorderedImages && reorderedImages.collection === collectionName) {
+      return reorderedImages.images;
     }
-  }, [collectionData]);
+    return sortedImages;
+  }, [snapshot, collectionName, reorderedImages]);
 
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
-    const reorderedImages = Array.from(images);
-    const [movedImage] = reorderedImages.splice(result.source.index, 1);
-    reorderedImages.splice(result.destination.index, 0, movedImage);
+    const nextImages = Array.from(images);
+    const [movedImage] = nextImages.splice(result.source.index, 1);
+    nextImages.splice(result.destination.index, 0, movedImage);
 
-    setImages(reorderedImages);
+    setReorderedImages({ collection: collectionName ?? '', images: nextImages });
 
     const batch = writeBatch(db);
-    reorderedImages.forEach((image, index) => {
+    nextImages.forEach((image, index) => {
       const docRef = doc(db, 'images', image.id);
       batch.update(docRef, { order: index });
     });

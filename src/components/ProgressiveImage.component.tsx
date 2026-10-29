@@ -10,7 +10,7 @@ interface ProgressiveImageProps {
 }
 
 // Styled component per l'immagine ad alta risoluzione
-const HighResImage = styled('img')(({ theme }) => ({
+const HighResImage = styled('img')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
@@ -22,9 +22,9 @@ const HighResImage = styled('img')(({ theme }) => ({
   '&.loaded': {
     opacity: 1, // Appare quando è caricata
   },
-}));
+});
 
-const PlaceholderImage = styled('div')(({ theme }) => ({
+const PlaceholderImage = styled('div')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
@@ -35,7 +35,7 @@ const PlaceholderImage = styled('div')(({ theme }) => ({
   left: 0,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-}));
+});
 
 const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
   src,

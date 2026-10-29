@@ -3,7 +3,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 import Masonry from '@mui/lab/Masonry';
 import { Box, Dialog, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ProgressiveImage from '../components/ProgressiveImage.component';
 
 // Esempi di dati delle foto presi dal web
@@ -71,21 +71,21 @@ const PhotoGallery: React.FC = () => {
     setSelectedPhoto(null);
   };
 
-  const handleNext = (e?: React.MouseEvent) => {
+  const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation(); // Evita di chiudere la dialog se clicchi sulla freccia
     if (!selectedPhoto) return;
     const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
     const nextIndex = (currentIndex + 1) % photos.length;
     setSelectedPhoto(photos[nextIndex]);
-  };
+  }, [selectedPhoto]);
 
-  const handlePrev = (e?: React.MouseEvent) => {
+  const handlePrev = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (!selectedPhoto) return;
     const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
     const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
     setSelectedPhoto(photos[prevIndex]);
-  };
+  }, [selectedPhoto]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -96,7 +96,7 @@ const PhotoGallery: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedPhoto]); // Si aggiorna quando cambia la foto selezionata
+  }, [selectedPhoto, handleNext, handlePrev]); // Si aggiorna quando cambia la foto selezionata
 
   return (
     <Box sx={{ width: '100%', p: { xs: 2, md: 4 } }}> {/* Padding esterno per Negative Space */}
