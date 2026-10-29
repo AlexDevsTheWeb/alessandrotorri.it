@@ -1,57 +1,65 @@
 ---
 type: Playbook
 title: Agent Rules
-description: Guidelines for AI agents working on the alessandrotorri.it codebase.
+description: How AI agents should work in the alessandrotorri.it repository.
 tags: [agents, rules, guidelines, ai-assistant]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
 status: stable
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+sources:
+  - id: raw-rebuild
+    resource: /raw/2026-10-29-rebuild.md
+    title: Personal Website Rebuild (raw, immutable)
 ---
 
 # Agent Rules
 
-## Before Starting Work
+The canonical schema is the repository-root `AGENTS.md`. This page is the wiki copy of the coding and collaboration rules; if they disagree, `AGENTS.md` wins and this page must be fixed.
 
-1. Read this knowledge bundle (`docs/`) to understand the project
-2. Check `PLAN.md` for the current phase and what's in progress
-3. Run `npm run lint` and `npm run build` to establish baseline
-4. Read the file you're about to edit — understand its context before changing it
+## Before starting work
 
-## Code Rules
+1. Read `AGENTS.md`, [the bundle index](/index.md), [the overview](/overview.md), and [the Rebuild Plan](/rebuild-plan.md).
+2. Read [The Usual Loop](/rules/workflow.md).
+3. Run `npm run lint` and `npm run build` to confirm the baseline.
+4. Read the files you are about to edit. If the wiki and the code disagree, fix the wiki in the same change.
 
-- **No comments** unless explicitly asked
-- **No new dependencies** without approval — check `package.json` first
-- **MUI only** — do not introduce Tailwind, CSS Modules, or other CSS systems
-- **TypeScript strict** — no `any` types, complete all interfaces
-- **Firebase patterns** — use existing `firebase.ts` init, follow Firestore document schema in [Photo Management](/concepts/photo-management.md)
-- **Zustand for state** — no Redux, no Context API for new stores
-- **Existing file naming** — follow `.layout.tsx`, `.component.tsx`, `.types.tsx` conventions already in the codebase
+## Code rules
 
-## Before Committing
+- **No comments** in new code unless explicitly requested.
+- **No new dependencies** without approval — check `package.json` first.
+- **MUI only** — `sx` prop or Emotion `styled()`. No Tailwind, CSS Modules, or Sass.
+- **TypeScript strict** — no `any`, complete all interfaces.
+- **Firebase patterns** — use the existing `src/firebase.ts` init; follow the schema in [Photo Management](/concepts/photo-management.md).
+- **Zustand for state** — no Redux, no new Context stores.
+- **File naming** — `*.layout.tsx`, `*.component.tsx`, `*.types.ts`, `*Store.ts`.
 
-1. Run `npm run lint` — fix all errors
-2. Run `npm run build` — must succeed
-3. Run `npm run typecheck` if available — no type errors
-4. Verify no `console.log` statements left in code
-5. Verify no secrets or API keys in code (check `.env` is in `.gitignore`)
+## Before committing
 
-## Git Conventions
+1. `npm run lint` — clean.
+2. `npm run build` — succeeds.
+3. No `console.log` left in code.
+4. No secrets or API keys staged; `.env` stays ignored.
+5. Wiki pages and `docs/log.md` updated in the same PR.
 
-- See [Git Conventions](/rules/git-conventions.md) for commit message format
-- One logical change per commit
-- Never commit `node_modules/` or build artifacts
+## Architecture constraints
 
-## Architecture Constraints
+- All public pages render inside `SharedLayout` (Navbar + Footer + BackToTop).
+- Admin routes must be wrapped in `ProtectedRoute`. This is **not yet enabled** in `src/App.tsx`; tracked in issue #3.
+- Images upload to Firebase Storage at `images/{filename}`.
+- Image metadata lives in the Firestore `images` collection.
+- Collections are derived from the `collection` field — there is no separate collection entity.
+- The Firestore document id is not a stored field; map `document.id` explicitly when using `useCollection`.
+- See [Site Architecture](/concepts/site-architecture.md) for routes.
 
-- All public pages render inside `SharedLayout` (Navbar + Footer)
-- Admin routes must be wrapped in `ProtectedRoute` (currently commented out — fix this)
-- Images upload to Firebase Storage at `images/{filename}`
-- Image metadata lives in Firestore `images` collection
-- Collections are derived from the `collection` field — no separate collection entity
-- See [Site Architecture](/concepts/site-architecture.md) for routing details
+## Content and language
 
-## Photography Domain
+- Main subject: **long-exposure landscape photography**.
+- The live site and UI copy are **Italian** (Gallerie, FAVORITE/ULTIMI LAVORI, captions like "Eilean Donan Castle - Scozia"). Preserve them.
+- Documentation and code identifiers are **English**.
+- Use the Adobe CDN images already captured in `src/data/collections.data.ts`; do not introduce Unsplash/Pexels placeholders.
 
-- Main subject: **long exposure photography**
-- Content should reflect this: seascapes, city lights, star trails, waterfalls
-- Placeholder content should use long exposure photography from Unsplash/Pexels
-- The site is in English; Italian text in code is legacy — replace with English
+## Related
+
+- [The Usual Loop](/rules/workflow.md)
+- [Code Style](/rules/code-style.md)
+- [Git Conventions](/rules/git-conventions.md)
+- [Decision 0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md)
