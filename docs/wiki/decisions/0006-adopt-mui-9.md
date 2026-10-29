@@ -50,5 +50,6 @@ Keep the other majors (Vite 8, ESLint 10, TypeScript 7, Firebase 13, framer-moti
 
 - [Source summary](/sources/2026-10-29-gh-issue-6.md)
 - [MUI v9 upgrade guide](https://mui.com/material-ui/migration/upgrade-to-v9/)
+- [Pull request #8](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/8)
 - [Tech Stack](/concepts/tech-stack.md)
 - [Issue #6](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/6)

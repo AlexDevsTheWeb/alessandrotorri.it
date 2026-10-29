@@ -6,6 +6,7 @@
 * **Decision**: [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md); remaining majors stay in issue #6.
 * **Wiki**: added [source summary for issue #6](/sources/2026-10-29-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle is ~1.37 MB (423.65 kB gzip); phase 5 code splitting remains the main remedy.
+* **PR**: [#8](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/8) — draft MUI 9 upgrade, stacked on #7.
 * **Next**: public rebuild phase 3 (issue #2); remaining majors in issue #6.
 
 ## 2026-10-29
