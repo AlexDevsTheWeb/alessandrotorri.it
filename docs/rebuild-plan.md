@@ -82,9 +82,9 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 
 | Phase | Name | Status | Notes |
 |-------|------|--------|-------|
-| 0 | Baseline & cleanup prep | pending | run lint/build, record errors |
-| 1 | Data layer (CDN) | pending | `collections.data.ts` + 9 covers |
-| 2 | Navbar + Footer + Shell | pending | match original structure |
+| 0 | Baseline & cleanup prep | done | lint: 3 errors + 1 warning; build fails on IImage gaps (recorded 2026-09-08) |
+| 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
+| 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero new lint issues |
 | 3 | Gallery grid (`/` + `/gallery`) | pending | 2-col covers grid |
 | 4 | Collection feed + lightbox | pending | single-col + captions + Dialog |
 | 5 | Polish (SEO, responsive, perf) | pending | titles, OG, lazy, sitemap |

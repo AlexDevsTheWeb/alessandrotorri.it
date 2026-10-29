@@ -4,7 +4,10 @@
 * **Wiki migration**: `docs/` converted to llm-wiki + OKF v0.2 compliant wiki (English only, per owner decision).
 * **Fixed**: `index.md` frontmatter removed (reserved file); `rebuild-plan.md` `okf_version` field removed, `description`/`tags`/`sources` added; all cross-links now absolute bundle-relative (`/concepts/...`, `/rules/...`, `/rebuild-plan.md`, `/overview.md`, `/log.md`); no `../` parent escapes.
 * **Added**: `overview.md` (Tier-1 synthesis hub, tree shape: index → overview → cluster hubs); ingest/query/lint operations in `index.md`; contradiction callouts (roadmap superseded) in `overview.md` + `concepts/roadmap.md` (status → `superseded`).
-* **Next**: Phase 0 baseline (`npm run lint`, `npm run build`), then Phase 1 `src/data/collections.data.ts`.
+* **Phase 0 done**: baseline recorded — lint 3 errors + 1 warning (`ProgressiveImage` unused `theme` x2, `CollectionDetailPage` set-state-in-effect; warning exhaustive-deps in `PhotoGallery`); build fails on `IImage` missing fields (`metadata`, `isFavorite`, `isLatestWork`, `isVisible`, `order`) + Firestore generic mismatches.
+* **Phase 1 done**: created `src/data/collections.data.ts` — 9 CDN covers (1280w + 32px placeholders), 24 favorite captions scraped, `PHOTOS` stubbed (cover as src, per-photo URLs TODO). New file lint/tsc clean, no new errors.
+* **Phase 2 done**: rewrote `src/layout/Navbar.layout.tsx` (triptych: Gallerie left, Alessandro Torri center, IG + YT + theme toggle right; mobile Drawer; dead `/projects`/`/about` links removed; social URLs exported) and `src/layout/Footer.layout.tsx` (centered ↑ Back to Top + IG/YT + copyright). Lint unchanged (3 errors + 1 warning, all pre-existing); tsc clean on both files.
+* **Next**: Phase 3 Gallery grid (`src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, new `src/components/CollectionCover.component.tsx`).
 
 ## 2026-09-08
 * **Added**: `docs/rebuild-plan.md` — stop/restart plan for modern reinterpretation of live alessandrotorri.it (Adobe Portfolio marta/ludwig). Locked: work in current repo, reuse CDN temporarily, admin deferred to Phase 6.
