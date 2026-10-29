@@ -26,9 +26,9 @@ sources:
 - Both render `CollectionGrid`.
 - `Container maxWidth="lg"`.
 - 9 covers from `COLLECTIONS`, 16:9, 1 column on mobile / 2 from `sm` up.
-- Title below the cover, centered and uppercase.
+- Title inside the cover, centered at the bottom over a dark gradient.
 - Links to `/gallery/:slug`.
-- Framer Motion stagger (`0.6s + i * 0.08`).
+- No entrance animation; hover only dims the image slightly.
 - Home renders the grid directly, with no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)).
 
 ### CollectionPage (`/gallery/:slug`) — phase 4
@@ -47,9 +47,9 @@ sources:
 
 ### CollectionCover (`src/components/CollectionCover.component.tsx`)
 
-- `ProgressiveImage` 16:9 cover with a centered uppercase title.
-- Hover: `scale(1.06)` + `brightness(0.65)`.
-- Framer Motion entrance stagger based on the item index.
+- `ProgressiveImage` 16:9 cover with a centered uppercase title inside the image.
+- Bottom gradient for legibility.
+- Hover: `brightness(0.86)` only; no scale, no entrance animation, no border/outline.
 
 ### PhotoGallery (`src/components/PhotoGallery.component.tsx`)
 

@@ -92,6 +92,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 |-------|------|--------|-------|
 | F | Knowledge foundation | done | OKF v0.2 wiki, docs audit, `AGENTS.md`, usual-loop skill, green baseline (2026-10-29) |
 | D | Dependency refresh | done (in-range + MUI 9) | 19 packages updated; MUI 9.5 adopted (decision 0006); remaining majors issue #6; grpc advisory issue #5 |
+| L | Layout refinements | done | owner feedback 2026-10-29; fonts, hover, covers, footer, mobile drawer (decision 0008) |
 | 0 | Baseline & cleanup prep | done | originally lint 3 errors + 1 warning and red build; fixed 2026-10-29 (commit `31d6854`) |
 | 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
@@ -130,7 +131,7 @@ Files: `src/layout/Navbar.layout.tsx`, `src/layout/Footer.layout.tsx`, `src/layo
 
 Files: `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, `src/components/CollectionCover.component.tsx` (new), `src/components/CollectionGrid.component.tsx` (new).
 
-- [x] `GalleryPage`: `Container maxWidth lg`, no `H2 Explore the Collections`; grid `xs:1 sm:2` (`Masonry` NOT needed here — plain `Grid`), `16:9` covers from `COLLECTIONS`, title below centered uppercase, `Link → /gallery/:slug`, framer-motion stagger `0.6s + i*0.08`.
+- [x] `GalleryPage`: `Container maxWidth lg`, no `H2 Explore the Collections`; grid `xs:1 sm:2` (`Masonry` NOT needed here — plain `Grid`), `16:9` covers from `COLLECTIONS`, title inside the cover over a bottom gradient, `Link → /gallery/:slug`, no entrance animation (refined by decision 0008).
 - [x] `HomePage`: renders the same `<CollectionGrid />` (decision 0007). Removed the Unsplash hero, commented Firestore blocks, and the `height:3000px` hack.
 - [x] Deleted dead `src/components/Navbar.tsx`.
 - [x] Acceptance: `/` and `/gallery` show 9 covers, 2-col from `sm`, 1-col mobile, click navigates.

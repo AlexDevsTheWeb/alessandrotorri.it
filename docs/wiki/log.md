@@ -1,6 +1,14 @@
 # Knowledge Bundle Update Log
 
 ## 2026-10-29
+* **Layout refinements**: applied the owner feedback from `docs/raw/2026-10-29-layout-improvements.md` — DM Sans + Instrument Serif, muted-to-full hover colors, visible light-theme icons, no focus borders, no card entrance/scale animation, cover titles inside a bottom gradient, compact borderless footer, transparent back-to-top icon, mobile icons moved into a blurred drawer.
+* **CSS cleanup**: replaced the Vite `index.css` boilerplate with a minimal reset and deleted the unused `App.css`.
+* **Decision**: [0008 — Visual refinements](/decisions/0008-visual-refinements.md), refining the visual specifics of decision 0003.
+* **Wiki**: added [source summary](/sources/2026-10-29-layout-improvements.md); updated [Design System](/concepts/design-system.md), [Gallery System](/concepts/gallery-system.md), [Site Architecture](/concepts/site-architecture.md), [Rebuild Plan](/rebuild-plan.md), indexes and AGENTS.
+* **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.357 MB / 420.96 kB gzip.
+* **Next**: phase 4 — collection feed, captions, and lightbox (`/gallery/:slug`).
+
+## 2026-10-29
 * **Issue #2 / phase 3**: shipped the 9-cover gallery grid on `/` and `/gallery`. New `CollectionGrid` + `CollectionCover` components, static `COLLECTIONS` data, 16:9 `ProgressiveImage`, centered uppercase titles, hover scale/brightness, framer-motion stagger.
 * **Home decision**: `/` renders the grid directly, no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)). Removed the Unsplash hero, commented Firestore blocks, and `height: 3000px` hack.
 * **Cleanup**: deleted the dead `src/components/Navbar.tsx`; `GalleryPage` no longer renders the demo `PhotoGallery`.

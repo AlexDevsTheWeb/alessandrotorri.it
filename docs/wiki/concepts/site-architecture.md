@@ -35,10 +35,10 @@ There is **no** `/about`, `/projects`, or `/contact` route. Old links to those p
 
 All routes render inside `SharedLayout`:
 
-- `Navbar` — fixed, glassmorphism, auto-hide on scroll down, triptych: `Gallerie` / `Alessandro Torri` / Instagram + YouTube + theme toggle.
+- `Navbar` — fixed, glassmorphism, auto-hide on scroll down. Desktop: `Gallerie` / `Alessandro Torri` / Instagram + YouTube + theme toggle. Mobile: menu + centered logo; socials and theme toggle live in the blurred drawer.
 - `<Outlet />` — page content.
-- `Footer` — back-to-top, social icons, copyright.
-- `BacktoTopButton` — appears after 400px of scroll.
+- `Footer` — compact single row with copyright and social icons; icons hidden on mobile, no top border.
+- `BacktoTopButton` — floating transparent icon after 400px of scroll, with no visible text.
 
 See [Design System](/concepts/design-system.md).
 

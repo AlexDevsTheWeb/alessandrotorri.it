@@ -25,7 +25,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 
 * **Knowledge foundation — done 2026-10-29.** `docs/wiki/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
-* **Public rebuild — phases 0–3 done, phase 4 next.** Data layer, navbar, footer, shell, and the 9-cover grid on `/` and `/gallery` are in place. See [Rebuild Plan](/rebuild-plan.md).
+* **Public rebuild — phases 0–3 done, layout refinements done, phase 4 next.** Data layer, navbar, footer, shell, and the 9-cover grid on `/` and `/gallery` are in place; the typography, hover states, covers, footer and mobile drawer were refined from owner feedback. See [Rebuild Plan](/rebuild-plan.md) and [Decision 0008](/decisions/0008-visual-refinements.md).
 * **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is still commented out. Tracked in issue #3.
 * **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6, and the Firebase grpc advisory in issue #5.
 * **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
