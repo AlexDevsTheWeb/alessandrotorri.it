@@ -19,7 +19,7 @@ Single-page React app with client-side routing. Public pages render inside one s
 
 | Route | Component | Access | Purpose |
 |-------|-----------|--------|---------|
-| `/` | `HomePage` | Public | Entry; becomes the cover grid (same content as `/gallery`) |
+| `/` | `HomePage` | Public | Entry; renders the same cover grid as `/gallery` (decision 0007) |
 | `/gallery` | `GalleryPage` | Public | 9 collection covers |
 | `/gallery/:collectionName` | `CollectionPage` | Public | Single-collection feed + lightbox |
 | `/login` | `LoginPage` | Public | Google sign-in |

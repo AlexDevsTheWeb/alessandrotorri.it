@@ -24,11 +24,13 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
 * [2026-10-29 — GitHub issue #1](/sources/2026-10-29-gh-issue-1.md) - Dependency refresh: in-range updates, deferred majors, security note.
 * [2026-10-29 — GitHub issue #6](/sources/2026-10-29-gh-issue-6.md) - MUI 9.5 adoption and the v7→v9 migrations.
+* [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phase 3: the 9-cover gallery grid.
 * [2026-03-03 — Blueprint](/sources/2026-03-03-blueprint.md) - Original feature blueprint (deprecated history).
 
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0007 — Home renders the gallery grid](/decisions/0007-home-gallery-grid.md) - No redirect; `/` and `/gallery` share the grid.
 * [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md) - MUI 9.5 + v9 API migrations.
 * [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md) - In-range now, majors deferred, no force fixes.
 * [0004 — Wiki layout under docs/wiki](/decisions/0004-wiki-layout.md) - Raw and wiki as siblings; fixed section layout.
