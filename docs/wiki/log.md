@@ -1,6 +1,15 @@
 # Knowledge Bundle Update Log
 
 ## 2026-10-29
+* **Issue #6 / MUI 9**: upgraded `@mui/material` and `@mui/icons-material` to 9.5.0 and `@mui/lab` to 9.0.0-beta.10; `@mui/system`, `@mui/utils`, and `@mui/styled-engine` resolve to 9.5.0. React 19.3.1 and Emotion 11.14 already satisfy the v9 peers.
+* **Migration**: `Dialog` `PaperProps` → `slotProps.paper`; system props moved to `sx` on `Box`/`Stack`/`Grid`; `nativeButton={false}` on buttons rendered as Router links.
+* **Decision**: [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md); remaining majors stay in issue #6.
+* **Wiki**: added [source summary for issue #6](/sources/2026-10-29-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Bundle is ~1.37 MB (423.65 kB gzip); phase 5 code splitting remains the main remedy.
+* **PR**: [#8](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/8) — draft MUI 9 upgrade, stacked on #7.
+* **Next**: public rebuild phase 3 (issue #2); remaining majors in issue #6.
+
+## 2026-10-29
 * **Issue #1 / dependencies**: applied all in-range updates with `npm update` (19 packages, including React 19.3.1, MUI 7.3.11, Vite 7.3.7, Firebase 12.19.0, Router 7.18.5, Zustand 5.0.16). `package-lock.json` only; `package.json` ranges unchanged.
 * **Security**: `npm audit` still reports 4 high advisories in `@grpc/grpc-js@1.9.16` (Firebase transitive). `npm audit fix --force` would downgrade Firebase to 9.14.0, so it was not applied; tracked in issue #5.
 * **Decision**: [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md); majors deferred to issue #6.

@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md) - MUI 9.5 family and the v9 API migrations.
 * [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md) - In-range now, majors deferred, no force fixes.
 * [0004 — Wiki layout under docs/wiki](/decisions/0004-wiki-layout.md) - Splits raw and wiki into siblings and fixes the section layout.
 * [0003 — Exact look & feel, modern implementation](/decisions/0003-exact-look-and-feel.md) - Resolves the "pixel clone vs reinterpretation" ambiguity in favor of visual parity.

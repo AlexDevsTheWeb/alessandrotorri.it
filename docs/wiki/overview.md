@@ -27,7 +27,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
 * **Public rebuild — phases 0–2 done, phase 3 next.** Data layer, navbar, footer, and shell are in place. See [Rebuild Plan](/rebuild-plan.md).
 * **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is still commented out. Tracked in issue #3.
-* **Libraries — in-range refresh done 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Majors are deferred to issue #6 ([Decision 0005](/decisions/0005-dependency-refresh-policy.md)); the Firebase grpc advisory is tracked in issue #5.
+* **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6, and the Firebase grpc advisory in issue #5.
 * **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
 
 > [!WARNING] Contradiction — exact clone vs modern reinterpretation

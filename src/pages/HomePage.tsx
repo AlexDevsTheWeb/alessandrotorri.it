@@ -59,6 +59,7 @@ const HomePage: React.FC = () => {
               size="large"
               component={Link}
               to="/gallery"
+              nativeButton={false}
               sx={{
                 mt: 4,
                 borderRadius: '50px',
@@ -84,7 +85,7 @@ const HomePage: React.FC = () => {
         </Typography>
         {/* {loading && <Typography>Loading...</Typography>} */}
         {/* {error && <Typography color="error">Error: {error.message}</Typography>} */}
-        <Grid container spacing={4} justifyContent="center">
+        <Grid container spacing={4} sx={{ justifyContent: 'center' }}>
           {/* {latestWork?.map((image, index) => (
             <Grid item key={image.id} xs={12} sm={6} md={4}>
               <motion.div

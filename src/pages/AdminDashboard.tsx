@@ -17,7 +17,7 @@ const AdminDashboard: React.FC = () => {
           Welcome to your admin dashboard. Here you will be able to manage your photos, albums, and collections.
         </Typography>
         <CollectionList />
-        <Box my={4}>
+        <Box sx={{ my: 4 }}>
           <Typography variant="h5" component="h2" gutterBottom>
             Upload New Image
           </Typography>
