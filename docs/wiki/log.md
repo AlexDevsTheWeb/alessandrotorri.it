@@ -1,6 +1,14 @@
 # Knowledge Bundle Update Log
 
 ## 2026-10-29
+* **Issue #2 / phase 3**: shipped the 9-cover gallery grid on `/` and `/gallery`. New `CollectionGrid` + `CollectionCover` components, static `COLLECTIONS` data, 16:9 `ProgressiveImage`, centered uppercase titles, hover scale/brightness, framer-motion stagger.
+* **Home decision**: `/` renders the grid directly, no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)). Removed the Unsplash hero, commented Firestore blocks, and `height: 3000px` hack.
+* **Cleanup**: deleted the dead `src/components/Navbar.tsx`; `GalleryPage` no longer renders the demo `PhotoGallery`.
+* **Wiki**: added [source summary for issue #2](/sources/2026-10-29-gh-issue-2.md); updated [Gallery System](/concepts/gallery-system.md), [Rebuild Plan](/rebuild-plan.md), [Overview](/overview.md), and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.352 MB / 419.88 kB gzip.
+* **Next**: phase 4 — collection feed, captions, and lightbox (`/gallery/:slug`).
+
+## 2026-10-29
 * **Issue #6 / MUI 9**: upgraded `@mui/material` and `@mui/icons-material` to 9.5.0 and `@mui/lab` to 9.0.0-beta.10; `@mui/system`, `@mui/utils`, and `@mui/styled-engine` resolve to 9.5.0. React 19.3.1 and Emotion 11.14 already satisfy the v9 peers.
 * **Migration**: `Dialog` `PaperProps` → `slotProps.paper`; system props moved to `sx` on `Box`/`Stack`/`Grid`; `nativeButton={false}` on buttons rendered as Router links.
 * **Decision**: [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md); remaining majors stay in issue #6.

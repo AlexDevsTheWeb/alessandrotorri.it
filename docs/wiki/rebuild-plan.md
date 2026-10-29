@@ -95,8 +95,8 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 0 | Baseline & cleanup prep | done | originally lint 3 errors + 1 warning and red build; fixed 2026-10-29 (commit `31d6854`) |
 | 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
-| 3 | Gallery grid (`/` + `/gallery`) | pending | **next** — 2-col covers grid |
-| 4 | Collection feed + lightbox | pending | single-col + captions + Dialog |
+| 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
+| 4 | Collection feed + lightbox | pending | **next** — single-col + captions + Dialog |
 | 5 | Polish (SEO, responsive, perf) | pending | titles, OG, lazy, sitemap |
 | 6 | Admin reconnect (DEFERRED) | deferred | protect `/admin`, finish upload/manage; issue #3 |
 
@@ -126,14 +126,15 @@ Files: `src/layout/Navbar.layout.tsx`, `src/layout/Footer.layout.tsx`, `src/layo
 - [x] Keep `SharedLayout` outlet order. Keep dark/light toggle via `themeStore`.
 - Acceptance: desktop + 390px mobile header matches original triptych; no dead routes in nav.
 
-### Phase 3 — Gallery grid
+### Phase 3 — Gallery grid — done
 
-Files: `src/pages/GalleryPage.tsx` (rewrite), `src/pages/HomePage.tsx` (make it re-export gallery grid or redirect to `/gallery`), `src/components/CollectionCover.component.tsx` (new, small).
+Files: `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, `src/components/CollectionCover.component.tsx` (new), `src/components/CollectionGrid.component.tsx` (new).
 
-- [ ] `GalleryPage`: `Container maxWidth lg`, no `H2 Explore the Collections`; grid `xs:1 sm:2` (`Masonry` NOT needed here — plain `Grid`), `16:9` covers from `COLLECTIONS`, title below centered uppercase, `Link → /gallery/:slug`, framer-motion stagger `0.6s + i*0.08`.
-- [ ] `HomePage`: render same `<GalleryPage/>` content (or `<Navigate to="/gallery"/>` — decide once, document). Remove Unsplash hero + commented Firestore blocks + `height:3000px` hack (`HomePage.tsx:81`).
-- [ ] Delete dead `src/components/Navbar.tsx` if still present; clean `App.css`/`index.css` Vite boilerplate only if it conflicts.
-- Acceptance: `/` and `/gallery` show 9 covers, 2-col ≥768px, 1-col mobile, click navigates.
+- [x] `GalleryPage`: `Container maxWidth lg`, no `H2 Explore the Collections`; grid `xs:1 sm:2` (`Masonry` NOT needed here — plain `Grid`), `16:9` covers from `COLLECTIONS`, title below centered uppercase, `Link → /gallery/:slug`, framer-motion stagger `0.6s + i*0.08`.
+- [x] `HomePage`: renders the same `<CollectionGrid />` (decision 0007). Removed the Unsplash hero, commented Firestore blocks, and the `height:3000px` hack.
+- [x] Deleted dead `src/components/Navbar.tsx`.
+- [x] Acceptance: `/` and `/gallery` show 9 covers, 2-col from `sm`, 1-col mobile, click navigates.
+- Verification: `npm run lint` and `npm run build` pass on 2026-10-29.
 
 ### Phase 4 — Collection feed + lightbox
 
@@ -187,6 +188,7 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/pages/GalleryPage.tsx` | 9-cover grid |
 | `src/pages/CollectionPage.tsx` | single-col feed + lightbox |
 | `src/components/CollectionCover.component.tsx` (new) | cover card |
+| `src/components/CollectionGrid.component.tsx` (new) | shared 9-cover grid for `/` and `/gallery` |
 | `src/components/PhotoGallery.component.tsx` | Dialog/keyboard pattern donor |
 | `src/components/ProgressiveImage.component.tsx` | blur-up loader |
 | `src/layout/Navbar.layout.tsx` | triptych nav |

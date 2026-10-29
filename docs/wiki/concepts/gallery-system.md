@@ -16,25 +16,22 @@ sources:
 
 # Gallery System
 
-> [!WARNING] Current code is mid-rebuild
-> `GalleryPage` still renders the demo `PhotoGallery` with hardcoded Unsplash images, and `CollectionPage` still queries Firestore. The target is the static CDN dataset in `src/data/collections.data.ts`. Do not describe the demo as the final gallery.
+> [!NOTE] Current state
+> Phase 3 is done: `/` and `/gallery` render the shared static `CollectionGrid` with the 9 CDN covers. `CollectionPage` is still the old Firestore view and will be rewritten in phase 4 with the static `PHOTOS` data and the lightbox.
 
-## Rebuild target
+## Implemented
 
-### GalleryPage (`/gallery`)
+### GalleryPage (`/gallery`) and HomePage (`/`)
 
+- Both render `CollectionGrid`.
 - `Container maxWidth="lg"`.
-- 9 covers from `COLLECTIONS`, 16:9, responsive 1 column on mobile / 2 from `sm` up.
+- 9 covers from `COLLECTIONS`, 16:9, 1 column on mobile / 2 from `sm` up.
 - Title below the cover, centered and uppercase.
 - Links to `/gallery/:slug`.
 - Framer Motion stagger (`0.6s + i * 0.08`).
+- Home renders the grid directly, with no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)).
 
-### HomePage (`/`)
-
-- Same cover grid as `/gallery`, or a redirect — decide once in phase 3 and document.
-- Remove the Unsplash hero, commented Firestore blocks, and the `height: 3000px` hack.
-
-### CollectionPage (`/gallery/:slug`)
+### CollectionPage (`/gallery/:slug`) — phase 4
 
 - Single-column feed, `maxWidth` ~900px.
 - Full-width image with a centered caption below.
@@ -43,11 +40,22 @@ sources:
 
 ## Components
 
+### CollectionGrid (`src/components/CollectionGrid.component.tsx`)
+
+- Renders `COLLECTIONS` as a responsive `Grid` (`xs: 12`, `sm: 6`).
+- Used by both `/` and `/gallery`.
+
+### CollectionCover (`src/components/CollectionCover.component.tsx`)
+
+- `ProgressiveImage` 16:9 cover with a centered uppercase title.
+- Hover: `scale(1.06)` + `brightness(0.65)`.
+- Framer Motion entrance stagger based on the item index.
+
 ### PhotoGallery (`src/components/PhotoGallery.component.tsx`)
 
 - Masonry via `@mui/lab/Masonry`.
 - Lightbox dialog with keyboard navigation (arrows, Escape), blurred backdrop, side arrows on desktop and bottom arrows on mobile.
-- Currently holds demo data; reuse the dialog/keyboard pattern in phase 4, then wire it to real data.
+- No longer used by `GalleryPage`; retained as the dialog/keyboard pattern donor for phase 4.
 
 ### ProgressiveImage (`src/components/ProgressiveImage.component.tsx`)
 
