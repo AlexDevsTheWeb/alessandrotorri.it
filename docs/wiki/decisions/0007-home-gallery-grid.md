@@ -33,6 +33,7 @@ The Rebuild Plan left one phase 3 choice open: `/` should either render the same
 # Links
 
 - [Source summary](/sources/2026-10-29-gh-issue-2.md)
+- [Pull request #9](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/9)
 - [Rebuild Plan](/rebuild-plan.md)
 - [Gallery System](/concepts/gallery-system.md)
 - [Decision 0003 — Exact look & feel](/decisions/0003-exact-look-and-feel.md)

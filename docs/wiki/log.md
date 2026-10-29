@@ -6,6 +6,7 @@
 * **Cleanup**: deleted the dead `src/components/Navbar.tsx`; `GalleryPage` no longer renders the demo `PhotoGallery`.
 * **Wiki**: added [source summary for issue #2](/sources/2026-10-29-gh-issue-2.md); updated [Gallery System](/concepts/gallery-system.md), [Rebuild Plan](/rebuild-plan.md), [Overview](/overview.md), and indexes.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.352 MB / 419.88 kB gzip.
+* **PR**: [#9](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/9) — draft phase 3 gallery grid.
 * **Next**: phase 4 — collection feed, captions, and lightbox (`/gallery/:slug`).
 
 ## 2026-10-29
