@@ -1,74 +1,94 @@
 import { createTheme } from '@mui/material/styles';
 
 const baseTypography = {
-  // Font di default per tutto il corpo del testo, menu, bottoni
-  fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
-  
-  // Font specifico per i titoli
-  h1: { fontFamily: '"Playfair Display", serif', letterSpacing: '-0.02em' },
-  h2: { fontFamily: '"Playfair Display", serif', fontWeight: 700 },
-  h3: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
-  h4: { fontFamily: '"Playfair Display", serif', fontWeight: 600 },
-  h5: { fontFamily: '"Inter", sans-serif', fontWeight: 500 }, // Titoli piccoli più moderni
-  h6: { fontFamily: '"Inter", sans-serif', fontWeight: 500 },
-  
+  fontFamily: '"DM Sans", "Helvetica", "Arial", sans-serif',
+  h1: {
+    fontFamily: '"Instrument Serif", "Times New Roman", serif',
+    fontWeight: 400,
+    letterSpacing: '-0.02em',
+    lineHeight: 1.05,
+  },
+  h2: {
+    fontFamily: '"Instrument Serif", "Times New Roman", serif',
+    fontWeight: 400,
+    letterSpacing: '-0.01em',
+  },
+  h3: {
+    fontFamily: '"Instrument Serif", "Times New Roman", serif',
+    fontWeight: 400,
+  },
+  h4: {
+    fontFamily: '"Instrument Serif", "Times New Roman", serif',
+    fontWeight: 400,
+  },
+  h5: { fontFamily: '"DM Sans", sans-serif', fontWeight: 500 },
+  h6: { fontFamily: '"DM Sans", sans-serif', fontWeight: 500 },
   button: {
-    textTransform: 'none' as const, // Toglie il tutto maiuscolo automatico, molto più moderno
+    textTransform: 'none' as const,
     fontWeight: 500,
     letterSpacing: '0.02em',
+  },
+};
+
+const sharedComponents = {
+  MuiButtonBase: {
+    defaultProps: {
+      disableRipple: true,
+    },
+  },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+        '&.Mui-focusVisible': {
+          outline: 'none',
+          boxShadow: 'none',
+        },
+      },
+    },
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+        '&.Mui-focusVisible': {
+          outline: 'none',
+          boxShadow: 'none',
+        },
+      },
+    },
   },
 };
 
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: { main: '#1a1a1a' }, // Nero quasi puro per testi e icone
+    primary: { main: '#1a1a1a' },
     background: {
-      default: '#ffffff', // Bianco puro per la massima pulizia
+      default: '#ffffff',
       paper: '#fafafa',
     },
   },
   typography: baseTypography,
-  shape: { borderRadius: 0 }, // Angoli netti = look più moderno e architettonico
+  shape: { borderRadius: 0 },
+  components: sharedComponents,
 });
 
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: { main: '#ffffff' },
-    // Questo resetta i colori di "azione" (hover, selected, etc.)
     action: {
-      hover: 'rgba(255, 255, 255, 0.08)', 
+      hover: 'rgba(255, 255, 255, 0.08)',
       selected: 'rgba(255, 255, 255, 0.16)',
     },
     background: { default: '#0a0a0a', paper: '#121212' },
   },
   typography: baseTypography,
-  // --- AGGIUNGI QUESTA SEZIONE ---
-  components: {
-    MuiButtonBase: {
-      defaultProps: {
-        disableRipple: true, // Toglie l'animazione a cerchio ovunque
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          // Rimuove il background grigio/viola di default su tutti i bottoni text
-          '&:hover': {
-            backgroundColor: 'transparent',
-          },
-        },
-      },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          '&:hover': {
-            backgroundColor: 'transparent',
-          },
-        },
-      },
-    },
-  },
+  shape: { borderRadius: 0 },
+  components: sharedComponents,
 });
