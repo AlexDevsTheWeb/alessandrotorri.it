@@ -6,6 +6,7 @@
 * **Decision**: [0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md); majors deferred to issue #6.
 * **Wiki**: added [source summary for issue #1](/sources/2026-10-29-gh-issue-1.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle is 1.35 MB (418.89 kB gzip); phase 5 code splitting is now a priority.
+* **PR**: [#7](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/7) — draft in-range dependency refresh.
 * **Next**: public rebuild phase 3 (issue #2).
 
 ## 2026-10-29
