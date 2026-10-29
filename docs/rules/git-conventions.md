@@ -1,19 +1,19 @@
 ---
 type: Playbook
 title: Git Conventions
-description: Commit message format, branching strategy, and PR guidelines.
-tags: [git, commits, branching, pr]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
+description: Commit message format, branching strategy, PR rules, and CI expectations.
+tags: [git, commits, branching, pr, ci]
 status: stable
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 ---
 
 # Git Conventions
 
-## Commit Messages
+## Commit messages
 
-Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 <type>: <description>
 
 [optional body]
@@ -23,32 +23,34 @@ Use [Conventional Commits](https://www.conventionalcommits.org/) format:
 
 | Type | When to use |
 |------|-------------|
-| `feat` | New feature (new page, new component, new functionality) |
+| `feat` | New feature (page, component, functionality) |
 | `fix` | Bug fix (broken route, type error, UI glitch) |
-| `refactor` | Code restructuring without behavior change |
+| `refactor` | Restructuring without behavior change |
 | `chore` | Tooling, config, dependency updates |
-| `docs` | Documentation changes only |
+| `docs` | Documentation only |
 | `style` | Formatting, no logic change |
-| `test` | Adding or updating tests |
+| `test` | Tests |
 
 ### Examples
 
-```
-feat: add About page with bio and gear section
+```text
+feat: add collection cover grid
 fix: enable ProtectedRoute for admin pages
-refactor: extract ImageCard from CollectionPage
-chore: update MUI to 7.3.8
+docs: ingest rebuild charter and audit the wiki
+chore: remove Firebase Studio workspace files
 ```
 
 ## Branching
 
-- `main` — production-ready code
-- Feature branches: `feat/<description>`, `fix/<description>`
-- One logical change per branch
+- `development` — default and integration branch.
+- Feature branches: `feat/<description>`, `fix/<description>`, `docs/<description>`, `chore/<description>`.
+- One logical change per branch.
 
-## Pull Requests
+## Pull requests
 
-- Clear title describing the change
-- Reference any related issues
-- Ensure `npm run lint` and `npm run build` pass
-- Review all changed files before requesting merge
+- Open as **draft** while work is in progress; mark ready only after verification.
+- Target `development`.
+- Fill `.github/PULL_REQUEST_TEMPLATE.md`; link issues.
+- Include code **and** the wiki/log updates in the same PR (see [The Usual Loop](/rules/workflow.md)).
+- `npm run lint` and `npm run build` must pass; CI runs both.
+- Review the full diff before requesting merge.

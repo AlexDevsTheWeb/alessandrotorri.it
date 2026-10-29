@@ -3,18 +3,18 @@ type: Reference
 title: State Management
 description: Zustand stores for authentication and theme state.
 tags: [state, zustand, auth, theme]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
 status: stable
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 ---
 
 # State Management
 
-## Auth Store (`src/store/authStore.ts`)
+## Auth store (`src/store/authStore.ts`)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `user` | `FirebaseUser \| null` | Current authenticated user |
-| `isLoading` | `boolean` | Auth state loading flag |
+| `user` | `User \| null` | Current authenticated user |
+| `isLoading` | `boolean` | Auth loading flag |
 | `error` | `string \| null` | Auth error message |
 
 | Action | Description |
@@ -23,13 +23,13 @@ status: stable
 | `loginWithGoogle()` | Google OAuth sign-in |
 | `logout()` | Sign out and clear state |
 
-Auth state also synced via `onAuthStateChanged` in `App.tsx`.
+`onAuthStateChanged` in `src/App.tsx` keeps the store in sync with Firebase.
 
-## Theme Store (`src/store/themeStore.ts`)
+## Theme store (`src/store/themeStore.ts`)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `themeMode` | `'light' \| 'dark'` | Current theme (default: dark) |
+| `themeMode` | `'light' \| 'dark'` | Current theme (default: `dark`) |
 
 | Action | Description |
 |--------|-------------|
@@ -37,6 +37,11 @@ Auth state also synced via `onAuthStateChanged` in `App.tsx`.
 
 ## Pattern
 
-- Zustand chosen over Redux for minimal boilerplate
-- No middleware, no persistence — state resets on page reload
-- Theme persisted via MUI's `ThemeProvider` + `useTheme`
+- Zustand over Redux for minimal boilerplate.
+- No middleware and no persistence — the theme resets on reload.
+- Theme is consumed through MUI `ThemeProvider` in `src/App.tsx`.
+
+## Related
+
+- [Tech Stack](/concepts/tech-stack.md)
+- [Firebase Backend](/concepts/firebase-backend.md)

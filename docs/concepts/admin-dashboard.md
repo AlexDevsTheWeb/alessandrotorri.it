@@ -3,45 +3,61 @@ type: Reference
 title: Admin Dashboard
 description: Image upload, collection management, and drag-and-drop reordering interface.
 tags: [admin, dashboard, upload, collections, drag-and-drop]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
-status: stable
+status: draft
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+sources:
+  - id: admin-issue
+    resource: https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/3
+    title: "Issue #3 — protect admin routes and finish the administrator section"
 ---
 
 # Admin Dashboard
 
+> [!WARNING] Not protected
+> `ProtectedRoute` is commented out in `src/App.tsx`. Anyone can reach `/admin` and `/admin/collection/:name`. Tracked in issue #3; do not expose new admin routes until it is fixed.
+
 ## Routes
 
-- `/admin` — `AdminDashboard`: upload form + collection list + logout
-- `/admin/collection/:collectionName` — `CollectionDetailPage`: manage images in a collection
+- `/admin` — `AdminDashboard`: upload form + collection list + logout.
+- `/admin/collection/:collectionName` — `CollectionDetailPage`: manage images in a collection.
 
-## AdminDashboard Page
+## AdminDashboard page
 
-- Lists all collections (deduplicated from Firestore `images` collection)
-- Upload form via `ImageUpload` component
-- Logout button
-- **Note**: Route protection via `ProtectedRoute` is currently commented out
+- Lists collections deduplicated from the Firestore `images` collection.
+- Upload form via `ImageUpload`.
+- Logout action.
+- Route protection is still disabled (issue #3).
 
-## ImageUpload Component
+## ImageUpload component
 
-- Multi-file `<Input type="file" multiple />`
-- Per-file metadata form:
-  - Title (text)
-  - Metadata/description (text)
-  - Collection name (text)
-  - Checkboxes: `isFavorite`, `isLatestWork`, `isCoverImage`, `isVisible`
-- Upload progress via `LinearProgress`
-- Uploads to Firebase Storage, creates Firestore doc on completion
+- Multi-file `<Input type="file" multiple />`.
+- Per-file metadata form: title, metadata, collection, and the `isFavorite`, `isLatestWork`, `isCoverImage`, `isVisible` flags.
+- Upload progress via `LinearProgress`.
+- Uploads to Firebase Storage and creates a Firestore document on completion.
 
 ## CollectionDetailPage
 
-- Drag-and-drop reordering via `@hello-pangea/dnd`
-- Inline editing of image name and metadata
-- Toggle checkboxes: favorite, latestWork, coverImage, visible
-- Delete individual images or entire collection
-- Queries by `collection` name, ordered by `order`
+- Drag-and-drop reordering via `@hello-pangea/dnd`; writes `order` in a batch.
+- Inline editing of name and metadata.
+- Toggles for favorite, latest work, cover image, and visibility.
+- Soft delete (`isVisible: false`); can also delete a whole collection.
+- Queries by `collection`, ordered by `order`.
+- The local list is memoized from the snapshot (no `setState` in an effect).
 
-## CollectionList Component
+## CollectionList component
 
-- Queries all images from Firestore
-- Deduplicates collection names
-- Renders as MUI `List` with links to admin collection detail pages
+- Queries all images from Firestore.
+- Deduplicates collection names.
+- Renders as an MUI `List` with links to the admin collection pages.
+
+## Known issues
+
+- Route protection disabled (issue #3).
+- Firestore/Storage security rules are not in the repo yet.
+- The admin still writes to Firestore while the public site reads static CDN data; both are intentional during the rebuild.
+
+## Related
+
+- [Photo Management](/concepts/photo-management.md)
+- [Firebase Backend](/concepts/firebase-backend.md)
+- [Site Architecture](/concepts/site-architecture.md)

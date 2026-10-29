@@ -1,5 +1,16 @@
 # Knowledge Bundle Update Log
 
+## 2026-10-29
+* **Ingested**: `docs/raw/2026-10-29-rebuild.md` as [source summary](/sources/2026-10-29-rebuild.md); extracted 10 requirements (wiki, docs audit, blueprint, multi-agent schema, libraries, clone, GitHub tooling).
+* **Archived**: root `blueprint.md` moved to `docs/raw/2026-03-03-blueprint.md` and summarized as deprecated history ([decision 0002](/decisions/0002-archive-blueprint.md)).
+* **Decision**: [0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md) (OKF v0.2, immutable raw, one `AGENTS.md`); [0003 — Exact look & feel](/decisions/0003-exact-look-and-feel.md) (visual parity, modern implementation).
+* **Agent schema**: added root `AGENTS.md` (canonical), `CLAUDE.md` + `GEMINI.md` pointers, `.agents/skills/usual-loop/SKILL.md` with a `.claude/skills` symlink; added [The Usual Loop](/rules/workflow.md).
+* **Audit**: [Docs and baseline audit](/reviews/2026-10-29-docs-audit.md) — every document classified; fixed stale `/about`, `PLAN.md`, "English site", IDX, and ProtectedRoute claims.
+* **Baseline**: `npm run lint` and `npm run build` are green. Fixed `IImage`, unused `styled()` theme params, setState-in-effect, and the unsupported `idField` option (image ids were undefined in admin actions).
+* **Tooling**: added GitHub Actions CI, PR/issue templates; opened issues #1 (dependencies), #2 (public rebuild phases 3–5), #3 (protect admin).
+* **Repository hygiene**: removed `.idx/` and the stale Firebase Studio `GEMINI.md`; replaced the Vite boilerplate `README.md`.
+* **Next**: issue #1 dependency refresh, then rebuild phase 3 ([issue #2](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/2)).
+
 ## 2026-09-08
 * **Wiki migration**: `docs/` converted to llm-wiki + OKF v0.2 compliant wiki (English only, per owner decision).
 * **Fixed**: `index.md` frontmatter removed (reserved file); `rebuild-plan.md` `okf_version` field removed, `description`/`tags`/`sources` added; all cross-links now absolute bundle-relative (`/concepts/...`, `/rules/...`, `/rebuild-plan.md`, `/overview.md`, `/log.md`); no `../` parent escapes.

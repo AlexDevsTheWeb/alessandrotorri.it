@@ -3,14 +3,18 @@ type: Roadmap
 title: Project Roadmap
 description: Phased development plan for the photography portfolio — features, bugs, and milestones.
 tags: [roadmap, plan, phases, milestones, features]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
-status: superseded
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+status: deprecated
+sources:
+  - id: raw-blueprint
+    resource: /raw/2026-03-03-blueprint.md
+    title: Photography Portfolio Project Blueprint (raw, immutable)
 ---
 
 # Project Roadmap
 
-> [!WARNING] Superseded
-> For public-site work, follow [Rebuild Plan](/rebuild-plan.md) instead. This roadmap is kept as history of the original plan.
+> [!WARNING] Deprecated
+> This is the original plan and is kept as history. For all current work, follow [Rebuild Plan](/rebuild-plan.md). The [blueprint](/sources/2026-03-03-blueprint.md) is also archived history. Do not follow both plans.
 
 Personal photography portfolio focused on long exposure photography. React 19 + MUI 7 + Firebase.
 

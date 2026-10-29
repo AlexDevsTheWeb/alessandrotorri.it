@@ -1,41 +1,58 @@
+---
+okf_version: "0.2"
+---
+
 # AlessandroTorri.it — Knowledge Bundle
 
-OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio project. This bundle captures architecture decisions, tech stack conventions, photo management workflows, and agent rules for AI assistants working on the codebase.
+OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It captures the rebuild plan, architecture, Firebase/photo workflows, decisions, and the shared rules for AI agents.
 
 > [!TIP] Start here
-> New session? Read [Rebuild Plan](/rebuild-plan.md) first (status table + phases + resume protocol), then [Overview](/overview.md) for the big picture.
+> New session? Read [AGENTS.md](https://github.com/AlexDevsTheWeb/alessandrotorri.it/blob/development/AGENTS.md), then [Overview](/overview.md), then [Rebuild Plan](/rebuild-plan.md) (status table + phases + resume protocol).
 
-## Active Plan
+## Start Here
 
-* [Rebuild Plan](/rebuild-plan.md) — **START HERE to resume work.** Modern reinterpretation of alessandrotorri.it, status table + phases + resume protocol.
+* [Overview](/overview.md) - Tier-1 synthesis: what the project is, where it stands, what contradicts what.
+* [Rebuild Plan](/rebuild-plan.md) - Single source of truth for the public-site rebuild; status table, phases, resume protocol.
+* [The Usual Loop](/rules/workflow.md) - Read → analyze → plan → implement → update wiki → draft PR.
 
-## Overview
+## Sources
 
-* [Overview](/overview.md) — Tier-1 synthesis hub: what the project is, where it stands, what contradicts what.
+* [Source summaries](/sources/index.md) - One page per ingested raw source.
+* [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
+* [2026-03-03 — Blueprint](/sources/2026-03-03-blueprint.md) - Original feature blueprint (deprecated history).
 
-## Roadmap
+## Decisions
 
-* [Project Roadmap](/concepts/roadmap.md) — Original phased development plan (superseded for public-site work by the Rebuild Plan).
+* [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md) - OKF v0.2 wiki, immutable raw layer, one `AGENTS.md`.
+* [0002 — Archive blueprint.md](/decisions/0002-archive-blueprint.md) - Blueprint moved to `docs/raw/`.
+* [0003 — Exact look & feel](/decisions/0003-exact-look-and-feel.md) - Visual parity, modern implementation.
 
 ## Concepts
 
-* [Site Architecture](/concepts/site-architecture.md) — Overall structure, routing, and page layout
-* [Tech Stack](/concepts/tech-stack.md) — Frameworks, libraries, and toolchain
-* [Firebase Backend](/concepts/firebase-backend.md) — Auth, Firestore, Storage configuration
-* [Photo Management](/concepts/photo-management.md) — Upload pipeline, collections, metadata
-* [Gallery System](/concepts/gallery-system.md) — Public-facing gallery, masonry layout, lightbox
-* [Design System](/concepts/design-system.md) — MUI theme, typography, colors, responsive rules
-* [State Management](/concepts/state-management.md) — Zustand stores, auth and theme state
-* [Admin Dashboard](/concepts/admin-dashboard.md) — Upload, collection management, DnD reordering
+* [Site Architecture](/concepts/site-architecture.md) - Routing, pages, layout shell.
+* [Tech Stack](/concepts/tech-stack.md) - Frameworks, libraries, toolchain.
+* [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore, Storage.
+* [Photo Management](/concepts/photo-management.md) - Upload pipeline, collections, metadata.
+* [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, progressive images.
+* [Design System](/concepts/design-system.md) - MUI theme, typography, color, responsiveness.
+* [State Management](/concepts/state-management.md) - Zustand stores.
+* [Admin Dashboard](/concepts/admin-dashboard.md) - Upload, collections, reordering.
+* [Project Roadmap](/concepts/roadmap.md) - Original phased plan (deprecated).
 
 ## Rules
 
-* [Agent Rules](/rules/agent-rules.md) — Guidelines for AI agents working on this repo
-* [Code Style](/rules/code-style.md) — TypeScript, React, and MUI conventions
-* [Git Conventions](/rules/git-conventions.md) — Commit messages, branching, PR format
+* [Agent Rules](/rules/agent-rules.md) - How agents work in this repo.
+* [The Usual Loop](/rules/workflow.md) - The standard end-to-end procedure.
+* [Code Style](/rules/code-style.md) - TypeScript, React, MUI conventions.
+* [Git Conventions](/rules/git-conventions.md) - Commits, branches, PRs.
+
+## Reviews
+
+* [Docs and baseline audit — 2026-10-29](/reviews/2026-10-29-docs-audit.md) - Keep/update/archive verdicts and baseline fix.
 
 ## Wiki Operations (llm-wiki)
 
-* **Ingest** — new source? Summarize it, update every concept it touches, flag contradictions with a `> [!WARNING]` callout, append to [Log](/log.md), update this index.
-* **Query** — answer from these pages (not raw code); cite the concept pages used.
-* **Lint** — check for orphan pages, broken bundle-relative links, superseded claims, missing `type` frontmatter on non-index concepts.
+* **Ingest** - New source? Summarize it in `/sources/`, update every concept it touches, flag contradictions with `> [!WARNING]`, append to [Log](/log.md), update this index.
+* **Query** - Answer from these pages, not raw code; cite the concept pages used.
+* **Lint** - Check orphan pages, broken bundle-relative links, non-OKF `status` values, missing `type` frontmatter, and stale claims.

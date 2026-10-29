@@ -1,51 +1,69 @@
 ---
 type: Reference
 title: Gallery System
-description: Public-facing gallery with masonry layout, lightbox, and progressive image loading.
-tags: [gallery, masonry, lightbox, progressive-image, ui]
-generated: { by: human:alessandro, at: 2026-08-26T22:00:00Z }
+description: Public gallery, collection feed, lightbox, and progressive image loading — current state and rebuild target.
+tags: [gallery, lightbox, progressive-image, ui, rebuild]
 status: stable
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+sources:
+  - id: rebuild-plan
+    resource: /rebuild-plan.md
+    title: Rebuild Plan
+  - id: decision-0003
+    resource: /decisions/0003-exact-look-and-feel.md
+    title: Exact look & feel, modern implementation
 ---
 
 # Gallery System
 
-## GalleryPage (`/gallery`)
+> [!WARNING] Current code is mid-rebuild
+> `GalleryPage` still renders the demo `PhotoGallery` with hardcoded Unsplash images, and `CollectionPage` still queries Firestore. The target is the static CDN dataset in `src/data/collections.data.ts`. Do not describe the demo as the final gallery.
 
-- Queries Firestore for all `isVisible == true` images
-- Groups by `collection` field
-- Each collection displayed as a card with `isCoverImage` thumbnail
-- Links to `/gallery/:collectionName`
-- Framer Motion staggered entrance animations
+## Rebuild target
 
-## CollectionPage (`/gallery/:collectionName`)
+### GalleryPage (`/gallery`)
 
-- Queries Firestore: `collection == :name`, `isVisible == true`, `orderBy('order')`
-- Responsive grid layout
-- Click opens modal lightbox with full-size image
-- Framer Motion page transitions
+- `Container maxWidth="lg"`.
+- 9 covers from `COLLECTIONS`, 16:9, responsive 1 column on mobile / 2 from `sm` up.
+- Title below the cover, centered and uppercase.
+- Links to `/gallery/:slug`.
+- Framer Motion stagger (`0.6s + i * 0.08`).
 
-## PhotoGallery Component
+### HomePage (`/`)
 
-- Masonry layout via `@mui/lab/Masonry`
-- Accepts `images: IImage[]` prop
-- Progressive image loading (blur-up effect)
-- Fullscreen lightbox dialog with:
-  - Keyboard navigation (arrow keys, Escape)
-  - Blur backdrop
-  - Previous/next arrows (desktop: sides, mobile: bottom)
-  - Italian-language EXIF placeholder text
+- Same cover grid as `/gallery`, or a redirect — decide once in phase 3 and document.
+- Remove the Unsplash hero, commented Firestore blocks, and the `height: 3000px` hack.
 
-## ProgressiveImage Component
+### CollectionPage (`/gallery/:slug`)
 
-- Blur-up lazy loading pattern
-- Shows blurred low-res placeholder
-- Fades to high-res image via opacity transition
-- Configurable aspect ratio via CSS `aspect-ratio`
-- Supports `loading="lazy"` attribute
+- Single-column feed, `maxWidth` ~900px.
+- Full-width image with a centered caption below.
+- `ProgressiveImage` blur-up plus `loading="lazy"`.
+- Lightbox: fullscreen `Dialog`, dark backdrop + blur, image `contain` at `maxHeight: 75vh`, caption + EXIF placeholder, prev/next with Esc/arrows, mobile arrows below the image.
 
-## Image Optimization (Planned)
+## Components
 
-- No WebP conversion pipeline yet
-- No responsive `srcset` implementation
-- No image CDN (direct Firebase Storage URLs)
-- Future: consider image optimization on upload
+### PhotoGallery (`src/components/PhotoGallery.component.tsx`)
+
+- Masonry via `@mui/lab/Masonry`.
+- Lightbox dialog with keyboard navigation (arrows, Escape), blurred backdrop, side arrows on desktop and bottom arrows on mobile.
+- Currently holds demo data; reuse the dialog/keyboard pattern in phase 4, then wire it to real data.
+
+### ProgressiveImage (`src/components/ProgressiveImage.component.tsx`)
+
+- Blur-up pattern: low-res placeholder, fade to high-res on load.
+- Configurable `aspect-ratio`, `loading="lazy"`.
+- Used by the public feed.
+
+## Image optimization
+
+- No WebP pipeline yet.
+- No responsive `srcset` yet (the CDN URLs support `carw_*` variants).
+- Firebase Storage migration is phase 6; until then the public site uses Adobe CDN URLs.
+
+## Related
+
+- [Design System](/concepts/design-system.md)
+- [Photo Management](/concepts/photo-management.md)
+- [Rebuild Plan](/rebuild-plan.md)
+- [Decision 0003](/decisions/0003-exact-look-and-feel.md)
