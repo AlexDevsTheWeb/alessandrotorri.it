@@ -56,7 +56,7 @@ src/
   firebase.ts     # Firebase init
 ```
 
-Agent and knowledge files live outside `src/`: `AGENTS.md`, `.agents/skills/`, `docs/`.
+Agent and knowledge files live outside `src/`: `AGENTS.md`, `.agents/skills/`, `docs/wiki/` (bundle), and `docs/raw/` (immutable sources).
 
 ## Related
 

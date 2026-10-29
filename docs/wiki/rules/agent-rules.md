@@ -7,7 +7,7 @@ status: stable
 generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 sources:
   - id: raw-rebuild
-    resource: /raw/2026-10-29-rebuild.md
+    resource: ../../raw/2026-10-29-rebuild.md
     title: Personal Website Rebuild (raw, immutable)
 ---
 
@@ -38,7 +38,7 @@ The canonical schema is the repository-root `AGENTS.md`. This page is the wiki c
 2. `npm run build` — succeeds.
 3. No `console.log` left in code.
 4. No secrets or API keys staged; `.env` stays ignored.
-5. Wiki pages and `docs/log.md` updated in the same PR.
+5. Wiki pages and `docs/wiki/log.md` updated in the same PR.
 
 ## Architecture constraints
 

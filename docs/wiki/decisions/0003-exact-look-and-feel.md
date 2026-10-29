@@ -7,7 +7,7 @@ status: stable
 generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 sources:
   - id: raw-rebuild
-    resource: /raw/2026-10-29-rebuild.md
+    resource: ../../raw/2026-10-29-rebuild.md
     title: Personal Website Rebuild (raw, immutable)
   - id: live-site
     resource: https://www.alessandrotorri.it/

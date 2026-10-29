@@ -10,7 +10,7 @@ sources:
     resource: https://alessandrotorri.it/
     title: Live Adobe Portfolio site
   - id: raw-rebuild
-    resource: /raw/2026-10-29-rebuild.md
+    resource: ../raw/2026-10-29-rebuild.md
     title: Personal Website Rebuild (raw, immutable)
   - id: roadmap
     resource: /concepts/roadmap.md
@@ -180,7 +180,7 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `AGENTS.md` | Canonical agent schema and read order |
 | `.agents/skills/usual-loop/SKILL.md` | Loadable version of the loop |
 | `docs/raw/` | Immutable sources |
-| `docs/sources/`, `docs/decisions/`, `docs/reviews/` | Source summaries, decisions, audits |
+| `docs/wiki/sources/`, `docs/wiki/decisions/`, `docs/wiki/reviews/` | Source summaries, decisions, audits |
 | `src/data/collections.data.ts` | CDN covers + captions |
 | `src/pages/HomePage.tsx` | becomes cover grid entry |
 | `src/pages/GalleryPage.tsx` | 9-cover grid |
@@ -192,8 +192,8 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/layout/Footer.layout.tsx` | back-to-top + copyright |
 | `src/style/theme.ts` | tokens, no new CSS system |
 | `index.html` | fonts + title/meta |
-| `docs/concepts/gallery-system.md` | gallery pattern reference |
-| `docs/concepts/design-system.md` | visual reference |
+| `docs/wiki/concepts/gallery-system.md` | gallery pattern reference |
+| `docs/wiki/concepts/design-system.md` | visual reference |
 
 ## 8. Out of Scope / Non-goals
 

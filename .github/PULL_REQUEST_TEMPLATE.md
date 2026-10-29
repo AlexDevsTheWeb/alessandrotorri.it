@@ -11,7 +11,7 @@
 - [ ] `npm run lint` passes
 - [ ] `npm run build` passes
 - [ ] Source summary / touched concepts updated
-- [ ] `docs/index.md` and `docs/log.md` updated
+- [ ] `docs/wiki/index.md` and `docs/wiki/log.md` updated
 - [ ] Decisions recorded (if any)
 
 ## Verification

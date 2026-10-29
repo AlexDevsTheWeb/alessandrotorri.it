@@ -7,7 +7,7 @@ status: deprecated
 generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 sources:
   - id: raw-blueprint
-    resource: /raw/2026-03-03-blueprint.md
+    resource: ../../raw/2026-03-03-blueprint.md
     title: Photography Portfolio Project Blueprint (raw, immutable)
     author: human:alessandrotorri
 ---
@@ -26,7 +26,7 @@ It is kept as immutable history so future agents can see what was originally pla
 
 # Links
 
-- [Raw blueprint](/raw/2026-03-03-blueprint.md)
+- [Raw blueprint](../../raw/2026-03-03-blueprint.md)
 - [Project Roadmap](/concepts/roadmap.md)
 - [Rebuild Plan](/rebuild-plan.md)
 - [Decision 0002 — Archive blueprint.md](/decisions/0002-archive-blueprint.md)

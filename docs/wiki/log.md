@@ -8,6 +8,7 @@
 * **Audit**: [Docs and baseline audit](/reviews/2026-10-29-docs-audit.md) — every document classified; fixed stale `/about`, `PLAN.md`, "English site", IDX, and ProtectedRoute claims.
 * **Baseline**: `npm run lint` and `npm run build` are green. Fixed `IImage`, unused `styled()` theme params, setState-in-effect, and the unsupported `idField` option (image ids were undefined in admin actions).
 * **Tooling**: added GitHub Actions CI, PR/issue templates; opened issues #1 (dependencies), #2 (public rebuild phases 3–5), #3 (protect admin).
+* **Restructure**: moved the OKF bundle to `docs/wiki/`, sibling of `docs/raw/`; added [decision 0004](/decisions/0004-wiki-layout.md), fixed the section layout, and extended the loop to GitHub issues.
 * **PR**: [#4](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/4) — draft knowledge-foundation MR.
 * **Repository hygiene**: removed `.idx/` and the stale Firebase Studio `GEMINI.md`; replaced the Vite boilerplate `README.md`.
 * **Next**: issue #1 dependency refresh, then rebuild phase 3 ([issue #2](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/2)).

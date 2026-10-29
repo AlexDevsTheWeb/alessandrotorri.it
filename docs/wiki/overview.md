@@ -13,7 +13,7 @@ sources:
     resource: /rebuild-plan.md
     title: Rebuild Plan
   - id: raw-rebuild
-    resource: /raw/2026-10-29-rebuild.md
+    resource: ../raw/2026-10-29-rebuild.md
     title: Personal Website Rebuild (raw, immutable)
 ---
 
@@ -23,7 +23,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 
 ## Where things stand
 
-* **Knowledge foundation — done 2026-10-29.** `docs/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
+* **Knowledge foundation — done 2026-10-29.** `docs/wiki/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
 * **Public rebuild — phases 0–2 done, phase 3 next.** Data layer, navbar, footer, and shell are in place. See [Rebuild Plan](/rebuild-plan.md).
 * **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is still commented out. Tracked in issue #3.

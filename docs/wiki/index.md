@@ -9,6 +9,9 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 > [!TIP] Start here
 > New session? Read [AGENTS.md](https://github.com/AlexDevsTheWeb/alessandrotorri.it/blob/development/AGENTS.md), then [Overview](/overview.md), then [Rebuild Plan](/rebuild-plan.md) (status table + phases + resume protocol).
 
+> [!NOTE] Layers
+> `docs/raw/` holds immutable sources. `docs/wiki/` (this bundle) holds the generated knowledge. New inputs may be raw files or GitHub issues; both get a page under [Sources](/sources/index.md).
+
 ## Start Here
 
 * [Overview](/overview.md) - Tier-1 synthesis: what the project is, where it stands, what contradicts what.
@@ -24,6 +27,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0004 — Wiki layout under docs/wiki](/decisions/0004-wiki-layout.md) - Raw and wiki as siblings; fixed section layout.
 * [0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md) - OKF v0.2 wiki, immutable raw layer, one `AGENTS.md`.
 * [0002 — Archive blueprint.md](/decisions/0002-archive-blueprint.md) - Blueprint moved to `docs/raw/`.
 * [0003 — Exact look & feel](/decisions/0003-exact-look-and-feel.md) - Visual parity, modern implementation.
@@ -53,6 +57,6 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 ## Wiki Operations (llm-wiki)
 
-* **Ingest** - New source? Summarize it in `/sources/`, update every concept it touches, flag contradictions with `> [!WARNING]`, append to [Log](/log.md), update this index.
+* **Ingest** - New raw file or GitHub issue? Summarize it in `/sources/`, update every concept it touches, flag contradictions with `> [!WARNING]`, append to [Log](/log.md), update this index.
 * **Query** - Answer from these pages, not raw code; cite the concept pages used.
-* **Lint** - Check orphan pages, broken bundle-relative links, non-OKF `status` values, missing `type` frontmatter, and stale claims.
+* **Lint** - Check orphan pages, broken bundle-relative links, non-OKF `status` values, missing `type` frontmatter, and stale claims. Keep the root clean: only `index.md`, `log.md`, `overview.md`, `rebuild-plan.md`.

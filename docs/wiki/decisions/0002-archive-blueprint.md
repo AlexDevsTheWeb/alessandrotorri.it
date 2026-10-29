@@ -7,10 +7,10 @@ status: stable
 generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
 sources:
   - id: raw-rebuild
-    resource: /raw/2026-10-29-rebuild.md
+    resource: ../../raw/2026-10-29-rebuild.md
     title: Personal Website Rebuild (raw, immutable)
   - id: raw-blueprint
-    resource: /raw/2026-03-03-blueprint.md
+    resource: ../../raw/2026-03-03-blueprint.md
     title: Photography Portfolio Project Blueprint (raw, immutable)
 ---
 
@@ -31,6 +31,6 @@ Move it to `docs/raw/2026-03-03-blueprint.md`, treat it as immutable historical 
 
 # Links
 
-- [Raw blueprint](/raw/2026-03-03-blueprint.md)
+- [Raw blueprint](../../raw/2026-03-03-blueprint.md)
 - [Source summary](/sources/2026-03-03-blueprint.md)
 - [Rebuild Plan](/rebuild-plan.md)

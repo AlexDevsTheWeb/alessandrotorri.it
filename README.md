@@ -40,22 +40,22 @@ CI runs lint and build on every push and pull request.
 
 ## Documentation
 
-The knowledge base lives in [`docs/`](docs/index.md) and follows Karpathy's llm-wiki pattern with OKF v0.2.
+The knowledge base lives in [`docs/wiki/`](docs/wiki/index.md) and follows Karpathy's llm-wiki pattern with OKF v0.2.
 
 - [`AGENTS.md`](AGENTS.md) — canonical rules for every AI agent (Claude Code, OpenCode, Pi, Gemini, Codex, …).
-- [`docs/overview.md`](docs/overview.md) — current state and contradictions.
-- [`docs/rebuild-plan.md`](docs/rebuild-plan.md) — phases, status, resume protocol.
-- [`docs/rules/workflow.md`](docs/rules/workflow.md) — the usual loop.
-- [`docs/sources/`](docs/sources/index.md) — one summary per raw source.
-- [`docs/decisions/`](docs/decisions/index.md) — architecture and process decisions.
-- [`docs/raw/`](docs/raw/index.md) — immutable source material.
+- [`docs/wiki/overview.md`](docs/wiki/overview.md) — current state and contradictions.
+- [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md) — phases, status, resume protocol.
+- [`docs/wiki/rules/workflow.md`](docs/wiki/rules/workflow.md) — the usual loop.
+- [`docs/wiki/sources/`](docs/wiki/sources/index.md) — one summary per raw source or GitHub issue.
+- [`docs/wiki/decisions/`](docs/wiki/decisions/index.md) — architecture and process decisions.
+- [`docs/raw/`](docs/raw/index.md) — immutable source material (sibling of `docs/wiki/`).
 
-Every new source, feature, or bug goes through the usual loop: **read → analyze → plan → implement → update the wiki → draft PR**.
+Every new raw source, GitHub issue, feature, or bug goes through the usual loop: **read → analyze → plan → implement → update the wiki → draft PR**.
 
 ## Status
 
 - Knowledge foundation: done 2026-10-29 (OKF wiki, agent schema, skills, green baseline).
-- Public rebuild: phases 0–2 done, phase 3 next. See the [Rebuild Plan](docs/rebuild-plan.md).
+- Public rebuild: phases 0–2 done, phase 3 next. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
 - Open work: dependency refresh (#1), public site phases 3–5 (#2), admin protection (#3).
 
 ## License
