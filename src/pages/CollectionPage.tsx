@@ -71,7 +71,11 @@ const CollectionPage: React.FC = () => {
           Nessuna foto disponibile
         </Typography>
       ) : (
-        <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={{ xs: 2, md: 3 }}>
+        <Masonry
+          columns={{ xs: 1, sm: 2, md: 3 }}
+          spacing={{ xs: 2, md: 3 }}
+          sx={{ m: '0 !important' }}
+        >
           {photos.map((photo, index) => (
             <Box key={`${photo.src}-${index}`} sx={{ position: 'relative', overflow: 'hidden' }}>
               <Box
