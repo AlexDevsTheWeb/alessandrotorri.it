@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography, useMediaQuery, useTheme } from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import React, { useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -6,12 +6,26 @@ import { COLLECTIONS } from '../data/collections.data';
 import { PHOTOS } from '../data/collections.photos';
 import PhotoLightbox from '../components/PhotoLightbox.component';
 import ProgressiveImage from '../components/ProgressiveImage.component';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
   const collection = COLLECTIONS.find((item) => item.slug === collectionName);
   const photos = collection ? PHOTOS[collection.slug] ?? [] : [];
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.up('sm'));
+  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
+
+  usePageMeta({
+    title: collection ? `${collection.title} — Alessandro Torri` : 'Collezione non trovata — Alessandro Torri',
+    description: collection
+      ? `${photos.length} fotografie della collezione ${collection.title}. Fotografia di paesaggio e lunga esposizione di Alessandro Torri.`
+      : 'La collezione richiesta non esiste.',
+    image: collection?.cover,
+    path: collection ? `/gallery/${collection.slug}` : '/gallery',
+  });
 
   if (!collection) {
     return (
@@ -48,8 +62,8 @@ const CollectionPage: React.FC = () => {
         </Typography>
       ) : (
         <Masonry
-          columns={{ xs: 1, sm: 2, md: 3 }}
-          spacing={{ xs: 2, md: 3 }}
+          columns={columns}
+          spacing={2}
           sx={{ m: '0 !important' }}
         >
           {photos.map((photo, index) => (
@@ -77,7 +91,14 @@ const CollectionPage: React.FC = () => {
                   },
                 }}
               >
-                <ProgressiveImage src={photo.src} alt={photo.caption} ratio={photo.ratio} />
+                <ProgressiveImage
+                  src={photo.src}
+                  srcSet={photo.srcSet}
+                  sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+                  alt={photo.caption}
+                  ratio={photo.ratio}
+                  priority={index === 0}
+                />
                 <Box
                   className="photo-caption-overlay"
                   sx={{

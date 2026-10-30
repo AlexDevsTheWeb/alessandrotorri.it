@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { storage, db } from '../firebase';
+import { storage, db } from '../firebaseData';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import {

@@ -3,9 +3,12 @@ import React, { useState } from 'react';
 
 interface ProgressiveImageProps {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   placeholder?: string;
   alt: string;
   ratio?: string;
+  priority?: boolean;
   onClickPhoto?: () => void;
 }
 
@@ -38,9 +41,12 @@ const PlaceholderImage = styled('div')({
 
 const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
   src,
+  srcSet,
+  sizes,
   placeholder,
   alt,
   ratio,
+  priority = false,
   onClickPhoto,
 }) => {
   const [loaded, setLoaded] = useState(false);
@@ -63,8 +69,11 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
       )}
       <HighResImage
         src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={alt}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
         onLoad={() => setLoaded(true)}
         className={loaded ? 'loaded' : ''}

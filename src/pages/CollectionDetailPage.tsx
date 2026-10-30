@@ -14,7 +14,7 @@ import { collection, doc, query, updateDoc, where, writeBatch, type Query } from
 import React, { useMemo, useState } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { useParams } from 'react-router-dom';
-import { db } from '../firebase';
+import { db } from '../firebaseData';
 import type { IImage } from '../types/image.types';
 
 
