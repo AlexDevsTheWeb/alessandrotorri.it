@@ -86,7 +86,7 @@ Firebase Studio / IDX was removed on 2026-10-29 (`.idx/` and the old `GEMINI.md`
 - In-range updates are applied in a dedicated loop; majors need a decision record and an individual branch.
 - `npm outdated` is the starting point, not an instruction to upgrade everything.
 - Never use `npm audit fix --force` when it downgrades a core package; document the advisory and track it instead.
-- Current budget note: the production bundle is ~1.37 MB (423.65 kB gzip); phase 5 code splitting is expected to reduce it.
+- Current budget note: the production bundle is ~1.267 MB (391.74 kB gzip); phase 5 code splitting is expected to reduce it.
 
 ## Related
 

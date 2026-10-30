@@ -55,7 +55,7 @@ Every new raw source, GitHub issue, feature, or bug goes through the usual loop:
 ## Status
 
 - Knowledge foundation: done 2026-10-29 (OKF wiki, agent schema, skills, green baseline).
-- Public rebuild: phases 0–3 done, layout refinements done, phase 4 next. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
+- Public rebuild: phases 0–4 done, layout refinements done, phase 5 next. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
 - Open work: dependency refresh (#1), public site phases 3–5 (#2), admin protection (#3).
 
 ## License

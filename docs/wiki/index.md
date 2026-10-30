@@ -24,7 +24,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
 * [2026-10-29 — GitHub issue #1](/sources/2026-10-29-gh-issue-1.md) - Dependency refresh: in-range updates, deferred majors, security note.
 * [2026-10-29 — GitHub issue #6](/sources/2026-10-29-gh-issue-6.md) - MUI 9.5 adoption and the v7→v9 migrations.
-* [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phase 3: the 9-cover gallery grid.
+* [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phases 3–4: the 9-cover grid and the collection feed + lightbox.
 * [2026-10-29 — Layout improvements](/sources/2026-10-29-layout-improvements.md) - Owner feedback on fonts, hover, cards, footer, mobile header and drawer.
 * [2026-03-03 — Blueprint](/sources/2026-03-03-blueprint.md) - Original feature blueprint (deprecated history).
 

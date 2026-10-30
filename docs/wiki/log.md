@@ -1,5 +1,12 @@
 # Knowledge Bundle Update Log
 
+## 2026-10-30
+* **Issue #2 / phase 4**: rewrote `CollectionPage` to use the static dataset, with breadcrumb, centered uppercase H1, single-column feed, captions, and a new `PhotoLightbox` (dark Dialog, blurred backdrop, prev/next, Esc/arrows, mobile arrows).
+* **Data**: captured all 9 collection photo lists from the live site — **89 photos** (24 favorite) with real CDN URLs, Italian captions and aspect ratios in `src/data/collections.photos.ts`. `ProgressiveImage` now accepts an optional placeholder.
+* **Wiki**: updated [source summary for issue #2](/sources/2026-10-29-gh-issue-2.md), [Gallery System](/concepts/gallery-system.md), [Photo Management](/concepts/photo-management.md), [Rebuild Plan](/rebuild-plan.md), [Overview](/overview.md), [Tech Stack](/concepts/tech-stack.md), AGENTS, README and raw index.
+* **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.267 MB / 391.74 kB gzip (demo gallery tree-shaken).
+* **Next**: phase 5 — titles/OG, robots/sitemap, responsive audit, lazy routes, error boundary, bundle splitting.
+
 ## 2026-10-29
 * **Layout refinements**: applied the owner feedback from `docs/raw/2026-10-29-layout-improvements.md` — DM Sans + Instrument Serif, muted-to-full hover colors, visible light-theme icons, no focus borders, no card entrance/scale animation, cover titles inside a bottom gradient, compact borderless footer, transparent back-to-top icon, mobile icons moved into a blurred drawer.
 * **CSS cleanup**: replaced the Vite `index.css` boilerplate with a minimal reset and deleted the unused `App.css`.

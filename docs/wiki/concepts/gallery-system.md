@@ -17,7 +17,7 @@ sources:
 # Gallery System
 
 > [!NOTE] Current state
-> Phase 3 is done: `/` and `/gallery` render the shared static `CollectionGrid` with the 9 CDN covers. `CollectionPage` is still the old Firestore view and will be rewritten in phase 4 with the static `PHOTOS` data and the lightbox.
+> Phases 3 and 4 are done: `/` and `/gallery` render the shared static `CollectionGrid` with the 9 CDN covers, and `/gallery/:slug` renders the static photo feed with captions and a keyboard lightbox. The favorite collection has its full 24 photos; all 9 collections have real CDN URLs (89 photos total).
 
 ## Implemented
 
@@ -31,12 +31,13 @@ sources:
 - No entrance animation; hover only dims the image slightly.
 - Home renders the grid directly, with no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)).
 
-### CollectionPage (`/gallery/:slug`) — phase 4
+### CollectionPage (`/gallery/:slug`) — implemented
 
-- Single-column feed, `maxWidth` ~900px.
+- Single-column feed, `maxWidth="md"` (~900px).
+- Breadcrumb `Gallerie / {title}`, centered uppercase H1.
 - Full-width image with a centered caption below.
-- `ProgressiveImage` blur-up plus `loading="lazy"`.
-- Lightbox: fullscreen `Dialog`, dark backdrop + blur, image `contain` at `maxHeight: 75vh`, caption + EXIF placeholder, prev/next with Esc/arrows, mobile arrows below the image.
+- Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`).
+- Unknown slugs show `Collezione non trovata` with a link back to `/gallery`.
 
 ## Components
 
@@ -51,17 +52,24 @@ sources:
 - Bottom gradient for legibility.
 - Hover: `brightness(0.86)` only; no scale, no entrance animation, no border/outline.
 
+### PhotoLightbox (`src/components/PhotoLightbox.component.tsx`)
+
+- Fullscreen dark `Dialog` with blurred backdrop.
+- Image `contain` at up to 75vh; caption + “Dati EXIF non disponibili”.
+- Prev/next buttons, Esc and arrow keys.
+- Side arrows on desktop, arrows below the caption on mobile.
+- MUI `Dialog` handles body scroll lock.
+
 ### PhotoGallery (`src/components/PhotoGallery.component.tsx`)
 
-- Masonry via `@mui/lab/Masonry`.
-- Lightbox dialog with keyboard navigation (arrows, Escape), blurred backdrop, side arrows on desktop and bottom arrows on mobile.
-- No longer used by `GalleryPage`; retained as the dialog/keyboard pattern donor for phase 4.
+- Masonry demo with hardcoded Unsplash data; no longer imported by any route.
+- Retained only as a reference for the old dialog pattern; safe to remove in the phase 5 cleanup.
 
 ### ProgressiveImage (`src/components/ProgressiveImage.component.tsx`)
 
-- Blur-up pattern: low-res placeholder, fade to high-res on load.
-- Configurable `aspect-ratio`, `loading="lazy"`.
-- Used by the public feed.
+- Blur-up pattern when a placeholder exists; otherwise a neutral background until the high-res image loads.
+- Configurable `aspect-ratio`, `loading="lazy"`, `decoding="async"`.
+- Used by the covers and the public feed.
 
 ## Image optimization
 

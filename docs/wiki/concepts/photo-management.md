@@ -46,7 +46,10 @@ The TypeScript mirror is `IImage` in `src/types/image.types.ts`.
 - Each collection has a cover image (`isCoverImage: true`).
 - Collections are discovered by deduplicating `collection` across images.
 - There is no separate `collections` collection in Firestore.
-- The public rebuild currently uses static CDN data (`src/data/collections.data.ts`) instead of Firestore; the schema stays compatible.
+- The public rebuild uses a static CDN dataset instead of Firestore; the schema stays compatible.
+- `src/data/collections.data.ts` holds the 9 covers and placeholders.
+- `src/data/collections.photos.ts` holds **89 photos** (24 for `01-favorite`) with real Adobe CDN URLs, Italian captions and aspect ratios, captured from the live site on 2026-10-30.
+- Individual photos have no tiny blur placeholder; `ProgressiveImage` uses a neutral background until the high-res image loads.
 
 ## Reordering
 
@@ -63,7 +66,7 @@ The TypeScript mirror is `IImage` in `src/types/image.types.ts`.
 
 ## Known bug fixed 2026-10-29
 
-`react-firebase-hooks` 5.1.1 ignores the legacy `idField` option. Admin actions previously received `image.id === undefined`. `CollectionPage` and `CollectionDetailPage` now use `useCollection` and map `document.id` explicitly. See [the audit](/reviews/2026-10-29-docs-audit.md).
+`react-firebase-hooks` 5.1.1 ignores the legacy `idField` option. Admin actions previously received `image.id === undefined`. `CollectionDetailPage` now uses `useCollection` and maps `document.id` explicitly; `CollectionPage` no longer queries Firestore. See [the audit](/reviews/2026-10-29-docs-audit.md).
 
 ## Related
 

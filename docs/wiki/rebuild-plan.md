@@ -97,8 +97,8 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
-| 4 | Collection feed + lightbox | pending | **next** — single-col + captions + Dialog |
-| 5 | Polish (SEO, responsive, perf) | pending | titles, OG, lazy, sitemap |
+| 4 | Collection feed + lightbox | done | static 89-photo dataset, single-column feed, captions, `PhotoLightbox`, keyboard nav |
+| 5 | Polish (SEO, responsive, perf) | pending | **next** — titles, OG, lazy, sitemap |
 | 6 | Admin reconnect (DEFERRED) | deferred | protect `/admin`, finish upload/manage; issue #3 |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
@@ -137,15 +137,16 @@ Files: `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, `src/components/Co
 - [x] Acceptance: `/` and `/gallery` show 9 covers, 2-col from `sm`, 1-col mobile, click navigates.
 - Verification: `npm run lint` and `npm run build` pass on 2026-10-29.
 
-### Phase 4 — Collection feed + lightbox
+### Phase 4 — Collection feed + lightbox — done
 
-Files: `src/pages/CollectionPage.tsx` (rewrite), reuse `src/components/ProgressiveImage.component.tsx`, reuse Dialog pattern from `src/components/PhotoGallery.component.tsx:126-211`.
+Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox.component.tsx` (new), `src/components/ProgressiveImage.component.tsx`, `src/data/collections.photos.ts` (new).
 
-- [ ] Read slug via `useParams`, lookup `PHOTOS[slug]`; H1 = title uppercase centered; breadcrumb `Gallerie / {title}`.
-- [ ] Single-column feed `maxWidth md (~900px)`, full-width image + `caption` centered below. Use `ProgressiveImage` (blur-up) + `loading="lazy"`.
-- [ ] Lightbox: fullscreen Dialog dark + blur, img `contain maxHeight 75vh`, caption + EXIF placeholder, prev/next + Esc/arrows, mobile arrows below.
-- [ ] Do NOT query Firestore yet — prop/data-file only. Keep existing Firestore code path commented or behind flag, document which.
-- Acceptance: `/gallery/01-favorite` shows 24 images with correct captions; lightbox keyboard works; no modal scroll leak.
+- [x] Read slug via `useParams`, look up `COLLECTIONS` and `PHOTOS[slug]`; H1 = title uppercase centered; breadcrumb `Gallerie / {title}`.
+- [x] Single-column feed `maxWidth="md"` (~900px), full-width image + `caption` centered below. Uses `ProgressiveImage` + `loading="lazy"`.
+- [x] Lightbox: fullscreen Dialog dark + blur, img `contain` max 75vh, caption + EXIF placeholder, prev/next + Esc/arrows, mobile arrows below.
+- [x] No Firestore query in `CollectionPage`; static data only.
+- [x] All 9 collections captured from the live site: 89 photos total, favorite 24, with real CDN URLs, captions and ratios.
+- Acceptance: `/gallery/01-favorite` shows 24 images with correct captions; lightbox keyboard works; MUI Dialog locks body scroll.
 
 ### Phase 5 — Polish
 
@@ -185,13 +186,14 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `docs/raw/` | Immutable sources |
 | `docs/wiki/sources/`, `docs/wiki/decisions/`, `docs/wiki/reviews/` | Source summaries, decisions, audits |
 | `src/data/collections.data.ts` | CDN covers + captions |
-| `src/pages/HomePage.tsx` | becomes cover grid entry |
-| `src/pages/GalleryPage.tsx` | 9-cover grid |
+| `src/data/collections.photos.ts` | 89 static photos with captions and ratios |
+| `src/pages/HomePage.tsx` | renders the cover grid |
+| `src/pages/GalleryPage.tsx` | renders the cover grid |
 | `src/pages/CollectionPage.tsx` | single-col feed + lightbox |
-| `src/components/CollectionCover.component.tsx` (new) | cover card |
-| `src/components/CollectionGrid.component.tsx` (new) | shared 9-cover grid for `/` and `/gallery` |
-| `src/components/PhotoGallery.component.tsx` | Dialog/keyboard pattern donor |
-| `src/components/ProgressiveImage.component.tsx` | blur-up loader |
+| `src/components/CollectionCover.component.tsx` | cover card |
+| `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery` |
+| `src/components/PhotoLightbox.component.tsx` | fullscreen photo lightbox |
+| `src/components/ProgressiveImage.component.tsx` | progressive image loader |
 | `src/layout/Navbar.layout.tsx` | triptych nav |
 | `src/layout/Footer.layout.tsx` | back-to-top + copyright |
 | `src/style/theme.ts` | tokens, no new CSS system |
