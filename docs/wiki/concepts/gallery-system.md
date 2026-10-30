@@ -37,6 +37,7 @@ sources:
 - Breadcrumb `Gallerie / {title}`, centered uppercase H1.
 - Each image keeps its own aspect ratio.
 - Caption is hidden by default; on hover or keyboard focus a ~50% black gradient fades in and the caption slides up to the center.
+- MUI Masonry's negative root margin is neutralized (`margin: 0 !important`) so the mobile single column has equal left/right gutters.
 - Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`).
 - Unknown slugs show `Collezione non trovata` with a link back to `/gallery`.
 

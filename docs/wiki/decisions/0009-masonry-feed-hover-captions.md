@@ -27,8 +27,9 @@ Phase 4 originally specified a single-column collection feed with a caption belo
    - a `linear-gradient` overlay at roughly 50% black fades in;
    - the caption fades in and slides from below to the center;
    - the image itself does not scale or bounce.
-4. The caption remains available in the lightbox for touch users and as the accessible button label.
-5. The lightbox behavior from phase 4 is unchanged.
+4. MUI Masonry's negative root margin is neutralized so the grid has equal left/right gutters on every breakpoint, including the mobile single column.
+5. The caption remains available in the lightbox for touch users and as the accessible button label.
+6. The lightbox behavior from phase 4 is unchanged.
 
 This supersedes the single-column/caption-below part of the phase 4 plan and refines the visual behavior in [Decision 0008](/decisions/0008-visual-refinements.md).
 

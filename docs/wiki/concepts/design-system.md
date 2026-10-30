@@ -78,6 +78,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
 - Caption is white, centered, with a soft text shadow.
 - No permanent caption below the image; the lightbox still shows the caption.
+- Equal gutters on every breakpoint; the Masonry root negative margin is neutralized so mobile photos stay centered.
 
 ## Lightbox
 
