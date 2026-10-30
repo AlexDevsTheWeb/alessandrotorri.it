@@ -8,6 +8,7 @@ export interface CollectionCover {
 export interface CollectionPhoto {
   src: string;
   caption: string;
+  ratio: string;
 }
 
 const CDN = 'https://cdn.myportfolio.com/003f706d94be83b9dd8b07d5b1778379';
@@ -68,39 +69,3 @@ export const COLLECTIONS: CollectionCover[] = [
     placeholder: `${CDN}/b535cd1a-6734-4509-a06b-45bb16c139ce_carw_16x9x32.jpg?h=9aa3b2c6e7ae602f699be4b244318be0`,
   },
 ];
-
-export const FAVORITE_CAPTIONS: string[] = [
-  'Eilean Donan Castle - Scozia',
-  'Badlands - South Dakota',
-  "Falaise d'Étretat - Normandia",
-  "Falaise d'Étretat - Normandia",
-  'Dolomiti di Brenta',
-  'Lago di Braies',
-  'Tellaro',
-  'Grandes Jorasses',
-  'Riomaggiore',
-  'Bedruthan steps - Cornovaglia',
-  'Holywell Bay Beach - Cornovaglia',
-  "Land's End - Cornovaglia",
-  'Vernazza',
-  'Pointe du Raz - Bretagna',
-  'Pointe du Van - Bretagna',
-  'Kermorvan - Bretagna',
-  'Arnìa - Cantabria',
-  'Virxe da Barca - Galizia',
-  'Cabo de São Vicente - Portogallo',
-  'Cabo da Roca - Portogallo',
-  'Dunquin pier - Irlanda',
-  'The three sisters - Irlanda',
-  'Faro di Goury - Francia',
-  'Le Mont Saint-Michel - Francia',
-];
-
-export const PHOTOS: Record<string, CollectionPhoto[]> = Object.fromEntries(
-  COLLECTIONS.map((c) => [
-    c.slug,
-    c.slug === '01-favorite'
-      ? FAVORITE_CAPTIONS.map((caption) => ({ src: c.cover, caption }))
-      : [{ src: c.cover, caption: c.title }],
-  ]),
-);

@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 
 interface ProgressiveImageProps {
   src: string;
-  placeholder: string;
+  placeholder?: string;
   alt: string;
   ratio?: string;
-  onClickPhoto?: () => void; // Aggiunta la prop onClickPhoto
+  onClickPhoto?: () => void;
 }
 
-// Styled component per l'immagine ad alta risoluzione
 const HighResImage = styled('img')({
   width: '100%',
   height: '100%',
@@ -17,10 +16,10 @@ const HighResImage = styled('img')({
   position: 'absolute',
   top: 0,
   left: 0,
-  opacity: 0, // Inizialmente nascosta
-  transition: 'opacity 0.6s ease-out', // Transizione fluida per l'apparizione
+  opacity: 0,
+  transition: 'opacity 0.6s ease-out',
   '&.loaded': {
-    opacity: 1, // Appare quando è caricata
+    opacity: 1,
   },
 });
 
@@ -28,8 +27,8 @@ const PlaceholderImage = styled('div')({
   width: '100%',
   height: '100%',
   objectFit: 'cover',
-  filter: 'blur(20px)', // Sfocatura intensa
-  transform: 'scale(1.1)', // Evita i bordi chiari della sfocatura
+  filter: 'blur(20px)',
+  transform: 'scale(1.1)',
   position: 'absolute',
   top: 0,
   left: 0,
@@ -42,13 +41,9 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
   placeholder,
   alt,
   ratio,
-  onClickPhoto // Destrutturiamo la nuova prop
+  onClickPhoto,
 }) => {
   const [loaded, setLoaded] = useState(false);
-
-  const handleLoad = () => {
-    setLoaded(true);
-  };
 
   return (
     <Box
@@ -59,16 +54,19 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
         height: ratio ? 'auto' : '100%',
         aspectRatio: ratio,
         backgroundColor: (theme) => alpha(theme.palette.text.disabled, 0.1),
-        cursor: onClickPhoto ? 'pointer' : 'default', // Cambia il cursore se cliccabile
+        cursor: onClickPhoto ? 'pointer' : 'default',
       }}
-      onClick={onClickPhoto} // Associa la funzione al click
+      onClick={onClickPhoto}
     >
-      <PlaceholderImage style={{ backgroundImage: `url(${placeholder})` }} aria-hidden="true" />
+      {placeholder && (
+        <PlaceholderImage style={{ backgroundImage: `url(${placeholder})` }} aria-hidden="true" />
+      )}
       <HighResImage
         src={src}
         alt={alt}
         loading="lazy"
-        onLoad={handleLoad}
+        decoding="async"
+        onLoad={() => setLoaded(true)}
         className={loaded ? 'loaded' : ''}
       />
     </Box>
