@@ -6,6 +6,7 @@
 * **Verification**: lint/build green; meta/canonical checked on `/`, `/gallery`, `/gallery/07-francia`; Masonry 1/2/3 columns and symmetric gutters at 390/768/1280; lightbox keyboard + scroll lock verified. Lighthouse local preview: a11y/BP/SEO 100, performance 74 (6.7s local TTFB); deployed verification is issue #14.
 * **Decision**: [0011 — SEO, metadata, and route loading](/decisions/0011-seo-and-route-loading.md).
 * **Wiki**: added [SEO and Metadata](/concepts/seo-metadata.md); updated source summary, rebuild plan, site architecture, tech stack, Firebase backend, admin/overview pages, indexes and README.
+* **PR**: [#15](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/15) — draft phase 5 polish.
 * **Next**: administrator section (issue #3); deployed Lighthouse check (issue #14).
 
 ## 2026-10-30

@@ -39,5 +39,6 @@ Phase 5 needed titles, descriptions, canonical/OG/Twitter metadata, robots/sitem
 
 - [SEO and Metadata](/concepts/seo-metadata.md)
 - [Source summary](/sources/2026-10-29-gh-issue-2.md)
+- [Pull request #15](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/15)
 - [Rebuild Plan](/rebuild-plan.md)
 - [Issue #14](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/14)
