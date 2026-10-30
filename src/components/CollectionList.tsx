@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, query, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '../firebaseData';
 import { Link } from 'react-router-dom';
 import { List, ListItem, ListItemText, Typography, Box } from '@mui/material';
 

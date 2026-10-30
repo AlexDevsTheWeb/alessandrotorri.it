@@ -71,7 +71,7 @@ sources:
 ### ProgressiveImage (`src/components/ProgressiveImage.component.tsx`)
 
 - Blur-up pattern when a placeholder exists; otherwise a neutral background until the high-res image loads.
-- Configurable `aspect-ratio`, `loading="lazy"`, `decoding="async"`.
+- Configurable `aspect-ratio`, `srcset`/`sizes`, `loading="lazy"` (the first feed image can be eager/high-priority), `decoding="async"`.
 - Used by the covers and the public feed.
 
 ## Image optimization

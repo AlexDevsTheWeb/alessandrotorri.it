@@ -14,7 +14,7 @@ sources:
 # Admin Dashboard
 
 > [!WARNING] Not protected
-> `ProtectedRoute` is commented out in `src/App.tsx`. Anyone can reach `/admin` and `/admin/collection/:name`. Tracked in issue #3; do not expose new admin routes until it is fixed.
+> `ProtectedRoute` is not applied in `src/App.tsx`. Anyone can reach `/admin` and `/admin/collection/:name`. Tracked in issue #3; do not expose new admin routes until it is fixed.
 
 ## Routes
 

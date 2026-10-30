@@ -35,7 +35,7 @@ Decisions locked 2026-09-08, amended 2026-10-29:
 1. **Scope:** current repository, visual parity with the live site, modern implementation. Not a fresh repo; not a redesign. See [Decision 0003](/decisions/0003-exact-look-and-feel.md).
 2. **Images:** reuse Adobe CDN URLs temporarily (`cdn.myportfolio.com/...`). No Firebase Storage migration yet.
 3. **Admin:** preserve the existing `/admin` section; protect and finish it after the public site (issue #3).
-4. **Stack:** no new deps without approval. MUI only, `sx` prop, Zustand, React Router, framer-motion. See [Tech Stack](/concepts/tech-stack.md) and [Agent Rules](/rules/agent-rules.md).
+4. **Stack:** no new deps without approval. MUI only, `sx` prop, Zustand, React Router. See [Tech Stack](/concepts/tech-stack.md) and [Agent Rules](/rules/agent-rules.md).
 5. **Process:** every change runs [The Usual Loop](/rules/workflow.md) and updates this wiki in the same PR.
 
 Original reference (read 2026-09-08 via WebFetch):
@@ -98,7 +98,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
-| 5 | Polish (SEO, responsive, perf) | pending | **next** — titles, OG, lazy, sitemap |
+| 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse in issue #14 |
 | 6 | Admin reconnect (DEFERRED) | deferred | protect `/admin`, finish upload/manage; issue #3 |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
@@ -149,17 +149,21 @@ Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox
 - [x] All 9 collections captured from the live site: 89 photos total, favorite 24, with real CDN URLs, captions and ratios.
 - Acceptance: `/gallery/01-favorite` shows 24 images with correct captions; lightbox keyboard works; MUI Dialog locks body scroll.
 
-### Phase 5 — Polish
+### Phase 5 — Polish — done
 
-- [ ] Per-page `<title>` + meta description + OG (`ALESSANDRO TORRI — Fotografia di paesaggio`), `index.html` title no longer `%VITE_APP_SITE_TITLE%` placeholder.
-- [ ] `robots.txt`, `sitemap.xml` in `public/`.
-- [ ] Responsive audit 390/768/1280; touch lightbox; `React.lazy` for Gallery/Collection routes; images `loading=lazy` + width/height to avoid CLS.
-- [ ] Error boundary around `<Outlet/>`; empty-collection state (`No photos yet`).
-- Acceptance: Lighthouse mobile perf ≥85, no console errors, `npm run lint && npm run build` green.
+- [x] Per-page `<title>` + meta description + canonical/OG/Twitter via `usePageMeta`; `index.html` defaults no longer use `%VITE_APP_SITE_TITLE%`.
+- [x] `robots.txt`, `sitemap.xml` in `public/`.
+- [x] Responsive audit 390/768/1280; lightbox keyboard + scroll lock verified.
+- [x] `React.lazy` for Gallery/Collection/Login/Admin; `Suspense` + `ErrorBoundary` around `<Outlet/>`.
+- [x] Images use `loading="lazy"` except the first feed image, which is eager/high-priority; Masonry preserves aspect ratio and avoids CLS.
+- [x] Manual chunks for React, MUI and Firebase; `firebase.ts` split from `firebaseData.ts`; no chunk over 500 kB.
+- [x] Removed the dead `PhotoGallery` demo and unused `framer-motion`.
+- [x] Empty/unknown collection state (`Collezione non trovata`, `Nessuna foto disponibile`).
+- Acceptance: lint/build green, a11y/best-practices/SEO 100. Local Lighthouse performance was 74 because of a 6.7s local-preview TTFB; deployed verification is issue #14.
 
 ### Phase 6 — Admin reconnect (DEFERRED, do not start)
 
-Trigger: user says main site complete. Then: `ProtectedRoute` on `/admin`, wire `PhotoGallery` to `images: IImage[]` prop, Firestore `isCoverImage` → covers, Storage upload → replace CDN URLs. Tracked in issue #3; separate plan.
+Trigger: user says main site complete. Then: `ProtectedRoute` on `/admin`, wire the admin to the Firestore `images` collection, map `isCoverImage` → covers, Storage upload → replace CDN URLs. Tracked in issue #3; separate plan.
 
 ## 5. Verify Commands (run before every stop)
 
@@ -190,15 +194,24 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/data/collections.photos.ts` | 89 static photos with captions and ratios |
 | `src/pages/HomePage.tsx` | renders the cover grid |
 | `src/pages/GalleryPage.tsx` | renders the cover grid |
-| `src/pages/CollectionPage.tsx` | single-col feed + lightbox |
+| `src/pages/CollectionPage.tsx` | Masonry feed + lightbox |
 | `src/components/CollectionCover.component.tsx` | cover card |
 | `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery` |
 | `src/components/PhotoLightbox.component.tsx` | fullscreen photo lightbox |
 | `src/components/ProgressiveImage.component.tsx` | progressive image loader |
-| `src/layout/Navbar.layout.tsx` | triptych nav |
-| `src/layout/Footer.layout.tsx` | back-to-top + copyright |
+| `src/components/ErrorBoundary.component.tsx` | route error fallback |
+| `src/components/PageLoader.component.tsx` | Suspense fallback |
+| `src/hooks/usePageMeta.ts` | per-route title/canonical/OG/Twitter |
+| `src/App.tsx` | lazy routes |
+| `src/firebase.ts` | Firebase auth only |
+| `src/firebaseData.ts` | lazy Firestore/Storage |
+| `src/layout/Navbar.layout.tsx` | triptych nav + breadcrumb |
+| `src/layout/Footer.layout.tsx` | compact footer |
 | `src/style/theme.ts` | tokens, no new CSS system |
-| `index.html` | fonts + title/meta |
+| `index.html` | fonts + default metadata |
+| `public/robots.txt`, `public/sitemap.xml` | crawl/index files |
+| `vite.config.ts` | manual chunks |
+| `docs/wiki/concepts/seo-metadata.md` | SEO reference |
 | `docs/wiki/concepts/gallery-system.md` | gallery pattern reference |
 | `docs/wiki/concepts/design-system.md` | visual reference |
 

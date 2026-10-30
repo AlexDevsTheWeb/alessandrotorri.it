@@ -27,7 +27,7 @@ Single-page React app with client-side routing. Public pages render inside one s
 | `/admin/collection/:collectionName` | `CollectionDetailPage` | **Should be protected** | DnD reorder + edit metadata |
 
 > [!WARNING] Admin routes are currently reachable without authentication
-> `ProtectedRoute` exists but is commented out in `src/App.tsx`. Tracked in issue #3. Do not add new admin routes until this is fixed.
+> `ProtectedRoute` exists but is not applied in `src/App.tsx`. Tracked in issue #3. Do not add new admin routes until this is fixed.
 
 There is **no** `/about`, `/projects`, or `/contact` route. Old links to those pages were removed from the navbar; do not reintroduce them without a decision.
 
@@ -36,9 +36,11 @@ There is **no** `/about`, `/projects`, or `/contact` route. Old links to those p
 All routes render inside `SharedLayout`:
 
 - `Navbar` — fixed, glassmorphism, auto-hide on scroll down. Desktop: `Gallerie / {collection}` breadcrumb / `Alessandro Torri` / Instagram + YouTube + theme toggle. Mobile: menu + centered logo; socials and theme toggle live in the blurred drawer; no breadcrumb.
-- `<Outlet />` — page content.
+- `<Outlet />` — page content, wrapped in `ErrorBoundary` + `Suspense` with a `PageLoader` fallback.
 - `Footer` — compact single row with copyright and social icons; icons hidden on mobile, no top border.
 - `BacktoTopButton` — floating transparent icon after 400px of scroll, with no visible text.
+
+Public pages except `HomePage` are lazy-loaded. `HomePage`, `GalleryPage`, `CollectionPage`, `LoginPage`, `AdminDashboard` and `CollectionDetailPage` are route chunks; see [Decision 0011](/decisions/0011-seo-and-route-loading.md).
 
 See [Design System](/concepts/design-system.md).
 
@@ -46,14 +48,16 @@ See [Design System](/concepts/design-system.md).
 
 ```text
 src/
-  components/     # Reusable UI (PhotoGallery, ProgressiveImage, ImageUpload, ...)
+  components/     # Reusable UI (PhotoLightbox, ProgressiveImage, ErrorBoundary, ...)
   data/           # Static CDN content for the current rebuild phase
+  hooks/          # usePageMeta
   layout/         # Shell components (Navbar, Footer, SharedLayout)
-  pages/          # Route-level components
+  pages/          # Route-level components (mostly lazy-loaded)
   store/          # Zustand stores (auth, theme)
   style/          # MUI theme definition
   types/          # TypeScript interfaces (*.types.ts)
-  firebase.ts     # Firebase init
+  firebase.ts     # Firebase app + auth
+  firebaseData.ts # Firestore + Storage, loaded with admin
 ```
 
 Agent and knowledge files live outside `src/`: `AGENTS.md`, `.agents/skills/`, `docs/wiki/` (bundle), and `docs/raw/` (immutable sources).

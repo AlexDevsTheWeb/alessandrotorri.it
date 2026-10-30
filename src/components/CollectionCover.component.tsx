@@ -6,9 +6,10 @@ import ProgressiveImage from './ProgressiveImage.component';
 
 interface CollectionCoverProps {
   collection: CollectionCoverData;
+  priority?: boolean;
 }
 
-const CollectionCover: React.FC<CollectionCoverProps> = ({ collection }) => (
+const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority = false }) => (
   <Box
     component={Link}
     to={`/gallery/${collection.slug}`}
@@ -34,6 +35,7 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection }) => (
         placeholder={collection.placeholder}
         alt={collection.title}
         ratio="16/9"
+        priority={priority}
       />
     </Box>
     <Box

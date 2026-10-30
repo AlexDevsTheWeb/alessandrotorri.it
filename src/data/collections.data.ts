@@ -7,6 +7,7 @@ export interface CollectionCover {
 
 export interface CollectionPhoto {
   src: string;
+  srcSet?: string;
   caption: string;
   ratio: string;
 }
