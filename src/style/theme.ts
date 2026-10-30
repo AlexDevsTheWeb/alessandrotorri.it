@@ -86,7 +86,7 @@ export const darkTheme = createTheme({
       hover: 'rgba(255, 255, 255, 0.08)',
       selected: 'rgba(255, 255, 255, 0.16)',
     },
-    background: { default: '#0a0a0a', paper: '#121212' },
+    background: { default: '#111111', paper: '#121212' },
   },
   typography: baseTypography,
   shape: { borderRadius: 0 },

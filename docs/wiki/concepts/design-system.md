@@ -29,7 +29,7 @@ Defined in `src/style/theme.ts`. Two themes: light and dark. Default is **dark**
 
 | Token | Light | Dark |
 |-------|-------|------|
-| Background | `#ffffff` | `#0a0a0a` |
+| Background | `#ffffff` | `#111111` |
 | Primary text | `#1a1a1a` | `#ffffff` |
 | Paper | `#fafafa` | `#121212` |
 

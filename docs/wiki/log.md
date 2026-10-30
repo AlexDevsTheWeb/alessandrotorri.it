@@ -6,6 +6,7 @@
 * **Refinement**: replaced the single-column feed with a responsive Masonry grid (1/2/3 columns) and hid the caption until hover/focus, when it slides to the center over a ~50% black gradient ([decision 0009](/decisions/0009-masonry-feed-hover-captions.md)).
 * **Fix**: MUI Masonry's negative root margin shifted the mobile feed left. Neutralized it with `margin: 0 !important`; at 390px the gutters are now 24px on both sides.
 * **Breadcrumb**: removed the in-page breadcrumb and moved `Gallerie / {title}` into the desktop navbar; hidden on mobile, H1 remains ([decision 0010](/decisions/0010-navbar-breadcrumb.md)).
+* **Theme**: dark background changed from `#0a0a0a` to `#111111`; dark paper stays `#121212`.
 * **Wiki**: updated [source summary for issue #2](/sources/2026-10-29-gh-issue-2.md), [Gallery System](/concepts/gallery-system.md), [Photo Management](/concepts/photo-management.md), [Design System](/concepts/design-system.md), [Rebuild Plan](/rebuild-plan.md), [Overview](/overview.md), [Tech Stack](/concepts/tech-stack.md), AGENTS, README and raw index.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.272 MB / 393.52 kB gzip (demo gallery tree-shaken).
 * **PR**: [#11](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/11) — draft phase 4 feed + lightbox.
