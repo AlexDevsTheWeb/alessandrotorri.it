@@ -1,4 +1,5 @@
-import { Box, Breadcrumbs, Button, Container, Link as MuiLink, Stack, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Container, Link as MuiLink, Typography } from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
 import React, { useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { COLLECTIONS } from '../data/collections.data';
@@ -14,7 +15,7 @@ const CollectionPage: React.FC = () => {
 
   if (!collection) {
     return (
-      <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 }, textAlign: 'center' }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, textAlign: 'center' }}>
         <Typography variant="h2" component="h1" gutterBottom>
           Collezione non trovata
         </Typography>
@@ -26,7 +27,7 @@ const CollectionPage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ justifyContent: 'center' }}>
         <MuiLink
           component={RouterLink}
@@ -70,15 +71,16 @@ const CollectionPage: React.FC = () => {
           Nessuna foto disponibile
         </Typography>
       ) : (
-        <Stack spacing={{ xs: 4, md: 6 }}>
+        <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={{ xs: 2, md: 3 }}>
           {photos.map((photo, index) => (
-            <Box component="figure" key={`${photo.src}-${index}`} sx={{ m: 0 }}>
+            <Box key={`${photo.src}-${index}`} sx={{ position: 'relative', overflow: 'hidden' }}>
               <Box
                 component="button"
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`Apri ${photo.caption}`}
                 sx={{
+                  position: 'relative',
                   display: 'block',
                   width: '100%',
                   p: 0,
@@ -86,16 +88,54 @@ const CollectionPage: React.FC = () => {
                   background: 'none',
                   cursor: 'zoom-in',
                   '&:focus-visible': { outline: 'none' },
+                  '&:hover .photo-caption-overlay, &:focus-visible .photo-caption-overlay': {
+                    opacity: 1,
+                  },
+                  '&:hover .photo-caption-text, &:focus-visible .photo-caption-text': {
+                    opacity: 1,
+                    transform: 'translate(-50%, -50%)',
+                  },
                 }}
               >
                 <ProgressiveImage src={photo.src} alt={photo.caption} ratio={photo.ratio} />
+                <Box
+                  className="photo-caption-overlay"
+                  sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: 0,
+                    background:
+                      'linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.45) 100%)',
+                    transition: 'opacity 0.3s ease',
+                    pointerEvents: 'none',
+                  }}
+                />
+                <Typography
+                  className="photo-caption-text"
+                  component="span"
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: 'calc(100% - 32px)',
+                    color: '#ffffff',
+                    fontSize: { xs: '0.95rem', md: '1.05rem' },
+                    fontWeight: 500,
+                    letterSpacing: '0.04em',
+                    textAlign: 'center',
+                    textShadow: '0 1px 8px rgba(0, 0, 0, 0.4)',
+                    opacity: 0,
+                    transform: 'translate(-50%, calc(-50% + 14px))',
+                    transition: 'transform 0.35s ease, opacity 0.35s ease',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  {photo.caption}
+                </Typography>
               </Box>
-              <Typography component="figcaption" variant="body2" color="text.secondary" align="center" sx={{ mt: 1.5 }}>
-                {photo.caption}
-              </Typography>
             </Box>
           ))}
-        </Stack>
+        </Masonry>
       )}
 
       <PhotoLightbox
