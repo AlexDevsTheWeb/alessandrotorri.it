@@ -5,6 +5,7 @@
 * **Data**: captured all 9 collection photo lists from the live site — **89 photos** (24 favorite) with real CDN URLs, Italian captions and aspect ratios in `src/data/collections.photos.ts`. `ProgressiveImage` now accepts an optional placeholder.
 * **Wiki**: updated [source summary for issue #2](/sources/2026-10-29-gh-issue-2.md), [Gallery System](/concepts/gallery-system.md), [Photo Management](/concepts/photo-management.md), [Rebuild Plan](/rebuild-plan.md), [Overview](/overview.md), [Tech Stack](/concepts/tech-stack.md), AGENTS, README and raw index.
 * **Verify**: `npm run lint` and `npm run build` pass. Bundle ~1.267 MB / 391.74 kB gzip (demo gallery tree-shaken).
+* **PR**: [#11](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/11) — draft phase 4 feed + lightbox.
 * **Next**: phase 5 — titles/OG, robots/sitemap, responsive audit, lazy routes, error boundary, bundle splitting.
 
 ## 2026-10-29
