@@ -17,14 +17,14 @@ sources:
 
 - **Project ID:** `alessandrotorri-it` (from the existing environment wiring).
 - **Config:** loaded from `.env` via `VITE_FIREBASE_*` variables; `.env` is gitignored.
-- **Init:** `src/firebase.ts` exports `auth`, `db`, and `storage`.
+- **Init:** `src/firebase.ts` exports the app and `auth`. `src/firebaseData.ts` exports `db` and `storage` so Firestore/Storage load only with the admin routes.
 
 ## Authentication
 
 - **Methods:** Google sign-in (the UI also has an email/password action in the store).
 - **Library:** `firebase/auth` + a Zustand `authStore`.
 - **State sync:** `onAuthStateChanged` in `src/App.tsx`.
-- **Route protection:** `ProtectedRoute` exists but is **commented out** in `src/App.tsx`; admin routes are currently public. Tracked in issue #3.
+- **Route protection:** `ProtectedRoute` exists but is **not applied** to the admin routes; they are currently public. Tracked in issue #3.
 
 ## Firestore
 

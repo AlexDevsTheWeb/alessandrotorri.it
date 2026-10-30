@@ -25,8 +25,8 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 
 * **Knowledge foundation — done 2026-10-29.** `docs/wiki/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
-* **Public rebuild — phases 0–4 done, phase 5 next.** Data layer, navbar, footer, shell, the 9-cover grid on `/` and `/gallery`, and the collection feed + lightbox on `/gallery/:slug` are in place; layout refinements are done. See [Rebuild Plan](/rebuild-plan.md) and [Decision 0008](/decisions/0008-visual-refinements.md).
-* **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is still commented out. Tracked in issue #3.
+* **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The next build phase is the administrator work (issue #3). See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
+* **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is not applied. Tracked in issue #3.
 * **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6, and the Firebase grpc advisory in issue #5.
 * **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
 

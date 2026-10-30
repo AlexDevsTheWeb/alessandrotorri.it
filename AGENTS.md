@@ -111,7 +111,7 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 
 ## 9. Current state and next
 
-- Public rebuild: phases 0–4 done; layout refinements done 2026-10-29; phase 5 next. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
+- Public rebuild: phases 0–5 done. Next: administrator section (issue #3). See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
 - Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; remaining majors in issue #6, grpc advisory in issue #5.

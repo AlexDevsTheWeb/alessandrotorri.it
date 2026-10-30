@@ -1,6 +1,14 @@
 # Knowledge Bundle Update Log
 
 ## 2026-10-30
+* **Issue #2 / phase 5**: fixed `index.html` defaults, added `usePageMeta` per-route title/description/canonical/OG/Twitter, `robots.txt` and `sitemap.xml`, lazy routes + `Suspense`/`ErrorBoundary`, manual chunks, and a CDN preconnect.
+* **Performance**: split MUI/React/Firebase chunks, made `firebase.ts` auth-only and `firebaseData.ts` lazy, removed the dead `PhotoGallery` demo and unused `framer-motion`, and added 600w/1200w `srcset` plus eager/high-priority first images. No chunk exceeds 500 kB.
+* **Verification**: lint/build green; meta/canonical checked on `/`, `/gallery`, `/gallery/07-francia`; Masonry 1/2/3 columns and symmetric gutters at 390/768/1280; lightbox keyboard + scroll lock verified. Lighthouse local preview: a11y/BP/SEO 100, performance 74 (6.7s local TTFB); deployed verification is issue #14.
+* **Decision**: [0011 — SEO, metadata, and route loading](/decisions/0011-seo-and-route-loading.md).
+* **Wiki**: added [SEO and Metadata](/concepts/seo-metadata.md); updated source summary, rebuild plan, site architecture, tech stack, Firebase backend, admin/overview pages, indexes and README.
+* **Next**: administrator section (issue #3); deployed Lighthouse check (issue #14).
+
+## 2026-10-30
 * **Issue #2 / phase 4**: rewrote `CollectionPage` to use the static dataset, with breadcrumb, centered uppercase H1, single-column feed, captions, and a new `PhotoLightbox` (dark Dialog, blurred backdrop, prev/next, Esc/arrows, mobile arrows).
 * **Data**: captured all 9 collection photo lists from the live site — **89 photos** (24 favorite) with real CDN URLs, Italian captions and aspect ratios in `src/data/collections.photos.ts`. `ProgressiveImage` now accepts an optional placeholder.
 * **Refinement**: replaced the single-column feed with a responsive Masonry grid (1/2/3 columns) and hid the caption until hover/focus, when it slides to the center over a ~50% black gradient ([decision 0009](/decisions/0009-masonry-feed-hover-captions.md)).

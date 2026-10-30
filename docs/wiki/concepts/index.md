@@ -21,6 +21,7 @@ Architecture, systems, and patterns for the project. Start with [the bundle inde
 
 * [Gallery System](/concepts/gallery-system.md) - Gallery, feed, lightbox, progressive images.
 * [Design System](/concepts/design-system.md) - Theme, typography, color, responsiveness.
+* [SEO and Metadata](/concepts/seo-metadata.md) - Titles, canonical, Open Graph, robots, sitemap.
 * [Admin Dashboard](/concepts/admin-dashboard.md) - Upload, collections, DnD.
 
 ## History

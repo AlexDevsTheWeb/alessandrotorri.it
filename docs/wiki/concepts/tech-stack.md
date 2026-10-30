@@ -51,13 +51,12 @@ Config is read from `VITE_FIREBASE_*` environment variables in `.env` (gitignore
 
 | Library | Purpose |
 |---------|---------|
-| `@mui/lab` 9.0.0-beta.10 | Masonry layout (admin/demo gallery) |
+| `@mui/lab` 9.0.0-beta.10 | Masonry layout for the collection feed |
 | `@mui/icons-material` 9.5.0 | Icon set |
 | `@mui/system` 9.5.0 + `@mui/utils` 9.5.0 | MUI primitives (transitive) |
 | `@emotion/react` + `@emotion/styled` | CSS-in-JS (MUI dependency, unchanged) |
-| `framer-motion` 12.43.0 | Page transitions and stagger animations |
 | `@hello-pangea/dnd` 18.0.1 | Drag-and-drop reordering in admin |
-| `react-firebase-hooks` 5.1.1 | Firestore query hooks |
+| `react-firebase-hooks` 5.1.1 | Firestore query hooks (lazy admin) |
 | `uuid` 13.0.2 | Unique upload ids |
 
 ## MUI v9 migration notes
@@ -74,6 +73,8 @@ MUI v9 (no v8) removed deprecated APIs and system props. Current code follows th
 
 - ESLint 9 flat config + typescript-eslint; `npm run lint`.
 - `tsc -b && vite build`; `npm run build`.
+- Lazy routes + `Suspense`/`ErrorBoundary`; MUI, React and Firebase manual chunks in `vite.config.ts`.
+- `src/firebase.ts` is auth-only; `src/firebaseData.ts` loads Firestore/Storage with admin.
 - GitHub Actions CI runs lint and build on push/PR (`.github/workflows/ci.yml`).
 - GitHub CLI for issues, PRs, and Actions.
 
@@ -86,13 +87,15 @@ Firebase Studio / IDX was removed on 2026-10-29 (`.idx/` and the old `GEMINI.md`
 - In-range updates are applied in a dedicated loop; majors need a decision record and an individual branch.
 - `npm outdated` is the starting point, not an instruction to upgrade everything.
 - Never use `npm audit fix --force` when it downgrades a core package; document the advisory and track it instead.
-- Current budget note: the production bundle is ~1.272 MB (393.52 kB gzip); phase 5 code splitting is expected to reduce it.
+- Current bundle note: no chunk exceeds 500 kB. Initial public load uses `index` (~20 kB), `react` (~276 kB), `mui` (~268 kB) and `firebase-core` (~158 kB); `firebase-data` (~426 kB) and the admin pages load only on admin routes. Deployed performance verification is [issue #14](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/14).
 
 ## Related
 
 - [Decision 0001 — Knowledge base and agent schema](/decisions/0001-knowledge-base-and-agent-schema.md)
 - [Decision 0005 — Dependency refresh policy](/decisions/0005-dependency-refresh-policy.md)
 - [Decision 0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md)
+- [Decision 0011 — SEO and route loading](/decisions/0011-seo-and-route-loading.md)
+- [SEO and Metadata](/concepts/seo-metadata.md)
 - [Source summary — issue #1](/sources/2026-10-29-gh-issue-1.md)
 - [Source summary — issue #6 MUI 9](/sources/2026-10-29-gh-issue-6.md)
 - [Code Style](/rules/code-style.md)
