@@ -141,7 +141,7 @@ Files: `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, `src/components/Co
 
 Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox.component.tsx` (new), `src/components/ProgressiveImage.component.tsx`, `src/data/collections.photos.ts` (new).
 
-- [x] Read slug via `useParams`, look up `COLLECTIONS` and `PHOTOS[slug]`; H1 = title uppercase centered; breadcrumb `Gallerie / {title}`.
+- [x] Read slug via `useParams`, look up `COLLECTIONS` and `PHOTOS[slug]`; H1 = title uppercase centered; desktop breadcrumb in the navbar, hidden on mobile ([decision 0010](/decisions/0010-navbar-breadcrumb.md)).
 - [x] Masonry feed (`xs: 1`, `sm: 2`, `md: 3`, `maxWidth="lg"`) with each image at its intrinsic ratio (refined by [decision 0009](/decisions/0009-masonry-feed-hover-captions.md)).
 - [x] Caption hidden by default; on hover/focus a ~50% black gradient fades in and the caption slides up to the center.
 - [x] Lightbox: fullscreen Dialog dark + blur, img `contain` max 75vh, caption + EXIF placeholder, prev/next + Esc/arrows, mobile arrows below.

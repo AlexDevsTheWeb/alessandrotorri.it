@@ -56,7 +56,9 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Glassmorphism: `backdrop-filter: blur(20px) saturate(180%)`.
 - Semi-transparent background (`alpha(bg, 0.7)`).
 - Fixed; hides on scroll down and reveals on scroll up.
-- Triptych: `Gallerie` left, `Alessandro Torri` center, Instagram + YouTube + theme toggle right.
+- Triptych: desktop `Gallerie / {collection}` breadcrumb on the left, `Alessandro Torri` center, Instagram + YouTube + theme toggle right.
+- The breadcrumb is hidden on mobile; only the menu button and centered logo remain.
+- The collection page does not repeat the breadcrumb in the body ([decision 0010](/decisions/0010-navbar-breadcrumb.md)).
 - Uppercase links at `0.75rem / 0.2em`; normal text is `alpha(text.primary, 0.65)`, hover is full `text.primary`.
 - Icons follow the same normal/hover color rule, with transparent backgrounds.
 - Mobile: the right-side icons are hidden from the header and moved into the drawer; the header keeps only the menu button and the centered logo.
