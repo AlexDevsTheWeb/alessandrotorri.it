@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, Container, Link as MuiLink, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
 import React, { useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -28,35 +28,11 @@ const CollectionPage: React.FC = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ justifyContent: 'center' }}>
-        <MuiLink
-          component={RouterLink}
-          to="/gallery"
-          underline="none"
-          variant="caption"
-          sx={{
-            textTransform: 'uppercase',
-            letterSpacing: '0.16em',
-            color: 'text.secondary',
-            '&:hover': { color: 'text.primary' },
-          }}
-        >
-          Gallerie
-        </MuiLink>
-        <Typography
-          variant="caption"
-          sx={{ textTransform: 'uppercase', letterSpacing: '0.16em', color: 'text.primary' }}
-        >
-          {collection.title}
-        </Typography>
-      </Breadcrumbs>
-
       <Typography
         variant="h1"
         component="h1"
         align="center"
         sx={{
-          mt: 2,
           mb: { xs: 4, md: 6 },
           fontSize: { xs: '2.2rem', md: '3.25rem' },
           letterSpacing: '0.08em',
