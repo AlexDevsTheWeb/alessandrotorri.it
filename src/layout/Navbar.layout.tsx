@@ -11,13 +11,15 @@ import {
   IconButton,
   List,
   ListItem,
+  Typography,
   useTheme,
   type ButtonProps,
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { COLLECTIONS } from '../data/collections.data';
 import { useThemeStore } from '../store/themeStore';
 import NavbarWrapper from './NavbarWrapper.layout';
 
@@ -109,7 +111,10 @@ const Navbar: React.FC = () => {
   const { themeMode, toggleTheme } = useThemeStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
+  const location = useLocation();
   const mutedColor = alpha(theme.palette.text.primary, 0.65);
+  const collectionSlug = location.pathname.match(/^\/gallery\/([^/]+)\/?$/)?.[1];
+  const currentCollection = COLLECTIONS.find((item) => item.slug === collectionSlug);
 
   const iconButtonSx = {
     color: mutedColor,
@@ -135,11 +140,41 @@ const Navbar: React.FC = () => {
         }}
       >
         <StyledToolbar>
-          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'flex-start' }}>
+            <Box
+              component="nav"
+              aria-label="breadcrumb"
+              sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5, minWidth: 0 }}
+            >
               <NavLink component={Link} to="/gallery" disableRipple nativeButton={false}>
                 Gallerie
               </NavLink>
+              {currentCollection && (
+                <>
+                  <Typography
+                    component="span"
+                    sx={{ color: alpha(theme.palette.text.primary, 0.4), fontSize: '0.75rem' }}
+                  >
+                    /
+                  </Typography>
+                  <Typography
+                    component="span"
+                    sx={{
+                      minWidth: 0,
+                      color: 'text.primary',
+                      fontSize: '0.72rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.2em',
+                      textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {currentCollection.title}
+                  </Typography>
+                </>
+              )}
             </Box>
             <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
               <IconButton

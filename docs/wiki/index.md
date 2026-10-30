@@ -24,13 +24,15 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
 * [2026-10-29 — GitHub issue #1](/sources/2026-10-29-gh-issue-1.md) - Dependency refresh: in-range updates, deferred majors, security note.
 * [2026-10-29 — GitHub issue #6](/sources/2026-10-29-gh-issue-6.md) - MUI 9.5 adoption and the v7→v9 migrations.
-* [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phase 3: the 9-cover gallery grid.
+* [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phases 3–4: the 9-cover grid and the collection feed + lightbox.
 * [2026-10-29 — Layout improvements](/sources/2026-10-29-layout-improvements.md) - Owner feedback on fonts, hover, cards, footer, mobile header and drawer.
 * [2026-03-03 — Blueprint](/sources/2026-03-03-blueprint.md) - Original feature blueprint (deprecated history).
 
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0010 — Breadcrumb in the navbar](/decisions/0010-navbar-breadcrumb.md) - Desktop navbar breadcrumb; hidden on mobile.
+* [0009 — Masonry feed with hover captions](/decisions/0009-masonry-feed-hover-captions.md) - Masonry layout; captions reveal over a black gradient.
 * [0008 — Visual refinements](/decisions/0008-visual-refinements.md) - Fonts, hover, covers, footer, mobile drawer.
 * [0007 — Home renders the gallery grid](/decisions/0007-home-gallery-grid.md) - No redirect; `/` and `/gallery` share the grid.
 * [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md) - MUI 9.5 + v9 API migrations.
