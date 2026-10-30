@@ -31,6 +31,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0009 — Masonry feed with hover captions](/decisions/0009-masonry-feed-hover-captions.md) - Masonry layout; captions reveal over a black gradient.
 * [0008 — Visual refinements](/decisions/0008-visual-refinements.md) - Fonts, hover, covers, footer, mobile drawer.
 * [0007 — Home renders the gallery grid](/decisions/0007-home-gallery-grid.md) - No redirect; `/` and `/gallery` share the grid.
 * [0006 — Adopt Material UI 9](/decisions/0006-adopt-mui-9.md) - MUI 9.5 + v9 API migrations.

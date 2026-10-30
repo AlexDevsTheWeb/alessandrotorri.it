@@ -72,9 +72,12 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 
 ## Collection feed
 
-- `maxWidth` ~900px, centered single column.
-- Spacing 4–6 between images.
-- Caption `body2`, secondary color, centered.
+- Masonry layout: 1 column on mobile, 2 from `sm`, 3 from `md`; `maxWidth="lg"`.
+- Each image keeps its intrinsic aspect ratio.
+- Caption is hidden by default and revealed on hover or keyboard focus.
+- Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
+- Caption is white, centered, with a soft text shadow.
+- No permanent caption below the image; the lightbox still shows the caption.
 
 ## Lightbox
 

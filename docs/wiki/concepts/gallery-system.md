@@ -17,7 +17,7 @@ sources:
 # Gallery System
 
 > [!NOTE] Current state
-> Phases 3 and 4 are done: `/` and `/gallery` render the shared static `CollectionGrid` with the 9 CDN covers, and `/gallery/:slug` renders the static photo feed with captions and a keyboard lightbox. The favorite collection has its full 24 photos; all 9 collections have real CDN URLs (89 photos total).
+> Phases 3 and 4 are done: `/` and `/gallery` render the shared static `CollectionGrid` with the 9 CDN covers, and `/gallery/:slug` renders a Masonry photo feed with captions that appear on hover/focus and a keyboard lightbox. The favorite collection has its full 24 photos; all 9 collections have real CDN URLs (89 photos total).
 
 ## Implemented
 
@@ -33,9 +33,10 @@ sources:
 
 ### CollectionPage (`/gallery/:slug`) — implemented
 
-- Single-column feed, `maxWidth="md"` (~900px).
+- Masonry feed with `columns={{ xs: 1, sm: 2, md: 3 }}`, `maxWidth="lg"`.
 - Breadcrumb `Gallerie / {title}`, centered uppercase H1.
-- Full-width image with a centered caption below.
+- Each image keeps its own aspect ratio.
+- Caption is hidden by default; on hover or keyboard focus a ~50% black gradient fades in and the caption slides up to the center.
 - Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`).
 - Unknown slugs show `Collezione non trovata` with a link back to `/gallery`.
 

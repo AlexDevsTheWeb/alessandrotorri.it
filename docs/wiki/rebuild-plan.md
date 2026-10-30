@@ -97,7 +97,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
-| 4 | Collection feed + lightbox | done | static 89-photo dataset, single-column feed, captions, `PhotoLightbox`, keyboard nav |
+| 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | pending | **next** — titles, OG, lazy, sitemap |
 | 6 | Admin reconnect (DEFERRED) | deferred | protect `/admin`, finish upload/manage; issue #3 |
 
@@ -142,7 +142,8 @@ Files: `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx`, `src/components/Co
 Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox.component.tsx` (new), `src/components/ProgressiveImage.component.tsx`, `src/data/collections.photos.ts` (new).
 
 - [x] Read slug via `useParams`, look up `COLLECTIONS` and `PHOTOS[slug]`; H1 = title uppercase centered; breadcrumb `Gallerie / {title}`.
-- [x] Single-column feed `maxWidth="md"` (~900px), full-width image + `caption` centered below. Uses `ProgressiveImage` + `loading="lazy"`.
+- [x] Masonry feed (`xs: 1`, `sm: 2`, `md: 3`, `maxWidth="lg"`) with each image at its intrinsic ratio (refined by [decision 0009](/decisions/0009-masonry-feed-hover-captions.md)).
+- [x] Caption hidden by default; on hover/focus a ~50% black gradient fades in and the caption slides up to the center.
 - [x] Lightbox: fullscreen Dialog dark + blur, img `contain` max 75vh, caption + EXIF placeholder, prev/next + Esc/arrows, mobile arrows below.
 - [x] No Firestore query in `CollectionPage`; static data only.
 - [x] All 9 collections captured from the live site: 89 photos total, favorite 24, with real CDN URLs, captions and ratios.
