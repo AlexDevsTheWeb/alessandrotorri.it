@@ -43,7 +43,7 @@ The canonical schema is the repository-root `AGENTS.md`. This page is the wiki c
 ## Architecture constraints
 
 - All public pages render inside `SharedLayout` (Navbar + Footer + BackToTop).
-- Admin routes must be wrapped in `ProtectedRoute`. This is **not yet enabled** in `src/App.tsx`; tracked in issue #3.
+- Admin routes must be wrapped in `ProtectedRoute`. This is enabled in `src/App.tsx` ([decision 0014](/decisions/0014-admin-route-protection.md)).
 - Images upload to Firebase Storage at `images/{filename}`.
 - Image metadata lives in the Firestore `images` collection.
 - Collections are derived from the `collection` field — there is no separate collection entity.

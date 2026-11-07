@@ -9,6 +9,7 @@ import { useThemeStore } from './store/themeStore';
 import { lightTheme, darkTheme } from './style/theme';
 import { CssBaseline } from '@mui/material';
 import SharedLayout from './layout/Shared.layout';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
@@ -22,7 +23,7 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      useAuthStore.setState({ user });
+      useAuthStore.setState({ user, isAuthReady: true });
     });
 
     return () => unsubscribe();
@@ -38,8 +39,10 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/gallery/:collectionName" element={<CollectionPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/collection/:collectionName" element={<CollectionDetailPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/collection/:collectionName" element={<CollectionDetailPage />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

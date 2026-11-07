@@ -27,7 +27,7 @@ Single-page React app with client-side routing. Public pages render inside one s
 | `/admin/collection/:collectionName` | `CollectionDetailPage` | **Should be protected** | DnD reorder + edit metadata |
 
 > [!WARNING] Admin routes are currently reachable without authentication
-> `ProtectedRoute` exists but is not applied in `src/App.tsx`. Tracked in issue #3. Do not add new admin routes until this is fixed.
+> `/admin` and `/admin/collection/:name` sit under `ProtectedRoute` in `src/App.tsx` ([decision 0014](/decisions/0014-admin-route-protection.md)). New admin routes must be added inside the same layout route.
 
 There is **no** `/about`, `/projects`, or `/contact` route. Old links to those pages were removed from the navbar; do not reintroduce them without a decision.
 
