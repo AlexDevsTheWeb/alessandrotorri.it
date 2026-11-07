@@ -4,6 +4,7 @@ One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issu
 
 * [2026-10-29 — Personal Website Rebuild Charter](/sources/2026-10-29-rebuild.md) - Owner charter that defines the rebuild goal, wiki/agent model, and execution order.
 * [2026-11-07 — Gallery layout improvements](/sources/2026-11-07-ui-improvement.md) - Owner feedback on gallery cursors, hover-only cover titles, 4:3 covers, grid spacing, EXIF label and copy protection.
+* [2026-11-07 — GitHub issue #3 admin route protection](/sources/2026-11-07-gh-issue-3.md) - ProtectedRoute, auth readiness, and admin-only Firestore/Storage rules.
 * [2026-10-29 — GitHub issue #1 dependency refresh](/sources/2026-10-29-gh-issue-1.md) - In-range updates, deferred majors, and the grpc advisory.
 * [2026-10-29 — GitHub issue #6 MUI 9 migration](/sources/2026-10-29-gh-issue-6.md) - Material UI 9.5 adoption and the v7→v9 API changes.
 * [2026-10-29 — GitHub issue #2 phases 3–5](/sources/2026-10-29-gh-issue-2.md) - Grid, feed + lightbox, SEO and performance polish.
