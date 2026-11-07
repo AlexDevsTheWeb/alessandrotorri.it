@@ -111,9 +111,9 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 
 ## 9. Current state and next
 
-- Public rebuild: phases 0–5 done. Next: administrator section (issue #3). See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
+- Public rebuild: phases 0–5 done. Admin route protection done (issue #3); deploy the rules and finish the administrator polish. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
 - Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; remaining majors in issue #6, grpc advisory in issue #5.
 - Next: public site phases 3–5 (issue #2); admin protection (issue #3).
-- Admin is currently reachable without auth; do not "improve" it until issue #3, but never expose new admin routes.
+- Admin routes are behind `ProtectedRoute` and gated by `firestore.rules` / `storage.rules` (admins allowlist via `admins/{uid}`), issue #3. Any new admin route must sit under the same guard.

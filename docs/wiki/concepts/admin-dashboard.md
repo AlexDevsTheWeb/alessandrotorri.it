@@ -13,8 +13,8 @@ sources:
 
 # Admin Dashboard
 
-> [!WARNING] Not protected
-> `ProtectedRoute` is not applied in `src/App.tsx`. Anyone can reach `/admin` and `/admin/collection/:name`. Tracked in issue #3; do not expose new admin routes until it is fixed.
+> [!NOTE] Protected
+> Both admin routes sit under `ProtectedRoute` in `src/App.tsx`. Signed-out visitors are redirected to `/login`. Data access is gated by `firestore.rules` and `storage.rules`, which allow writes only for UIDs in `admins/{uid}` ([decision 0014](/decisions/0014-admin-route-protection.md), issue #3).
 
 ## Routes
 
@@ -26,7 +26,7 @@ sources:
 - Lists collections deduplicated from the Firestore `images` collection.
 - Upload form via `ImageUpload`.
 - Logout action.
-- Route protection is still disabled (issue #3).
+- Reached only through `ProtectedRoute` (signed-in users).
 
 ## ImageUpload component
 
@@ -52,8 +52,8 @@ sources:
 
 ## Known issues
 
-- Route protection disabled (issue #3).
-- Firestore/Storage security rules are not in the repo yet.
+- A signed-in account that is not in `admins/{uid}` can open the screens, but Firestore and Storage deny its reads and writes. A client-side admin check is a follow-up.
+- Rules are in the repo but not deployed or emulator-tested yet (see [Firebase Backend](/concepts/firebase-backend.md)).
 - The admin still writes to Firestore while the public site reads static CDN data; both are intentional during the rebuild.
 
 ## Related
