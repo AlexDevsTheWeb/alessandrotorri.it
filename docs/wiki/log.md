@@ -1,6 +1,11 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-07
+* **Issue #6 / majors batch**: adopted Vite 8 + `@vitejs/plugin-react` 6, ESLint 10 + `@eslint/js` 10 + `eslint-plugin-react-refresh` 0.5, `uuid` 14 and `globals` 17; lint and build green with no config changes. TypeScript 7 builds but `typescript-eslint` does not support it, so `npm run lint` fails; kept 5.9.3. Firebase 13 builds but needs a live smoke test and still resolves the vulnerable gRPC; deferred. `framer-motion` is no longer a dependency.
+* **Decision**: [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md).
+* **Wiki**: added [source summary for issue #6 (2026-11-07)](/sources/2026-11-07-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), AGENTS.md, and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass; `npm ci` from the lockfile passes; browser check on the Vite 8 build: `/gallery` renders.
+* **Next**: TypeScript 7 once typescript-eslint supports it; Firebase 13 after a live smoke test (issue #6 stays open).
 * **Issue #5 / grpc advisory**: added a scoped `overrides` entry `@grpc/grpc-js: ^1.14.7`. `npm audit --omit=dev` is clean (was 4 high). Firebase stays at 12.19.0; Firebase 13 still resolves a vulnerable grpc, so it was not the fix. The `firebase-data` chunk is byte-identical, so the browser bundle is unchanged.
 * **Decision**: [0013 — Override @grpc/grpc-js to a patched 1.14 release](/decisions/0013-grpc-js-override.md).
 * **Wiki**: added [source summary for issue #5](/sources/2026-11-07-gh-issue-5.md); updated [Tech Stack](/concepts/tech-stack.md), [Firebase Backend](/concepts/firebase-backend.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.

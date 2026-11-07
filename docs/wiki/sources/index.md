@@ -4,6 +4,7 @@ One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issu
 
 * [2026-10-29 — Personal Website Rebuild Charter](/sources/2026-10-29-rebuild.md) - Owner charter that defines the rebuild goal, wiki/agent model, and execution order.
 * [2026-11-07 — Gallery layout improvements](/sources/2026-11-07-ui-improvement.md) - Owner feedback on gallery cursors, hover-only cover titles, 4:3 covers, grid spacing, EXIF label and copy protection.
+* [2026-11-07 — GitHub issue #6 dependency majors batch](/sources/2026-11-07-gh-issue-6.md) - Vite 8, ESLint 10, uuid 14, globals 17 adopted; TypeScript 7 blocked; Firebase 13 deferred.
 * [2026-11-07 — GitHub issue #5 grpc-js advisory](/sources/2026-11-07-gh-issue-5.md) - Scoped override clears the high-severity Firestore advisory.
 * [2026-11-07 — GitHub issue #3 admin route protection](/sources/2026-11-07-gh-issue-3.md) - ProtectedRoute, auth readiness, and admin-only Firestore/Storage rules.
 * [2026-10-29 — GitHub issue #1 dependency refresh](/sources/2026-10-29-gh-issue-1.md) - In-range updates, deferred majors, and the grpc advisory.

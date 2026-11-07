@@ -27,12 +27,12 @@ sources:
 | Package manager | npm | 10.9.9 |
 | Framework | React | 19.3.1 |
 | Language | TypeScript | 5.9.3 |
-| Bundler | Vite | 7.3.7 |
+| Bundler | Vite | 8.3.6 (decision 0015) |
 | UI library | MUI (Material-UI) | 9.5.0 |
 | State | Zustand | 5.0.16 |
 | Routing | React Router DOM | 7.18.5 |
 
-Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/1)). MUI 9 adopted 2026-10-29 ([decision 0006](/decisions/0006-adopt-mui-9.md)). The remaining majors are tracked in [issue #6](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/6).
+Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/1)). MUI 9 adopted 2026-10-29 ([decision 0006](/decisions/0006-adopt-mui-9.md)). Vite 8, ESLint 10, uuid 14 and globals 17 adopted 2026-11-07 ([decision 0015](/decisions/0015-dependency-majors-batch.md)). TypeScript 7 is blocked by typescript-eslint and Firebase 13 awaits a live smoke test; both remain in [issue #6](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/6).
 
 ## Firebase
 
@@ -57,7 +57,7 @@ Config is read from `VITE_FIREBASE_*` environment variables in `.env` (gitignore
 | `@emotion/react` + `@emotion/styled` | CSS-in-JS (MUI dependency, unchanged) |
 | `@hello-pangea/dnd` 18.0.1 | Drag-and-drop reordering in admin |
 | `react-firebase-hooks` 5.1.1 | Firestore query hooks (lazy admin) |
-| `uuid` 13.0.2 | Unique upload ids |
+| `uuid` 14.0.3 | Unique upload ids |
 
 ## MUI v9 migration notes
 
@@ -71,7 +71,8 @@ MUI v9 (no v8) removed deprecated APIs and system props. Current code follows th
 
 ## Dev tooling
 
-- ESLint 9 flat config + typescript-eslint; `npm run lint`.
+- ESLint 10 flat config + typescript-eslint; `npm run lint`. TypeScript stays on 5.9.3 because typescript-eslint does not support TypeScript 7 yet ([decision 0015](/decisions/0015-dependency-majors-batch.md)).
+- Vite 8 with `@vitejs/plugin-react` 6; `globals` 17 and `eslint-plugin-react-refresh` 0.5.
 - `tsc -b && vite build`; `npm run build`.
 - Lazy routes + `Suspense`/`ErrorBoundary`; MUI, React and Firebase manual chunks in `vite.config.ts`.
 - `src/firebase.ts` is auth-only; `src/firebaseData.ts` loads Firestore/Storage with admin.
