@@ -1,6 +1,13 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-07
+* **Issue #6 / majors batch**: adopted Vite 8 + `@vitejs/plugin-react` 6, ESLint 10 + `@eslint/js` 10 + `eslint-plugin-react-refresh` 0.5, `uuid` 14 and `globals` 17; lint and build green with no config changes. TypeScript 7 builds but `typescript-eslint` does not support it, so `npm run lint` fails; kept 5.9.3. Firebase 13 builds but needs a live smoke test and still resolves the vulnerable gRPC; deferred. `framer-motion` is no longer a dependency.
+* **Decision**: [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md).
+* **Wiki**: added [source summary for issue #6 (2026-11-07)](/sources/2026-11-07-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), AGENTS.md, and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass; `npm ci` from the lockfile passes; browser check on the Vite 8 build: `/gallery` renders.
+* **Next**: TypeScript 7 once typescript-eslint supports it; Firebase 13 after a live smoke test (issue #6 stays open).
+
+## 2026-11-07
 * **Gallery layout refinements**: applied the owner feedback from `docs/raw/2026-11-07-ui-improvement.md` — cover titles centered and shown only on hover/focus over a stronger gradient, 4:3 covers, tighter grid gap (8px / 16px), pointer cursors on covers and photos (fixed the `cursor: default` that `ProgressiveImage` forced), "Dati EXIF non disponibili" removed from the lightbox, and a native right-click/drag guard on single-gallery photos.
 * **Decision**: [0012 — Gallery hover titles and copy guard](/decisions/0012-gallery-hover-titles-and-copy-guard.md); supersedes the always-visible cover title in [0008](/decisions/0008-visual-refinements.md) and records the deviation from live-site parity in [0003](/decisions/0003-exact-look-and-feel.md).
 * **Dependency**: no copy-protection library added. The owner asked for "a library", but AGENTS.md requires approval for new dependencies; the guard is native and deterrent-only. Question recorded in decision 0012.

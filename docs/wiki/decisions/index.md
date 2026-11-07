@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.
 * [0012 — Gallery covers reveal titles on hover, 4:3 covers, and a copy guard](/decisions/0012-gallery-hover-titles-and-copy-guard.md) - Hover-only centered cover titles, 4:3 covers, pointer cursors, EXIF label removed, native copy guard.
 * [0011 — SEO, metadata, and route loading](/decisions/0011-seo-and-route-loading.md) - Metadata hook, static sitemap, lazy routes, chunks.
 * [0010 — Breadcrumb lives in the navbar on desktop](/decisions/0010-navbar-breadcrumb.md) - Navbar breadcrumb, hidden on mobile; no in-page breadcrumb.

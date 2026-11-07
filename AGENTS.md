@@ -114,6 +114,6 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 - Public rebuild: phases 0–5 done. Next: administrator section (issue #3). See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
-- Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; remaining majors in issue #6, grpc advisory in issue #5.
-- Next: public site phases 3–5 (issue #2); admin protection (issue #3).
+- Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; Vite 8, ESLint 10, uuid 14, globals 17 adopted 2026-11-07. TypeScript 7 is blocked by typescript-eslint and Firebase 13 is deferred (issue #6). The grpc advisory is cleared by a scoped override (issue #5, decision 0013).
+- Next: deploy the admin rules and smoke-test them (issue #3); deployed Lighthouse (issue #14); remaining majors (issue #6).
 - Admin is currently reachable without auth; do not "improve" it until issue #3, but never expose new admin routes.
