@@ -42,8 +42,8 @@ Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/
 | Firestore | `firebase` | Image metadata and collections |
 | Storage | `firebase` | Image file hosting |
 
-> [!WARNING] Transitive advisory
-> `firebase@12.19.0 -> @firebase/firestore@4.17.2` still pins `@grpc/grpc-js@1.9.16`, which has 4 high-severity advisories. `npm audit fix --force` would downgrade Firebase to 9.14.0, so it was not applied. Tracked in [issue #5](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/5).
+> [!NOTE] Transitive advisory resolved
+> `firebase@12.19.0 -> @firebase/firestore@4.17.2` pinned `@grpc/grpc-js@1.9.16`. A scoped `overrides` entry now resolves it to `1.14.7`, and `npm audit --omit=dev` is clean. The browser bundle does not include gRPC. See [Decision 0013](/decisions/0013-grpc-js-override.md) and [issue #5](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/5).
 
 Config is read from `VITE_FIREBASE_*` environment variables in `.env` (gitignored). See [Firebase Backend](/concepts/firebase-backend.md).
 

@@ -91,7 +91,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | Phase | Name | Status | Notes |
 |-------|------|--------|-------|
 | F | Knowledge foundation | done | OKF v0.2 wiki, docs audit, `AGENTS.md`, usual-loop skill, green baseline (2026-10-29) |
-| D | Dependency refresh | done (in-range + MUI 9) | 19 packages updated; MUI 9.5 adopted (decision 0006); Vite 8, ESLint 10, uuid 14, globals 17 adopted (decision 0015); TypeScript 7 blocked, Firebase 13 deferred (issue #6); grpc advisory issue #5 |
+| D | Dependency refresh | done (in-range + MUI 9 + grpc override) | 19 packages updated; MUI 9.5 adopted (decision 0006); Vite 8, ESLint 10, uuid 14, globals 17 adopted (decision 0015); TypeScript 7 blocked, Firebase 13 deferred (issue #6); grpc advisory cleared by override (decision 0013) |
 | L | Layout refinements | done | owner feedback 2026-10-29; fonts, hover, covers, footer, mobile drawer (decision 0008) |
 | L2 | Gallery layout refinements | done | owner feedback 2026-11-07; hover-only centered cover titles, 4:3 covers, tighter grid, pointer cursors, EXIF label removed, copy guard (decision 0012) |
 | 0 | Baseline & cleanup prep | done | originally lint 3 errors + 1 warning and red build; fixed 2026-10-29 (commit `31d6854`) |
@@ -100,7 +100,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse in issue #14 |
-| 6 | Admin reconnect (DEFERRED) | deferred | protect `/admin`, finish upload/manage; issue #3 |
+| 6 | Admin reconnect | in-progress | route protection and rules done (decision 0014, issue #3); deploy rules and finish upload/manage polish |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
@@ -203,7 +203,9 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/components/ErrorBoundary.component.tsx` | route error fallback |
 | `src/components/PageLoader.component.tsx` | Suspense fallback |
 | `src/hooks/usePageMeta.ts` | per-route title/canonical/OG/Twitter |
-| `src/App.tsx` | lazy routes |
+| `src/App.tsx` | lazy routes; admin routes under `ProtectedRoute` |
+| `src/components/ProtectedRoute.tsx` | admin guard (waits for `isAuthReady`) |
+| `firestore.rules`, `storage.rules`, `firebase.json` | admin-only writes via `admins/{uid}` |
 | `src/firebase.ts` | Firebase auth only |
 | `src/firebaseData.ts` | lazy Firestore/Storage |
 | `src/layout/Navbar.layout.tsx` | triptych nav + breadcrumb |
@@ -219,5 +221,5 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 ## 8. Out of Scope / Non-goals
 
 - No Firebase migration or upload-pipeline rewrite, no About/Projects pages, no Tailwind/CSS Modules, no new deps without approval, no WebP pipeline yet.
-- No new admin routes before issue #3; never expose admin data publicly.
+- New admin routes must sit under `ProtectedRoute`; never expose admin data publicly.
 - No redesign disguised as "modern reinterpretation" — [Decision 0003](/decisions/0003-exact-look-and-feel.md) locks visual parity.

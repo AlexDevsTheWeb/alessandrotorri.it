@@ -6,8 +6,15 @@
 * **Wiki**: added [source summary for issue #6 (2026-11-07)](/sources/2026-11-07-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), AGENTS.md, and indexes.
 * **Verify**: `npm run lint` and `npm run build` pass; `npm ci` from the lockfile passes; browser check on the Vite 8 build: `/gallery` renders.
 * **Next**: TypeScript 7 once typescript-eslint supports it; Firebase 13 after a live smoke test (issue #6 stays open).
-
-## 2026-11-07
+* **Issue #5 / grpc advisory**: added a scoped `overrides` entry `@grpc/grpc-js: ^1.14.7`. `npm audit --omit=dev` is clean (was 4 high). Firebase stays at 12.19.0; Firebase 13 still resolves a vulnerable grpc, so it was not the fix. The `firebase-data` chunk is byte-identical, so the browser bundle is unchanged.
+* **Decision**: [0013 — Override @grpc/grpc-js to a patched 1.14 release](/decisions/0013-grpc-js-override.md).
+* **Wiki**: added [source summary for issue #5](/sources/2026-11-07-gh-issue-5.md); updated [Tech Stack](/concepts/tech-stack.md), [Firebase Backend](/concepts/firebase-backend.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Live Firestore not exercised (no project credentials in this session).
+* **Next**: admin route protection (issue #3); majors (issue #6).
+* **Issue #3 / admin protection**: wrapped `/admin` and `/admin/collection/:name` in `ProtectedRoute`; added `isAuthReady` so a refreshed `/admin` waits for auth instead of redirecting; added `firestore.rules`, `storage.rules` and `firebase.json` so writes need an `admins/{uid}` document. Browser check: signed-out `/admin` and `/admin/collection/…` redirect to `/login`; `/gallery` stays public.
+* **Decision**: [0014 — Protect admin routes and gate data with an admins allowlist](/decisions/0014-admin-route-protection.md).
+* **Wiki**: added [source summary for issue #3](/sources/2026-11-07-gh-issue-3.md); updated [Admin Dashboard](/concepts/admin-dashboard.md), [Firebase Backend](/concepts/firebase-backend.md), [Site Architecture](/concepts/site-architecture.md), [Agent Rules](/rules/agent-rules.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), AGENTS.md, and indexes.
+* **Not done**: rules are not yet deployed or emulator-tested; the first `admins/{uid}` document is created by the owner in the console.
 * **Gallery layout refinements**: applied the owner feedback from `docs/raw/2026-11-07-ui-improvement.md` — cover titles centered and shown only on hover/focus over a stronger gradient, 4:3 covers, tighter grid gap (8px / 16px), pointer cursors on covers and photos (fixed the `cursor: default` that `ProgressiveImage` forced), "Dati EXIF non disponibili" removed from the lightbox, and a native right-click/drag guard on single-gallery photos.
 * **Decision**: [0012 — Gallery hover titles and copy guard](/decisions/0012-gallery-hover-titles-and-copy-guard.md); supersedes the always-visible cover title in [0008](/decisions/0008-visual-refinements.md) and records the deviation from live-site parity in [0003](/decisions/0003-exact-look-and-feel.md).
 * **Dependency**: no copy-protection library added. The owner asked for "a library", but AGENTS.md requires approval for new dependencies; the guard is native and deterrent-only. Question recorded in decision 0012.

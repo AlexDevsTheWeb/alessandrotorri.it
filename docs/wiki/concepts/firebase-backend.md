@@ -24,7 +24,7 @@ sources:
 - **Methods:** Google sign-in (the UI also has an email/password action in the store).
 - **Library:** `firebase/auth` + a Zustand `authStore`.
 - **State sync:** `onAuthStateChanged` in `src/App.tsx`.
-- **Route protection:** `ProtectedRoute` exists but is **not applied** to the admin routes; they are currently public. Tracked in issue #3.
+- **Route protection:** `ProtectedRoute` wraps the admin routes. `authStore.isAuthReady` prevents a refreshed `/admin` from redirecting before auth resolves ([decision 0014](/decisions/0014-admin-route-protection.md)).
 
 ## Firestore
 
@@ -39,9 +39,16 @@ sources:
 - **Upload:** `uploadBytesResumable` with progress tracking.
 - **Download URLs:** stored in the Firestore document `url` field.
 
+## Dependency note
+
+- `@grpc/grpc-js` is overridden to `^1.14.7` in `package.json` to clear the Firestore advisory ([decision 0013](/decisions/0013-grpc-js-override.md)). The browser bundle does not include it.
+
 ## Security rules
 
-`firestore.rules` and `storage.rules` are not in the repository yet. Add them with the admin-hardening work (issue #3) before deploying.
+- `firestore.rules` and `storage.rules` are in the repository, referenced by `firebase.json`.
+- Writes to `images` and Storage uploads require a document `admins/{uid}`; `admins` is read-only from clients and managed in the console.
+- `images` documents are readable when `isVisible == true`; Storage `images/` is public-read, with uploads limited to `image/*` and 50 MB.
+- Deploy manually once the admin UID is in `admins`: `firebase deploy --only firestore:rules,storage --project alessandrotorri-it`. Not yet deployed or emulator-tested.
 
 ## Related
 
