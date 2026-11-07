@@ -39,6 +39,10 @@ sources:
 - **Upload:** `uploadBytesResumable` with progress tracking.
 - **Download URLs:** stored in the Firestore document `url` field.
 
+## Dependency note
+
+- `@grpc/grpc-js` is overridden to `^1.14.7` in `package.json` to clear the Firestore advisory ([decision 0013](/decisions/0013-grpc-js-override.md)). The browser bundle does not include it.
+
 ## Security rules
 
 `firestore.rules` and `storage.rules` are not in the repository yet. Add them with the admin-hardening work (issue #3) before deploying.

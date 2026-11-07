@@ -28,7 +28,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 * **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The next build phase is the administrator work (issue #3). See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
 * **Gallery refinements — 2026-11-07.** Covers are 4:3 with titles revealed on hover, the grid is tighter, images have pointer cursors, the EXIF label is gone and the single gallery is protected from right-click copying ([Decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 * **Admin — exists but unprotected.** Upload, collections, and DnD reordering work; `ProtectedRoute` is not applied. Tracked in issue #3.
-* **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6, and the Firebase grpc advisory in issue #5.
+* **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6. The Firebase grpc advisory is cleared by a scoped override ([Decision 0013](/decisions/0013-grpc-js-override.md)).
 * **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
 
 > [!WARNING] Contradiction — exact clone vs modern reinterpretation
