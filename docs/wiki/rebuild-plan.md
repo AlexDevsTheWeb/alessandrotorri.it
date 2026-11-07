@@ -91,7 +91,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | Phase | Name | Status | Notes |
 |-------|------|--------|-------|
 | F | Knowledge foundation | done | OKF v0.2 wiki, docs audit, `AGENTS.md`, usual-loop skill, green baseline (2026-10-29) |
-| D | Dependency refresh | done (in-range + MUI 9) | 19 packages updated; MUI 9.5 adopted (decision 0006); remaining majors issue #6; grpc advisory issue #5 |
+| D | Dependency refresh | done (in-range + MUI 9 + grpc override) | 19 packages updated; MUI 9.5 adopted (decision 0006); grpc advisory cleared by override (decision 0013); remaining majors issue #6 |
 | L | Layout refinements | done | owner feedback 2026-10-29; fonts, hover, covers, footer, mobile drawer (decision 0008) |
 | L2 | Gallery layout refinements | done | owner feedback 2026-11-07; hover-only centered cover titles, 4:3 covers, tighter grid, pointer cursors, EXIF label removed, copy guard (decision 0012) |
 | 0 | Baseline & cleanup prep | done | originally lint 3 errors + 1 warning and red build; fixed 2026-10-29 (commit `31d6854`) |

@@ -27,8 +27,8 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
 * **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The next build phase is the administrator work (issue #3). See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
 * **Gallery refinements — 2026-11-07.** Covers are 4:3 with titles revealed on hover, the grid is tighter, images have pointer cursors, the EXIF label is gone and the single gallery is protected from right-click copying ([Decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+* **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6. The Firebase grpc advisory is cleared by a scoped override ([Decision 0013](/decisions/0013-grpc-js-override.md)).
 * **Admin — protected (issue #3).** Admin routes sit under `ProtectedRoute`, and Firestore/Storage rules allow writes only for UIDs in `admins/{uid}` ([Decision 0014](/decisions/0014-admin-route-protection.md)). Rules are not yet deployed or emulator-tested.
-* **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); the remaining majors are tracked in issue #6, and the Firebase grpc advisory in issue #5.
 * **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
 
 > [!WARNING] Contradiction — exact clone vs modern reinterpretation
