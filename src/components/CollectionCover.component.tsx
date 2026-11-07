@@ -20,12 +20,20 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority 
       overflow: 'hidden',
       color: 'text.primary',
       textDecoration: 'none',
+      cursor: 'pointer',
       outline: 'none',
       '&:focus-visible': {
         outline: 'none',
       },
-      '&:hover .collection-cover-media': {
+      '&:hover .collection-cover-media, &:focus-visible .collection-cover-media': {
         filter: 'brightness(0.86)',
+      },
+      '&:hover .collection-cover-overlay, &:focus-visible .collection-cover-overlay': {
+        opacity: 1,
+      },
+      '&:hover .collection-cover-title, &:focus-visible .collection-cover-title': {
+        opacity: 1,
+        transform: 'translate(-50%, -50%)',
       },
     }}
   >
@@ -34,16 +42,19 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority 
         src={collection.cover}
         placeholder={collection.placeholder}
         alt={collection.title}
-        ratio="16/9"
+        ratio="4/3"
         priority={priority}
       />
     </Box>
     <Box
+      className="collection-cover-overlay"
       sx={{
         position: 'absolute',
         inset: 0,
+        opacity: 0,
         background:
-          'linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.28) 38%, rgba(0, 0, 0, 0) 68%)',
+          'linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0.45) 100%)',
+        transition: 'opacity 0.35s ease',
         pointerEvents: 'none',
       }}
     />
@@ -53,15 +64,19 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority 
       variant="h6"
       sx={{
         position: 'absolute',
-        right: 16,
-        bottom: 14,
-        left: 16,
+        top: '50%',
+        left: '50%',
+        width: 'calc(100% - 32px)',
         color: '#ffffff',
         fontWeight: 500,
         letterSpacing: '0.2em',
         textAlign: 'center',
         textTransform: 'uppercase',
         textShadow: '0 1px 8px rgba(0, 0, 0, 0.35)',
+        opacity: 0,
+        transform: 'translate(-50%, calc(-50% + 14px))',
+        transition: 'transform 0.35s ease, opacity 0.35s ease',
+        pointerEvents: 'none',
       }}
     >
       {collection.title}
