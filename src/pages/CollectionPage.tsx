@@ -80,7 +80,7 @@ const CollectionPage: React.FC = () => {
                   p: 0,
                   border: 0,
                   background: 'none',
-                  cursor: 'zoom-in',
+                  cursor: 'pointer',
                   '&:focus-visible': { outline: 'none' },
                   '&:hover .photo-caption-overlay, &:focus-visible .photo-caption-overlay': {
                     opacity: 1,
@@ -98,6 +98,7 @@ const CollectionPage: React.FC = () => {
                   alt={photo.caption}
                   ratio={photo.ratio}
                   priority={index === 0}
+                  preventCopy
                 />
                 <Box
                   className="photo-caption-overlay"
