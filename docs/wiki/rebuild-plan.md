@@ -79,9 +79,9 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 
 - Light: bg `#ffffff`, paper `#fafafa`, text `#1a1a1a`. Dark: bg `#0a0a0a`, paper `#121212`.
 - Navbar: glass `blur(20px) saturate(180%)`, `alpha(bg,0.7)`, uppercase `0.75rem / 0.2em` links, opacity-hover (no ripple). Center logo `ALESSANDRO TORRI`.
-- Covers: 16:9, `overflow:hidden`, hover `scale(1.05-1.08)` + `brightness(0.65)`, title uppercase centered, gradient reveal from bottom.
+- Covers: 4:3, `overflow:hidden`, hover `brightness(0.86)`, title uppercase centered and shown only on hover/focus over a stronger gradient ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - Detail feed: max-width `~900px` centered single column, `spacing 4-6`, caption `body2 secondary centered`.
-- Lightbox: fullscreen `Dialog`, `rgba(0,0,0,0.85)` + `backdrop blur(15px)`, arrows sides (desktop) / bottom (mobile), Esc/arrows keyboard, caption + fake EXIF line (replace later).
+- Lightbox: fullscreen `Dialog`, `rgba(0,0,0,0.85)` + `backdrop blur(15px)`, arrows sides (desktop) / bottom (mobile), Esc/arrows keyboard, caption only (EXIF placeholder removed 2026-11-07).
 - Footer: transparent, top divider, `© {year} Alessandro Torri` + Instagram + YouTube icons, centered Back-to-Top.
 
 ## 4. Phases, Tasks & Acceptance
@@ -93,6 +93,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | F | Knowledge foundation | done | OKF v0.2 wiki, docs audit, `AGENTS.md`, usual-loop skill, green baseline (2026-10-29) |
 | D | Dependency refresh | done (in-range + MUI 9) | 19 packages updated; MUI 9.5 adopted (decision 0006); remaining majors issue #6; grpc advisory issue #5 |
 | L | Layout refinements | done | owner feedback 2026-10-29; fonts, hover, covers, footer, mobile drawer (decision 0008) |
+| L2 | Gallery layout refinements | done | owner feedback 2026-11-07; hover-only centered cover titles, 4:3 covers, tighter grid, pointer cursors, EXIF label removed, copy guard (decision 0012) |
 | 0 | Baseline & cleanup prep | done | originally lint 3 errors + 1 warning and red build; fixed 2026-10-29 (commit `31d6854`) |
 | 1 | Data layer (CDN) | done | `src/data/collections.data.ts`: 9 CDN covers + 24 favorite captions; per-photo URLs still TODO |
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |

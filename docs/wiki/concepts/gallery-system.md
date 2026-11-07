@@ -25,10 +25,10 @@ sources:
 
 - Both render `CollectionGrid`.
 - `Container maxWidth="lg"`.
-- 9 covers from `COLLECTIONS`, 16:9, 1 column on mobile / 2 from `sm` up.
-- Title inside the cover, centered at the bottom over a dark gradient.
-- Links to `/gallery/:slug`.
-- No entrance animation; hover only dims the image slightly.
+- 9 covers from `COLLECTIONS`, 4:3, 1 column on mobile / 2 from `sm` up, 8px gap on mobile and 16px from `md` ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Title hidden by default; on hover or focus it fades in at the center over a dark gradient ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Links to `/gallery/:slug`; pointer cursor across the whole cover.
+- No entrance animation; hover dims the image slightly.
 - Home renders the grid directly, with no redirect ([decision 0007](/decisions/0007-home-gallery-grid.md)).
 
 ### CollectionPage (`/gallery/:slug`) — implemented
@@ -39,7 +39,7 @@ sources:
 - Each image keeps its own aspect ratio.
 - Caption is hidden by default; on hover or keyboard focus a ~50% black gradient fades in and the caption slides up to the center.
 - MUI Masonry's negative root margin is neutralized (`margin: 0 !important`) so the mobile single column has equal left/right gutters.
-- Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`).
+- Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`), with a pointer cursor and the copy guard ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - Unknown slugs show `Collezione non trovata` with a link back to `/gallery`.
 
 ## Components
@@ -51,14 +51,15 @@ sources:
 
 ### CollectionCover (`src/components/CollectionCover.component.tsx`)
 
-- `ProgressiveImage` 16:9 cover with a centered uppercase title inside the image.
-- Bottom gradient for legibility.
-- Hover: `brightness(0.86)` only; no scale, no entrance animation, no border/outline.
+- `ProgressiveImage` 4:3 cover with a centered uppercase title, hidden until hover or focus.
+- On hover or focus: the title fades in and rises into place over a 0.6–0.85 black gradient.
+- Hover: `brightness(0.86)` on the image; no scale, no entrance animation, no border/outline.
 
 ### PhotoLightbox (`src/components/PhotoLightbox.component.tsx`)
 
 - Fullscreen dark `Dialog` with blurred backdrop.
-- Image `contain` at up to 75vh; caption + “Dati EXIF non disponibili”.
+- Image `contain` at up to 75vh; caption only. The EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Image is not draggable and its context menu is cancelled.
 - Prev/next buttons, Esc and arrow keys.
 - Side arrows on desktop, arrows below the caption on mobile.
 - MUI `Dialog` handles body scroll lock.
@@ -72,6 +73,7 @@ sources:
 
 - Blur-up pattern when a placeholder exists; otherwise a neutral background until the high-res image loads.
 - Configurable `aspect-ratio`, `srcset`/`sizes`, `loading="lazy"` (the first feed image can be eager/high-priority), `decoding="async"`.
+- Inherits the cursor when not clickable; the `preventCopy` prop adds `draggable={false}`, `user-select: none` and a cancelled context menu ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - Used by the covers and the public feed.
 
 ## Image optimization

@@ -22,6 +22,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
+* [2026-11-07 — Gallery layout improvements](/sources/2026-11-07-ui-improvement.md) - Owner feedback on gallery cursors, hover-only cover titles, 4:3 covers, grid spacing, EXIF label and copy protection.
 * [2026-10-29 — GitHub issue #1](/sources/2026-10-29-gh-issue-1.md) - Dependency refresh: in-range updates, deferred majors, security note.
 * [2026-10-29 — GitHub issue #6](/sources/2026-10-29-gh-issue-6.md) - MUI 9.5 adoption and the v7→v9 migrations.
 * [2026-10-29 — GitHub issue #2](/sources/2026-10-29-gh-issue-2.md) - Public rebuild phases 3–5: grid, feed + lightbox, SEO/performance polish.
@@ -31,6 +32,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0012 — Gallery hover titles and copy guard](/decisions/0012-gallery-hover-titles-and-copy-guard.md) - Hover-only cover titles, 4:3 covers, pointer cursors, copy guard, EXIF label removed.
 * [0011 — SEO and route loading](/decisions/0011-seo-and-route-loading.md) - Metadata hook, static sitemap, lazy routes, chunks.
 * [0010 — Breadcrumb in the navbar](/decisions/0010-navbar-breadcrumb.md) - Desktop navbar breadcrumb; hidden on mobile.
 * [0009 — Masonry feed with hover captions](/decisions/0009-masonry-feed-hover-captions.md) - Masonry layout; captions reveal over a black gradient.

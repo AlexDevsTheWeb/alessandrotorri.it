@@ -10,7 +10,10 @@ interface ProgressiveImageProps {
   ratio?: string;
   priority?: boolean;
   onClickPhoto?: () => void;
+  preventCopy?: boolean;
 }
+
+const preventContextMenu = (event: React.MouseEvent) => event.preventDefault();
 
 const HighResImage = styled('img')({
   width: '100%',
@@ -48,6 +51,7 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
   ratio,
   priority = false,
   onClickPhoto,
+  preventCopy = false,
 }) => {
   const [loaded, setLoaded] = useState(false);
 
@@ -60,7 +64,9 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
         height: ratio ? 'auto' : '100%',
         aspectRatio: ratio,
         backgroundColor: (theme) => alpha(theme.palette.text.disabled, 0.1),
-        cursor: onClickPhoto ? 'pointer' : 'default',
+        cursor: onClickPhoto ? 'pointer' : 'inherit',
+        userSelect: preventCopy ? 'none' : undefined,
+        WebkitUserSelect: preventCopy ? 'none' : undefined,
       }}
       onClick={onClickPhoto}
     >
@@ -75,6 +81,8 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
+        draggable={preventCopy ? false : undefined}
+        onContextMenu={preventCopy ? preventContextMenu : undefined}
         onLoad={() => setLoaded(true)}
         className={loaded ? 'loaded' : ''}
       />

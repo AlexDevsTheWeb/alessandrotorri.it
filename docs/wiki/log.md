@@ -1,5 +1,13 @@
 # Knowledge Bundle Update Log
 
+## 2026-11-07
+* **Gallery layout refinements**: applied the owner feedback from `docs/raw/2026-11-07-ui-improvement.md` — cover titles centered and shown only on hover/focus over a stronger gradient, 4:3 covers, tighter grid gap (8px / 16px), pointer cursors on covers and photos (fixed the `cursor: default` that `ProgressiveImage` forced), "Dati EXIF non disponibili" removed from the lightbox, and a native right-click/drag guard on single-gallery photos.
+* **Decision**: [0012 — Gallery hover titles and copy guard](/decisions/0012-gallery-hover-titles-and-copy-guard.md); supersedes the always-visible cover title in [0008](/decisions/0008-visual-refinements.md) and records the deviation from live-site parity in [0003](/decisions/0003-exact-look-and-feel.md).
+* **Dependency**: no copy-protection library added. The owner asked for "a library", but AGENTS.md requires approval for new dependencies; the guard is native and deterrent-only. Question recorded in decision 0012.
+* **Wiki**: added [source summary](/sources/2026-11-07-ui-improvement.md) and [decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md); updated [Gallery System](/concepts/gallery-system.md), [Design System](/concepts/design-system.md), [Rebuild Plan](/rebuild-plan.md) (status `L2`), [Overview](/overview.md), and the bundle, decision and source indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Manual browser check of hover, cursor and mobile layout is still pending.
+* **Next**: owner review of the gallery changes; administrator section (issue #3).
+
 ## 2026-10-30
 * **Issue #2 / phase 5**: fixed `index.html` defaults, added `usePageMeta` per-route title/description/canonical/OG/Twitter, `robots.txt` and `sitemap.xml`, lazy routes + `Suspense`/`ErrorBoundary`, manual chunks, and a CDN preconnect.
 * **Performance**: split MUI/React/Firebase chunks, made `firebase.ts` auth-only and `firebaseData.ts` lazy, removed the dead `PhotoGallery` demo and unused `framer-motion`, and added 600w/1200w `srcset` plus eager/high-priority first images. No chunk exceeds 500 kB.

@@ -66,11 +66,11 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 
 ## Covers
 
-- 16:9, `overflow: hidden`.
-- Collection title is inside the image, centered at the bottom, over a dark gradient for legibility.
+- 4:3, `overflow: hidden`.
+- Collection title is centered in the image and hidden until hover or keyboard focus; it fades in over a 0.6–0.85 black gradient ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - No entrance animation and no hover scale.
 - Hover only dims the image slightly (`brightness(0.86)`); no border, no outline.
-- Card links have `outline: none`, including focus.
+- Card links have `outline: none`, including focus, and a pointer cursor.
 
 ## Collection feed
 
@@ -87,7 +87,8 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Fullscreen `Dialog`, `rgba(0,0,0,0.85)` + `backdrop-filter: blur(15px)`.
 - Arrows on the sides (desktop) or below (mobile).
 - Esc/arrows keyboard support.
-- Caption plus an EXIF placeholder line until real metadata exists.
+- Caption only; the EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Feed and lightbox photos are not draggable and their context menu is cancelled.
 
 ## Footer
 

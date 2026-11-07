@@ -117,20 +117,20 @@ const PhotoLightbox: React.FC<PhotoLightboxProps> = ({ photos, index, onChange, 
             component="img"
             src={photo.src}
             alt={photo.caption}
+            draggable={false}
+            onContextMenu={(event: React.MouseEvent) => event.preventDefault()}
             sx={{
               display: 'block',
               maxWidth: { xs: '92vw', md: '78vw' },
               maxHeight: { xs: '62vh', md: '75vh' },
               objectFit: 'contain',
               boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+              userSelect: 'none',
             }}
           />
           <Box sx={{ color: 'white', textAlign: 'center', maxWidth: 640, mt: 2 }}>
             <Typography id="photo-lightbox-title" variant="h6">
               {photo.caption}
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.65, mt: 0.5 }}>
-              Dati EXIF non disponibili
             </Typography>
           </Box>
 
