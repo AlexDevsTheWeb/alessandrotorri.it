@@ -57,6 +57,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [Tech Stack](/concepts/tech-stack.md) - Frameworks, libraries, toolchain.
 * [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore, Storage.
 * [Photo Management](/concepts/photo-management.md) - Upload pipeline, collections, metadata.
+* [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft).
 * [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, progressive images.
 * [Design System](/concepts/design-system.md) - MUI theme, typography, color, responsiveness.
 * [SEO and Metadata](/concepts/seo-metadata.md) - Titles, canonical, Open Graph, robots and sitemap.
@@ -73,6 +74,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 ## Reviews
 
+* [Open items and library review — 2026-11-07](/reviews/2026-11-07-open-items.md) - Disposition of every open item, library status, accepted risks.
 * [Docs and baseline audit — 2026-10-29](/reviews/2026-10-29-docs-audit.md) - Keep/update/archive verdicts and baseline fix.
 
 ## Wiki Operations (llm-wiki)

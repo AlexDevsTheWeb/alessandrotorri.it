@@ -29,10 +29,10 @@ sources:
 | Language | TypeScript | 5.9.3 |
 | Bundler | Vite | 8.3.6 (decision 0015) |
 | UI library | MUI (Material-UI) | 9.5.0 |
-| State | Zustand | 5.0.16 |
+| State | Zustand | 5.1.0 |
 | Routing | React Router DOM | 7.18.5 |
 
-Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/1)). MUI 9 adopted 2026-10-29 ([decision 0006](/decisions/0006-adopt-mui-9.md)). Vite 8, ESLint 10, uuid 14 and globals 17 adopted 2026-11-07 ([decision 0015](/decisions/0015-dependency-majors-batch.md)). TypeScript 7 is blocked by typescript-eslint and Firebase 13 awaits a live smoke test; both remain in [issue #6](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/6).
+Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/1)). MUI 9 adopted 2026-10-29 ([decision 0006](/decisions/0006-adopt-mui-9.md)). Vite 8, ESLint 10, uuid 14 and globals 17 adopted 2026-11-07 ([decision 0015](/decisions/0015-dependency-majors-batch.md)). Zustand moved to 5.1.0 and `@types/node` is aligned to the Node 22 line used by CI. TypeScript 7 is blocked by typescript-eslint ([issue #20](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/20)) and Firebase 13 waits for the backend decision ([issue #21](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/21)). Full register in the [open items review](/reviews/2026-11-07-open-items.md).
 
 ## Firebase
 

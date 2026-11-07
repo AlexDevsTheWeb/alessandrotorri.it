@@ -16,6 +16,7 @@ Architecture, systems, and patterns for the project. Start with [the bundle inde
 
 * [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore, Storage.
 * [Photo Management](/concepts/photo-management.md) - Upload pipeline, collections, metadata.
+* [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft).
 
 ## Frontend
 

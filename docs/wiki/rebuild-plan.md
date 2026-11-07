@@ -99,8 +99,8 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 2 | Navbar + Footer + Shell | done | triptych nav (Gallerie/logo/IG+YT+theme), mobile drawer, centered footer; zero lint issues |
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
-| 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse in issue #14 |
-| 6 | Admin reconnect | in-progress | route protection and rules done (decision 0014, issue #3); deploy rules and finish upload/manage polish |
+| 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse moved to issue #22 (closed #14, 2026-11-07) |
+| 6 | Admin reconnect | in-progress | route protection and rules done (decision 0014, issue #3); deploy rules; storage/backend direction open ([options](/concepts/photo-storage-options.md)) |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
