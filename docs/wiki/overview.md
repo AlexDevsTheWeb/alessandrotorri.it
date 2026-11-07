@@ -41,6 +41,8 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 > [Project Roadmap](/concepts/roadmap.md) describes the original long-exposure plan and is now `deprecated`. For all current work, [Rebuild Plan](/rebuild-plan.md) is authoritative. The [blueprint](/sources/2026-03-03-blueprint.md) is archived history only.
 
 > [!QUESTION] Open questions
+> * Is Firebase the right long-term backend for the photos, or should the image bytes move to Cloudflare R2 in phase 6? See [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
+> * Has the admin rules deployment been done? See [Firebase Backend](/concepts/firebase-backend.md) and the [open items review](/reviews/2026-11-07-open-items.md).
 > * Home `/` = same cover grid as `/gallery`, or redirect? (Rebuild Plan phase 3 to decide once.)
 > * Firestore schema unchanged when the CDN phase ends? Assumed yes — revisit in phase 6.
 > * Which dependency majors are worth adopting? (Issue #1; requires a decision record per major.)

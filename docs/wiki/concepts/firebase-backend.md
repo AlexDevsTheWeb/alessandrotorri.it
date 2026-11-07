@@ -39,6 +39,16 @@ sources:
 - **Upload:** `uploadBytesResumable` with progress tracking.
 - **Download URLs:** stored in the Firestore document `url` field.
 
+## Backend choice
+
+Firebase is fine for auth and metadata at this scale. Whether to keep Firebase Storage for the image bytes, or move them to Cloudflare R2, is open. See [Photo Storage and Backend Options](/concepts/photo-storage-options.md) for the cost comparison and alternatives.
+
+## Owner actions before admin uploads work
+
+1. In the Firebase console, create `admins/{uid}` with the Auth UID of the owner account.
+2. Deploy the rules: `firebase deploy --only firestore:rules,storage --project alessandrotorri-it`.
+3. Smoke-test as the owner (upload, edit, reorder) and as a second Google account (expect denial).
+
 ## Dependency note
 
 - `@grpc/grpc-js` is overridden to `^1.14.7` in `package.json` to clear the Firestore advisory ([decision 0013](/decisions/0013-grpc-js-override.md)). The browser bundle does not include it.
