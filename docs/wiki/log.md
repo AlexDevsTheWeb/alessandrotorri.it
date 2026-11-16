@@ -1,6 +1,14 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-07
+* **Open items closed**: closed #6 and #14 with follow-ups — [#20](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/20) TypeScript 7 (blocked upstream), [#21](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/21) Firebase 13 (after the backend decision), [#22](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/22) deployed Lighthouse (needs a deploy target). Register in [open items review](/reviews/2026-11-07-open-items.md).
+* **Libraries**: `zustand` 5.0.16 → 5.1.0 (in range); `@types/node` 24 → 22 to match CI and the local runtime. Production audit clean; 10 moderate dev-only `minimatch` advisories accepted (fix requires a breaking `--force`).
+* **Backend analysis**: [Photo Storage and Backend Options](/concepts/photo-storage-options.md) (draft) — Firebase fits auth and metadata; image egress and delivery are its weak points; Cloudflare R2 for bytes is the recommended option to discuss.
+* **Wiki**: added [open items review](/reviews/2026-11-07-open-items.md), [photo storage options](/concepts/photo-storage-options.md), [source summary for issue #14](/sources/2026-11-07-gh-issue-14.md); updated Rebuild Plan, Overview, Firebase Backend, Tech Stack and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass after the updates.
+* **Next**: owner decisions on backend and deployment; then #21, #22.
+
+## 2026-11-07
 * **Issue #6 / majors batch**: adopted Vite 8 + `@vitejs/plugin-react` 6, ESLint 10 + `@eslint/js` 10 + `eslint-plugin-react-refresh` 0.5, `uuid` 14 and `globals` 17; lint and build green with no config changes. TypeScript 7 builds but `typescript-eslint` does not support it, so `npm run lint` fails; kept 5.9.3. Firebase 13 builds but needs a live smoke test and still resolves the vulnerable gRPC; deferred. `framer-motion` is no longer a dependency.
 * **Decision**: [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md).
 * **Wiki**: added [source summary for issue #6 (2026-11-07)](/sources/2026-11-07-gh-issue-6.md); updated [Tech Stack](/concepts/tech-stack.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), AGENTS.md, and indexes.

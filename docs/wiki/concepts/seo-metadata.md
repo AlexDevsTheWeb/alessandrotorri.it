@@ -49,7 +49,7 @@ Collection pages use the collection cover as OG image and a description with the
 
 - `/`, `/gallery` and `/gallery/07-francia` show the expected title, description and canonical URL.
 - Lighthouse local preview: SEO 100, accessibility 100, best practices 100.
-- Deployed performance verification is issue #14.
+- Deployed performance verification is issue #22 (closed #14, 2026-11-07).
 
 ## Related
 
