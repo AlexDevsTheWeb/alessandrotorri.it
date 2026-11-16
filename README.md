@@ -4,7 +4,7 @@ Photography portfolio for Alessandro Torri — long-exposure landscape work. The
 
 ## Stack
 
-React 19 · Vite 7 · TypeScript · MUI 7 · Zustand · Firebase (Auth, Firestore, Storage) · framer-motion
+React 19 · Vite 8 · TypeScript · MUI 9 · Zustand · Firebase (Auth, Firestore)
 
 ## Quick start
 
@@ -55,8 +55,8 @@ Every new raw source, GitHub issue, feature, or bug goes through the usual loop:
 ## Status
 
 - Knowledge foundation: done 2026-10-29 (OKF wiki, agent schema, skills, green baseline).
-- Public rebuild: phases 0–5 done; admin section next. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
-- Open work: dependency refresh (#1), public site phases 3–5 (#2), admin protection (#3).
+- Public rebuild: phases 0–5 done; gallery admin done 2026-11-16. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
+- Open work: deploy the Firestore rules and seed galleries (#3), deployed Lighthouse (#14), remaining majors (#6 / #20 / #21 / #22).
 
 ## License
 

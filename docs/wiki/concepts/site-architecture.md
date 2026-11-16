@@ -2,13 +2,16 @@
 type: Architecture
 title: Site Architecture
 description: Routing, layout shell, and directory structure for the photography portfolio.
-tags: [architecture, routing, pages, layout]
+tags: [architecture, routing, pages, layout, admin]
 status: stable
-generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-16T00:00:00Z }
 sources:
   - id: rebuild-plan
     resource: /rebuild-plan.md
     title: Rebuild Plan
+  - id: decision-0016
+    resource: /decisions/0016-gallery-management.md
+    title: Manage galleries in Firestore with static repository images
 ---
 
 # Site Architecture
@@ -20,14 +23,14 @@ Single-page React app with client-side routing. Public pages render inside one s
 | Route | Component | Access | Purpose |
 |-------|-----------|--------|---------|
 | `/` | `HomePage` | Public | Entry; renders the same cover grid as `/gallery` (decision 0007) |
-| `/gallery` | `GalleryPage` | Public | 9 collection covers |
-| `/gallery/:collectionName` | `CollectionPage` | Public | Single-collection feed + lightbox |
+| `/gallery` | `GalleryPage` | Public | Gallery covers (Firestore, static fallback) |
+| `/gallery/:collectionName` | `CollectionPage` | Public | Single-gallery feed + lightbox (Firestore, static fallback) |
 | `/login` | `LoginPage` | Public | Google sign-in |
-| `/admin` | `AdminDashboard` | **Should be protected** | Upload + manage collections |
-| `/admin/collection/:collectionName` | `CollectionDetailPage` | **Should be protected** | DnD reorder + edit metadata |
+| `/admin` | `AdminDashboard` | Protected | Gallery list, create/edit/delete, ordering |
+| `/admin/gallery/:galleryId` | `AdminGalleryDetailPage` | Protected | Gallery fields, images and ordering |
 
-> [!WARNING] Admin routes are currently reachable without authentication
-> `/admin` and `/admin/collection/:name` sit under `ProtectedRoute` in `src/App.tsx` ([decision 0014](/decisions/0014-admin-route-protection.md)). New admin routes must be added inside the same layout route.
+> [!NOTE] Admin protection
+> `/admin` and `/admin/gallery/:id` sit under `ProtectedRoute` in `src/App.tsx` ([decision 0014](/decisions/0014-admin-route-protection.md)). New admin routes must be added inside the same layout route.
 
 There is **no** `/about`, `/projects`, or `/contact` route. Old links to those pages were removed from the navbar; do not reintroduce them without a decision.
 
@@ -40,7 +43,7 @@ All routes render inside `SharedLayout`:
 - `Footer` — compact single row with copyright and social icons; icons hidden on mobile, no top border.
 - `BacktoTopButton` — floating transparent icon after 400px of scroll, with no visible text.
 
-Public pages except `HomePage` are lazy-loaded. `HomePage`, `GalleryPage`, `CollectionPage`, `LoginPage`, `AdminDashboard` and `CollectionDetailPage` are route chunks; see [Decision 0011](/decisions/0011-seo-and-route-loading.md).
+Public pages except `HomePage` are lazy-loaded. `HomePage`, `GalleryPage`, `CollectionPage`, `LoginPage`, `AdminDashboard` and `AdminGalleryDetailPage` are route chunks; see [Decision 0011](/decisions/0011-seo-and-route-loading.md).
 
 See [Design System](/concepts/design-system.md).
 
@@ -48,16 +51,19 @@ See [Design System](/concepts/design-system.md).
 
 ```text
 src/
-  components/     # Reusable UI (PhotoLightbox, ProgressiveImage, ErrorBoundary, ...)
-  data/           # Static CDN content for the current rebuild phase
-  hooks/          # usePageMeta
+  components/     # Reusable UI (PhotoLightbox, gallery admin forms, ErrorBoundary, ...)
+  data/           # Static fallback content and Firestore-to-public mappers
+  hooks/          # usePageMeta, usePublicGalleries
   layout/         # Shell components (Navbar, Footer, SharedLayout)
   pages/          # Route-level components (mostly lazy-loaded)
-  store/          # Zustand stores (auth, theme)
+  services/       # Firestore gateway for galleries
+  store/          # Zustand stores (auth, theme, gallery)
   style/          # MUI theme definition
   types/          # TypeScript interfaces (*.types.ts)
   firebase.ts     # Firebase app + auth
-  firebaseData.ts # Firestore + Storage, loaded with admin
+  firebaseData.ts # Firestore handle
+public/
+  galleries/      # Static image assets referenced by Firestore galleries
 ```
 
 Agent and knowledge files live outside `src/`: `AGENTS.md`, `.agents/skills/`, `docs/wiki/` (bundle), and `docs/raw/` (immutable sources).

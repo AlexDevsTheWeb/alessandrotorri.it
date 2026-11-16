@@ -29,7 +29,16 @@ sources:
 # Photo Storage and Backend Options
 
 > [!NOTE] Context
-> The public site reads photos from static data (`src/data/collections.photos.ts`) that points at Adobe CDN URLs. Firebase is only used by the admin: Google sign-in, Firestore `images` metadata, and Storage uploads. Phase 6 ([Rebuild Plan](/rebuild-plan.md)) would move the image files to our own storage. The choice is therefore about the admin workflow and about where the photo bytes are served from.
+> The public site reads galleries from Firestore `galleries` and falls back to the static Adobe CDN dataset. Image bytes are **not** in Firebase: they are static files in `public/galleries/` deployed with the site ([Decision 0016](/decisions/0016-gallery-management.md), 2026-11-16). Firebase still provides auth and metadata only. This page remains the input for whether Firestore itself stays, and for any future image pipeline.
+
+## Resolution (2026-11-16)
+
+The storage question this page raised is answered for the photo bytes:
+
+- The owner chose repository assets over Firebase Storage, so there is no bucket, no Blaze requirement and no egress bill for images.
+- Firebase keeps Google auth and the `galleries` metadata collection.
+- What is still open: whether Firestore is the right long-term metadata store (versus a static manifest or another backend) and whether the owner later wants an image pipeline for responsive variants. Firebase 13 (issue #21) waits on that.
+
 
 ## What the portfolio needs
 
@@ -79,20 +88,22 @@ At 500 GB a month of downloads, Firebase Storage on a new bucket would cost abou
 
 ## Recommendation for discussion
 
-- Short term: keep Firebase Auth and Firestore. They are working, cheap at this size, and already protected by rules.
-- Phase 6 storage: prefer Cloudflare R2 for the image bytes (zero egress, S3-compatible), with a small upload path and pre-generated sizes. This is option 2. It keeps the admin and avoids a new CMS.
-- Revisit option 5 (imgix on R2) if we want on-the-fly responsive variants instead of pre-generated ones.
-- Before choosing, confirm: expected traffic, whether the owner wants a web admin or a script, and whether a second vendor (Cloudflare) is acceptable.
+- Images: settled — static repository assets under `public/galleries/` ([Decision 0016](/decisions/0016-gallery-management.md)).
+- Metadata: keep Firebase Auth and Firestore for now. They work, are cheap at this size, and are protected by rules.
+- If the owner later wants on-the-fly responsive variants, revisit option 5 (imgix or Cloudflare Images on top of static files or R2) instead of a Storage bucket.
+- Before changing the metadata store, confirm: expected traffic, whether a web admin stays, and whether a second vendor is acceptable.
 
 > [!QUESTION] Open questions for the owner
 > - Expected monthly visits and photo downloads?
-> - Is a second vendor (Cloudflare R2) acceptable, or should everything stay in Firebase?
-> - Is a web admin required, or is a local upload script enough?
+> - Should Firestore stay as the metadata store, or should galleries eventually be a static manifest?
+> - Is a responsive image pipeline wanted, and if so, which vendor?
+
 
 ## Links
 
-- [Firebase Backend](/concepts/firebase-backend.md)
 - [Photo Management](/concepts/photo-management.md)
+- [Firebase Backend](/concepts/firebase-backend.md)
+- [Decision 0016 — Gallery management and static images](/decisions/0016-gallery-management.md)
 - [Rebuild Plan](/rebuild-plan.md) — phase 6
 - [Open items review](/reviews/2026-11-07-open-items.md)
 - [Issue #21 — evaluate Firebase 13 after the backend decision](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/21)

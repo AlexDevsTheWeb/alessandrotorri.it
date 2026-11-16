@@ -1,5 +1,16 @@
 # Knowledge Bundle Update Log
 
+## 2026-11-16
+* **PR #23 review**: draft, mergeable, CI green, based on `development` (no `main` branch exists). It carries only the 2026-11-07 docs slice plus `zustand` 5.1.0 and `@types/node` 22, so it should merge first; this branch is stacked on it until then.
+* **Admin galleries**: replaced the Storage-upload admin with Firestore `galleries` (embedded `images`) and a full gallery CRUD: create/edit/delete dialogs, drag-and-drop gallery ordering plus an explicit `displayOrder`, image rows with live previews, title/alt/ratio and drag-and-drop ordering, validated save in one write. New `useGalleryStore`, `galleries.service.ts`, `/admin/gallery/:galleryId`.
+* **Images**: static repository assets in `public/galleries/`; `storage.rules`, the Storage client and `firebase.json` storage config removed. `react-firebase-hooks` dropped (unused after the rewrite).
+* **Public read**: `/`, `/gallery` and `/gallery/:slug` read Firestore lazily and fall back to the captured CDN dataset, so first paint never waits on Firestore and the site cannot go blank.
+* **Rules**: `galleries` public read, admin-only validated writes; the legacy `images` block removed and denied by the catch-all. Not deployed or emulator-tested.
+* **Decision**: [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md); supersedes the Storage/`images` parts of [0014](/decisions/0014-admin-route-protection.md).
+* **Wiki**: added [source summary](/sources/2026-11-16-admin-galleries.md), the decision, and `IMPLEMENTATION_PLAN.md` at the repository root as the raw source requires; updated [Admin Dashboard](/concepts/admin-dashboard.md), [Photo Management](/concepts/photo-management.md), [Firebase Backend](/concepts/firebase-backend.md), [Gallery System](/concepts/gallery-system.md), [State Management](/concepts/state-management.md), [Site Architecture](/concepts/site-architecture.md), [Tech Stack](/concepts/tech-stack.md), [Photo Storage Options](/concepts/photo-storage-options.md), [Agent Rules](/rules/agent-rules.md), AGENTS.md, README, Overview, Rebuild Plan and indexes.
+* **Verify**: `npm run lint` and `npm run build` pass; the gallery service is emitted as its own lazy chunk. Live Firestore, rules deployment and browser drag-and-drop are not exercised (no credentials in this session).
+* **Next**: merge #23, deploy `firestore.rules`, seed galleries and retire the CDN fallback (issue #3).
+
 ## 2026-11-07
 * **Open items closed**: closed #6 and #14 with follow-ups — [#20](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/20) TypeScript 7 (blocked upstream), [#21](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/21) Firebase 13 (after the backend decision), [#22](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/22) deployed Lighthouse (needs a deploy target). Register in [open items review](/reviews/2026-11-07-open-items.md).
 * **Libraries**: `zustand` 5.0.16 → 5.1.0 (in range); `@types/node` 24 → 22 to match CI and the local runtime. Production audit clean; 10 moderate dev-only `minimatch` advisories accepted (fix requires a breaking `--force`).

@@ -14,16 +14,16 @@ Architecture, systems, and patterns for the project. Start with [the bundle inde
 
 ## Backend
 
-* [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore, Storage.
-* [Photo Management](/concepts/photo-management.md) - Upload pipeline, collections, metadata.
-* [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft).
+* [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore galleries, rules; no Storage.
+* [Photo Management](/concepts/photo-management.md) - Gallery schema, static image assets, ordering.
+* [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft; image storage resolved).
 
 ## Frontend
 
-* [Gallery System](/concepts/gallery-system.md) - Gallery, feed, lightbox, progressive images.
+* [Gallery System](/concepts/gallery-system.md) - Gallery, feed, lightbox, progressive images, Firestore read with fallback.
 * [Design System](/concepts/design-system.md) - Theme, typography, color, responsiveness.
 * [SEO and Metadata](/concepts/seo-metadata.md) - Titles, canonical, Open Graph, robots, sitemap.
-* [Admin Dashboard](/concepts/admin-dashboard.md) - Upload, collections, DnD.
+* [Admin Dashboard](/concepts/admin-dashboard.md) - Gallery CRUD, ordering, image assignment and previews.
 
 ## History
 

@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Replaces Storage uploads; galleries collection, embedded images, public read with static fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.
 * [0014 — Protect admin routes and gate data with an admins allowlist](/decisions/0014-admin-route-protection.md) - ProtectedRoute, isAuthReady, and rules with admins/{uid}.
 * [0013 — Override @grpc/grpc-js to a patched 1.14 release](/decisions/0013-grpc-js-override.md) - Scoped override clears the Firestore advisory; browser bundle unaffected.

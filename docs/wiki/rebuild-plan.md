@@ -33,8 +33,8 @@ Recreate https://alessandrotorri.it/ (owner's live Adobe Portfolio site) with th
 Decisions locked 2026-09-08, amended 2026-10-29:
 
 1. **Scope:** current repository, visual parity with the live site, modern implementation. Not a fresh repo; not a redesign. See [Decision 0003](/decisions/0003-exact-look-and-feel.md).
-2. **Images:** reuse Adobe CDN URLs temporarily (`cdn.myportfolio.com/...`). No Firebase Storage migration yet.
-3. **Admin:** preserve the existing `/admin` section; protect and finish it after the public site (issue #3).
+2. **Images:** static repository assets under `public/galleries/`; Firestore `galleries` stores metadata. The Adobe CDN dataset stays as the public fallback until the owner seeds galleries ([Decision 0016](/decisions/0016-gallery-management.md)).
+3. **Admin:** the gallery admin is built; deploy the rules and smoke-test it (issue #3).
 4. **Stack:** no new deps without approval. MUI only, `sx` prop, Zustand, React Router. See [Tech Stack](/concepts/tech-stack.md) and [Agent Rules](/rules/agent-rules.md).
 5. **Process:** every change runs [The Usual Loop](/rules/workflow.md) and updates this wiki in the same PR.
 
@@ -53,7 +53,7 @@ Original reference (read 2026-09-08 via WebFetch):
 | `/` | `HomePage` (rewritten as cover grid) | Entry — same content as `/gallery`, like original where `/` → gallery |
 | `/gallery` | `GalleryPage` | 9 collection covers, 2-col responsive |
 | `/gallery/:collectionName` | `CollectionPage` | Single-column feed + captions + lightbox |
-| `/login`, `/admin`, `/admin/collection/:name` | existing | **Out of scope until Phase 6** — do not break, do not improve |
+| `/login`, `/admin`, `/admin/gallery/:galleryId` | existing | Admin gallery management ([Decision 0016](/decisions/0016-gallery-management.md)) |
 | `/projects`, `/about` | — | **Do not create yet.** Remove links from Navbar (currently dead links in `src/layout/Navbar.layout.tsx:84-89`) |
 
 Layout shell (`src/layout/Shared.layout.tsx`): `Navbar` + `<Outlet/>` + `Footer` + `BacktoTopButton`. Keep.
@@ -69,7 +69,7 @@ export interface CollectionPhoto { src: string; caption: string }
 
 - 9 covers from live site (16:9 `carw_16x9x1280.jpg` variants for grid, `32px` blur placeholder where available).
 - Per-collection photo lists: start with `favorite` (24 captions scraped 2026-09-08), others progressively scraped from `/02-ultimi-lavori`, `/07-francia`, etc.
-- Later (Phase 6): replace with Firestore `images` where `isVisible==true`, grouped by `collection`, cover = `isCoverImage`. No schema change needed.
+- Since 2026-11-16 this dataset is the **fallback**: Firestore `galleries` overrides it when present ([Decision 0016](/decisions/0016-gallery-management.md)).
 
 Caption seed (favorite, already captured): Eilean Donan Castle - Scozia, Badlands - South Dakota, Falaise d'Étretat - Normandia (x2), Dolomiti di Brenta, Lago di Braies, Tellaro, Grandes Jorasses, Riomaggiore, Bedruthan steps / Holywell Bay / Land's End - Cornovaglia, Vernazza, Pointe du Raz / Pointe du Van / Kermorvan - Bretagna, Arnìa - Cantabria, Virxe da Barca - Galizia, Cabo de São Vicente / Cabo da Roca - Portogallo, Dunquin pier / The three sisters - Irlanda, Faro di Goury / Le Mont Saint-Michel - Francia.
 
@@ -100,7 +100,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse moved to issue #22 (closed #14, 2026-11-07) |
-| 6 | Admin reconnect | in-progress | route protection and rules done (decision 0014, issue #3); deploy rules; storage/backend direction open ([options](/concepts/photo-storage-options.md)) |
+| 6 | Admin reconnect | in-progress | gallery admin, Firestore `galleries`, static images and public read with fallback done 2026-11-16 ([decision 0016](/decisions/0016-gallery-management.md)); deploy rules, seed galleries, retire the CDN fallback |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
@@ -162,9 +162,15 @@ Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox
 - [x] Empty/unknown collection state (`Collezione non trovata`, `Nessuna foto disponibile`).
 - Acceptance: lint/build green, a11y/best-practices/SEO 100. Local Lighthouse performance was 74 because of a 6.7s local-preview TTFB; deployed verification is issue #14.
 
-### Phase 6 — Admin reconnect (DEFERRED, do not start)
+### Phase 6 — Admin reconnect — in progress
 
-Trigger: user says main site complete. Then: `ProtectedRoute` on `/admin`, wire the admin to the Firestore `images` collection, map `isCoverImage` → covers, Storage upload → replace CDN URLs. Tracked in issue #3; separate plan.
+Done 2026-11-16: `ProtectedRoute` on the admin routes; Firestore `galleries` with embedded images; full gallery CRUD, ordering, image assignment with previews, alt text and ratios; Zustand `useGalleryStore`; public pages read Firestore with the static dataset as fallback; admin-only rules ([decision 0016](/decisions/0016-gallery-management.md), [decision 0014](/decisions/0014-admin-route-protection.md)).
+
+- [ ] Deploy `firestore.rules` and smoke-test create/edit/reorder/delete as the owner, plus denial for a second account (issue #3).
+- [ ] Seed the first galleries and images in `public/galleries/`.
+- [ ] Retire the Adobe CDN fallback once the Firestore galleries cover the nine collections.
+- [ ] Remove the retired `images` documents from the console (optional; the rules deny them).
+- [ ] Optional: responsive variants for repository images; revisit with [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
 
 ## 5. Verify Commands (run before every stop)
 
@@ -191,8 +197,19 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `.agents/skills/usual-loop/SKILL.md` | Loadable version of the loop |
 | `docs/raw/` | Immutable sources |
 | `docs/wiki/sources/`, `docs/wiki/decisions/`, `docs/wiki/reviews/` | Source summaries, decisions, audits |
-| `src/data/collections.data.ts` | CDN covers + captions |
-| `src/data/collections.photos.ts` | 89 static photos with captions and ratios |
+| `src/data/collections.data.ts` | CDN covers + captions (public fallback) |
+| `src/data/collections.photos.ts` | 89 static photos with captions and ratios (public fallback) |
+| `src/data/galleries.mapper.ts` | Firestore gallery → cover/photo mapping |
+| `src/services/galleries.service.ts` | Firestore gateway for galleries |
+| `src/store/galleryStore.ts` | Zustand gallery store (admin) |
+| `src/hooks/usePublicGalleries.ts` | Lazy public read with fallback |
+| `src/types/gallery.types.ts` | Gallery and image types |
+| `src/pages/AdminDashboard.tsx` | Gallery list, create/edit/delete, ordering |
+| `src/pages/AdminGalleryDetailPage.tsx` | Gallery editor shell |
+| `src/components/GalleryEditor.component.tsx` | Draft editing, validation and save |
+| `src/components/GalleryFields.component.tsx` | Shared gallery fields + cover preview |
+| `src/components/GalleryImageList.component.tsx` | Image rows, previews and ordering |
+| `src/components/GalleryList.component.tsx` | Sortable gallery list |
 | `src/pages/HomePage.tsx` | renders the cover grid |
 | `src/pages/GalleryPage.tsx` | renders the cover grid |
 | `src/pages/CollectionPage.tsx` | Masonry feed + lightbox |
@@ -205,7 +222,8 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/hooks/usePageMeta.ts` | per-route title/canonical/OG/Twitter |
 | `src/App.tsx` | lazy routes; admin routes under `ProtectedRoute` |
 | `src/components/ProtectedRoute.tsx` | admin guard (waits for `isAuthReady`) |
-| `firestore.rules`, `storage.rules`, `firebase.json` | admin-only writes via `admins/{uid}` |
+| `firestore.rules`, `firebase.json` | admin-only writes via `admins/{uid}`; public gallery read |
+| `public/galleries/` | static image assets referenced by Firestore galleries |
 | `src/firebase.ts` | Firebase auth only |
 | `src/firebaseData.ts` | lazy Firestore/Storage |
 | `src/layout/Navbar.layout.tsx` | triptych nav + breadcrumb |
@@ -220,6 +238,7 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 
 ## 8. Out of Scope / Non-goals
 
-- No Firebase migration or upload-pipeline rewrite, no About/Projects pages, no Tailwind/CSS Modules, no new deps without approval, no WebP pipeline yet.
+- No About/Projects pages, no Tailwind/CSS Modules, no new deps without approval, no WebP pipeline yet.
+- No Firebase Storage uploads: image bytes are repository assets ([Decision 0016](/decisions/0016-gallery-management.md)).
 - New admin routes must sit under `ProtectedRoute`; never expose admin data publicly.
 - No redesign disguised as "modern reinterpretation" — [Decision 0003](/decisions/0003-exact-look-and-feel.md) locks visual parity.
