@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -16,6 +17,55 @@ import { db } from '../firebaseData';
 import type { Gallery, GalleryDraft, GalleryImage, GalleryOrder } from '../types/gallery.types';
 
 const GALLERIES = 'galleries';
+const ADMINS = 'admins';
+
+interface FirestoreFailure {
+  code: string;
+  message: string;
+}
+
+const describeFirestoreFailure = (error: unknown): FirestoreFailure => {
+  const candidate = error as { code?: unknown; message?: unknown };
+  return {
+    code: typeof candidate?.code === 'string' ? candidate.code : 'unknown',
+    message:
+      typeof candidate?.message === 'string'
+        ? candidate.message
+        : error instanceof Error
+          ? error.message
+          : String(error),
+  };
+};
+
+const logFirestoreFailure = (
+  operation: string,
+  path: string,
+  payload: unknown,
+  error: unknown,
+): void => {
+  const failure = describeFirestoreFailure(error);
+  console.error(`[galleries] ${operation} failed (${failure.code})`, {
+    path,
+    payload,
+    code: failure.code,
+    message: failure.message,
+    error,
+  });
+};
+
+export const describeGalleryError = (error: unknown): string => {
+  const { code, message } = describeFirestoreFailure(error);
+  if (code === 'permission-denied') {
+    return 'Permesso negato da Firestore. Verifica che le regole siano pubblicate (firebase deploy --only firestore:rules) e che il tuo UID sia in admins/{uid}. Dettagli nella console del browser.';
+  }
+  if (code === 'unavailable') {
+    return 'Firestore non raggiungibile. Controlla la connessione e riprova.';
+  }
+  if (code === 'failed-precondition') {
+    return 'Operazione rifiutata: controlla gli indici Firestore richiesti.';
+  }
+  return message;
+};
 
 const asString = (value: unknown, fallback = ''): string =>
   typeof value === 'string' ? value : fallback;
@@ -101,28 +151,72 @@ const buildGalleryPayload = (draft: GalleryDraft) => ({
 });
 
 export const fetchGalleries = async (): Promise<Gallery[]> => {
-  const snapshot = await getDocs(query(collection(db, GALLERIES), orderBy('displayOrder')));
-  return snapshot.docs.map((document) => normalizeGallery(document.id, document.data()));
+  try {
+    const snapshot = await getDocs(query(collection(db, GALLERIES), orderBy('displayOrder')));
+    return snapshot.docs.map((document) => normalizeGallery(document.id, document.data()));
+  } catch (error) {
+    logFirestoreFailure('fetch', GALLERIES, null, error);
+    throw error;
+  }
+};
+
+export const checkAdminAccess = async (uid: string): Promise<boolean> => {
+  try {
+    const snapshot = await getDoc(doc(db, ADMINS, uid));
+    return snapshot.exists();
+  } catch (error) {
+    logFirestoreFailure('check-admin', `${ADMINS}/${uid}`, null, error);
+    throw error;
+  }
 };
 
 export const createGallery = async (draft: GalleryDraft): Promise<string> => {
-  const reference = await addDoc(collection(db, GALLERIES), {
-    ...buildGalleryPayload(draft),
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
-  return reference.id;
+  const payload = buildGalleryPayload(draft);
+
+  try {
+    const reference = await addDoc(collection(db, GALLERIES), {
+      ...payload,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return reference.id;
+  } catch (error) {
+    logFirestoreFailure(
+      'create',
+      GALLERIES,
+      { ...payload, createdAt: '<serverTimestamp>', updatedAt: '<serverTimestamp>' },
+      error,
+    );
+    throw error;
+  }
 };
 
 export const saveGallery = async (id: string, draft: GalleryDraft): Promise<void> => {
-  await updateDoc(doc(db, GALLERIES, id), {
-    ...buildGalleryPayload(draft),
-    updatedAt: serverTimestamp(),
-  });
+  const payload = buildGalleryPayload(draft);
+
+  try {
+    await updateDoc(doc(db, GALLERIES, id), {
+      ...payload,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    logFirestoreFailure(
+      'update',
+      `${GALLERIES}/${id}`,
+      { ...payload, updatedAt: '<serverTimestamp>' },
+      error,
+    );
+    throw error;
+  }
 };
 
 export const deleteGallery = async (id: string): Promise<void> => {
-  await deleteDoc(doc(db, GALLERIES, id));
+  try {
+    await deleteDoc(doc(db, GALLERIES, id));
+  } catch (error) {
+    logFirestoreFailure('delete', `${GALLERIES}/${id}`, null, error);
+    throw error;
+  }
 };
 
 export const reorderGalleries = async (orders: GalleryOrder[]): Promise<void> => {
@@ -130,7 +224,18 @@ export const reorderGalleries = async (orders: GalleryOrder[]): Promise<void> =>
   orders.forEach(({ id, displayOrder }) => {
     batch.update(doc(db, GALLERIES, id), { displayOrder, updatedAt: serverTimestamp() });
   });
-  await batch.commit();
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    logFirestoreFailure(
+      'reorder',
+      GALLERIES,
+      { orders, updatedAt: '<serverTimestamp>' },
+      error,
+    );
+    throw error;
+  }
 };
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Divider, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { toGalleryDraft, validateGalleryDraft } from '../services/galleries.service';
+import { describeGalleryError, toGalleryDraft, validateGalleryDraft } from '../services/galleries.service';
 import type { Gallery, GalleryDraft } from '../types/gallery.types';
 import GalleryFields from './GalleryFields.component';
 import GalleryImageList from './GalleryImageList.component';
@@ -59,7 +59,7 @@ const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, onSav
       setBaseline(next);
       setSaved(true);
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Salvataggio non riuscito.');
+      setError(describeGalleryError(saveError));
     } finally {
       setIsSaving(false);
     }
