@@ -116,7 +116,7 @@ const PhotoLightbox: React.FC<PhotoLightboxProps> = ({ photos, index, onChange, 
           <Box
             component="img"
             src={photo.src}
-            alt={photo.caption}
+            alt={photo.alt ?? photo.caption}
             draggable={false}
             onContextMenu={(event: React.MouseEvent) => event.preventDefault()}
             sx={{

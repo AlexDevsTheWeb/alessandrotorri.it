@@ -2,13 +2,14 @@ export interface CollectionCover {
   slug: string;
   title: string;
   cover: string;
-  placeholder: string;
+  placeholder?: string;
 }
 
 export interface CollectionPhoto {
   src: string;
   srcSet?: string;
   caption: string;
+  alt?: string;
   ratio: string;
 }
 
