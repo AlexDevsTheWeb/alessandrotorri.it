@@ -2,6 +2,7 @@
 
 One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issue read online. Each summary records what the source says, what it changed, and which wiki pages it touched.
 
+* [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - Gallery writes denied: payload and rules verified in the emulator; admins/{uid} and deployment are the real gates.
 * [2026-10-29 — Personal Website Rebuild Charter](/sources/2026-10-29-rebuild.md) - Owner charter that defines the rebuild goal, wiki/agent model, and execution order.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review plus Firestore galleries, static repository images, admin CRUD/ordering, and public read with fallback.
 * [2026-11-07 — Gallery layout improvements](/sources/2026-11-07-ui-improvement.md) - Owner feedback on gallery cursors, hover-only cover titles, 4:3 covers, grid spacing, EXIF label and copy protection.

@@ -166,6 +166,7 @@ Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox
 
 Done 2026-11-16: `ProtectedRoute` on the admin routes; Firestore `galleries` with embedded images; full gallery CRUD, ordering, image assignment with previews, alt text and ratios; Zustand `useGalleryStore`; public pages read Firestore with the static dataset as fallback; admin-only rules ([decision 0016](/decisions/0016-gallery-management.md), [decision 0014](/decisions/0014-admin-route-protection.md)).
 
+- [x] Client-side Firestore diagnostics and the `admins/{uid}` preflight banner ([decision 0017](/decisions/0017-firestore-permission-diagnostics.md), [playbook](/rules/firestore-permissions.md)).
 - [ ] Deploy `firestore.rules` and smoke-test create/edit/reorder/delete as the owner, plus denial for a second account (issue #3).
 - [ ] Seed the first galleries and images in `public/galleries/`.
 - [ ] Retire the Adobe CDN fallback once the Firestore galleries cover the nine collections.

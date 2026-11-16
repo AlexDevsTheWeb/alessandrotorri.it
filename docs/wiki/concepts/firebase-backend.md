@@ -51,6 +51,8 @@ Firebase still owns auth and metadata; it no longer owns the photo bytes. Whethe
 3. Seed at least one gallery (or accept the static fallback on the public site).
 4. Smoke-test as the owner (create, reorder, save) and as a second Google account (expect denial).
 
+If a write still returns `Missing or insufficient permissions`, follow the [Firestore permissions playbook](/rules/firestore-permissions.md). The admin page now preflights `admins/{uid}` and names the missing step ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
+
 ## Dependency note
 
 - `@grpc/grpc-js` is overridden to `^1.14.7` in `package.json` to clear the Firestore advisory ([decision 0013](/decisions/0013-grpc-js-override.md)). The browser bundle does not include it.
@@ -61,7 +63,7 @@ Firebase still owns auth and metadata; it no longer owns the photo bytes. Whethe
 - `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric order, list of at most 500 images, timestamp `updatedAt`); delete requires `isAdmin()`.
 - `admins/{uid}` is readable only by that user and never writable from clients.
 - The catch-all denies everything else, including the retired `images` collection.
-- Not yet deployed or emulator-tested.
+- The gallery payload and these checks were validated in the Firestore emulator on 2026-11-16 (deny without `admins/{uid}`, allow with it). Deployment to the live project is still pending.
 
 ## Related
 

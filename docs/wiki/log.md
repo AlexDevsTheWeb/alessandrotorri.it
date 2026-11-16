@@ -1,6 +1,15 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-16
+* **Incident**: gallery create/save returned `Missing or insufficient permissions`. Inspected the write path and replayed the exact payload against `firestore.rules` in the Firestore emulator: without `admins/{uid}` the write is denied; with it, create, update and ordered read succeed. The payload satisfies `isValidGallery()`, including `updatedAt is timestamp` with `serverTimestamp()`.
+* **Diagnosis**: the rules and payload match. The gates are the missing `admins/{uid}` document and/or an undeployed ruleset; the UI previously showed only the raw Firebase message, so the two were indistinguishable.
+* **Fix**: `galleries.service.ts` logs every failure with operation, path, payload snapshot, code and message and exports `describeGalleryError` for Italian, actionable UI text; the store gained `adminStatus` and `checkAdminAccess`; `/admin` preflights `admins/{uid}` and shows the UID with the console steps. Rules unchanged.
+* **Decision**: [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md). No rule was relaxed.
+* **Wiki**: added the [Firestore check source summary](/sources/2026-11-16-firestore-check.md) and the [Firestore permissions playbook](/rules/firestore-permissions.md); updated [Admin Dashboard](/concepts/admin-dashboard.md), [Firebase Backend](/concepts/firebase-backend.md), the [implementation report](/reviews/2026-11-16-admin-galleries-implementation.md), Overview, Rebuild Plan, AGENTS, indexes and this log.
+* **Verify**: `npm run lint` and `npm run build` pass. Emulator evidence recorded; the live project was not touched (no credentials, no deploy).
+* **Next**: deploy `firestore.rules`, create `admins/{uid}`, then smoke-test the admin (issue #3).
+
+## 2026-11-16
 * **PR #23 review**: draft, mergeable, CI green, based on `development` (no `main` branch exists). It carries only the 2026-11-07 docs slice plus `zustand` 5.1.0 and `@types/node` 22, so it should merge first; this branch is stacked on it until then.
 * **Admin galleries**: replaced the Storage-upload admin with Firestore `galleries` (embedded `images`) and a full gallery CRUD: create/edit/delete dialogs, drag-and-drop gallery ordering plus an explicit `displayOrder`, image rows with live previews, title/alt/ratio and drag-and-drop ordering, validated save in one write. New `useGalleryStore`, `galleries.service.ts`, `/admin/gallery/:galleryId`.
 * **Images**: static repository assets in `public/galleries/`; `storage.rules`, the Storage client and `firebase.json` storage config removed. `react-firebase-hooks` dropped (unused after the rewrite).

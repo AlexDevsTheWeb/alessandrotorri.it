@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - "Missing or insufficient permissions" on gallery writes: payload/rules verified, cause is the admins/{uid} gate or undeployed rules; diagnostics added.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review, Firestore galleries, static repository images, admin CRUD/ordering, public read with fallback.
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
 * [2026-11-07 — Gallery layout improvements](/sources/2026-11-07-ui-improvement.md) - Owner feedback on gallery cursors, hover-only cover titles, 4:3 covers, grid spacing, EXIF label and copy protection.
@@ -36,6 +37,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured failure logs, actionable errors and an admins/{uid} preflight; rules stay strict.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Storage uploads replaced; galleries collection, embedded images, public read with fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.
 * [0013 — Override @grpc/grpc-js to a patched 1.14 release](/decisions/0013-grpc-js-override.md) - Scoped override clears the Firestore advisory; browser bundle unaffected.
@@ -71,6 +73,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 * [Agent Rules](/rules/agent-rules.md) - How agents work in this repo.
 * [The Usual Loop](/rules/workflow.md) - The standard end-to-end procedure.
+* [Firestore Permissions](/rules/firestore-permissions.md) - Diagnose "Missing or insufficient permissions" on gallery writes.
 * [Code Style](/rules/code-style.md) - TypeScript, React, MUI conventions.
 * [Git Conventions](/rules/git-conventions.md) - Commits, branches, PRs.
 

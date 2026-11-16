@@ -58,14 +58,22 @@ One Firestore document per gallery in `galleries`; images are embedded ([Photo M
 
 ## Store and service
 
-- `src/store/galleryStore.ts` — `galleries`, `status`, `error`, `fetchGalleries`, `createGallery`, `saveGallery`, `deleteGallery`, `reorderGalleries`.
-- `src/services/galleries.service.ts` — the only Firestore gateway for galleries: normalization, slug helper, draft validation, reads and writes.
+- `src/store/galleryStore.ts` — `galleries`, `status`, `error`, `adminStatus`, `fetchGalleries`, `checkAdminAccess`, `createGallery`, `saveGallery`, `deleteGallery`, `reorderGalleries`.
+- `src/services/galleries.service.ts` — the only Firestore gateway for galleries: normalization, slug helper, draft validation, reads and writes, plus the failure diagnostics.
 - The admin routes are lazy, so the store and `@hello-pangea/dnd` stay out of the public entry bundle.
+
+## Permissions diagnostics
+
+After sign-in the dashboard reads `admins/{uid}` (allowed by the rules) and shows:
+
+- a yellow **Account non abilitato alla scrittura** banner with the exact UID when the document is missing;
+- a red **Permessi non verificabili** banner when even that read is denied, which means the ruleset was never deployed.
+
+Every failed Firestore call logs `[galleries] <operation> failed (<code>)` with the target path and a payload snapshot, and the UI shows an Italian explanation instead of the raw Firebase message. Full decision tree in the [Firestore permissions playbook](/rules/firestore-permissions.md) ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
 
 ## Known issues
 
-- A signed-in account that is not in `admins/{uid}` can open the screens, but Firestore denies reads and writes. A client-side admin check is still a follow-up.
-- Rules are in the repository but not deployed or emulator-tested ([Firebase Backend](/concepts/firebase-backend.md), issue #3).
+- Rules are in the repository but not confirmed deployed; the preflight banner is the check ([Firebase Backend](/concepts/firebase-backend.md), issue #3).
 - Drag-and-drop, validation and live previews have only been type-checked and built; no browser or live-project run was possible in this session.
 - Adding an image requires committing the file to `public/galleries/` and deploying. This is the intended tradeoff of [Decision 0016](/decisions/0016-gallery-management.md).
 
