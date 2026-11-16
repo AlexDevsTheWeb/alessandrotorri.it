@@ -63,6 +63,7 @@ The owner asks for two things: assess PR #23 before starting new work, and repla
 # Links
 
 - [Raw source](../../raw/2026-11-16-admin-galleries.md)
+- [Implementation report](/reviews/2026-11-16-admin-galleries-implementation.md)
 - [Decision 0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md)
 - [Admin Dashboard](/concepts/admin-dashboard.md)
 - [Gallery System](/concepts/gallery-system.md)
