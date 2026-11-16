@@ -1,17 +1,29 @@
 import { Box, Button, Container, Typography, useMediaQuery, useTheme } from '@mui/material';
 import Masonry from '@mui/lab/Masonry';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { COLLECTIONS } from '../data/collections.data';
 import { PHOTOS } from '../data/collections.photos';
+import { galleryToCover, galleryToPhotos } from '../data/galleries.mapper';
 import PhotoLightbox from '../components/PhotoLightbox.component';
 import ProgressiveImage from '../components/ProgressiveImage.component';
+import PageLoader from '../components/PageLoader.component';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { usePublicGalleries } from '../hooks/usePublicGalleries';
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
-  const collection = COLLECTIONS.find((item) => item.slug === collectionName);
-  const photos = collection ? PHOTOS[collection.slug] ?? [] : [];
+  const { galleries, isReady } = usePublicGalleries();
+  const remoteGallery = galleries.find((gallery) => gallery.slug === collectionName);
+  const staticCollection = COLLECTIONS.find((item) => item.slug === collectionName);
+  const collection = remoteGallery ? galleryToCover(remoteGallery) : staticCollection;
+
+  const photos = useMemo(() => {
+    if (remoteGallery) return galleryToPhotos(remoteGallery);
+    if (staticCollection) return PHOTOS[staticCollection.slug] ?? [];
+    return [];
+  }, [remoteGallery, staticCollection]);
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -26,6 +38,10 @@ const CollectionPage: React.FC = () => {
     image: collection?.cover,
     path: collection ? `/gallery/${collection.slug}` : '/gallery',
   });
+
+  if (!isReady && !collection) {
+    return <PageLoader />;
+  }
 
   if (!collection) {
     return (
@@ -95,7 +111,7 @@ const CollectionPage: React.FC = () => {
                   src={photo.src}
                   srcSet={photo.srcSet}
                   sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-                  alt={photo.caption}
+                  alt={photo.alt ?? photo.caption}
                   ratio={photo.ratio}
                   priority={index === 0}
                   preventCopy

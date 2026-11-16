@@ -39,8 +39,9 @@ Last in-range refresh: 2026-10-29 ([issue #1](https://github.com/AlexDevsTheWeb/
 | Service | Package | Purpose |
 |---------|---------|---------|
 | Auth | `firebase` 12.19.0 | Google sign-in for the administrator |
-| Firestore | `firebase` | Image metadata and collections |
-| Storage | `firebase` | Image file hosting |
+| Firestore | `firebase` | Gallery metadata (public read, admin write) |
+
+Image files are static assets in `public/galleries/`, not a Firebase service ([Decision 0016](/decisions/0016-gallery-management.md)).
 
 > [!NOTE] Transitive advisory resolved
 > `firebase@12.19.0 -> @firebase/firestore@4.17.2` pinned `@grpc/grpc-js@1.9.16`. A scoped `overrides` entry now resolves it to `1.14.7`, and `npm audit --omit=dev` is clean. The browser bundle does not include gRPC. See [Decision 0013](/decisions/0013-grpc-js-override.md) and [issue #5](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/5).
@@ -55,9 +56,8 @@ Config is read from `VITE_FIREBASE_*` environment variables in `.env` (gitignore
 | `@mui/icons-material` 9.5.0 | Icon set |
 | `@mui/system` 9.5.0 + `@mui/utils` 9.5.0 | MUI primitives (transitive) |
 | `@emotion/react` + `@emotion/styled` | CSS-in-JS (MUI dependency, unchanged) |
-| `@hello-pangea/dnd` 18.0.1 | Drag-and-drop reordering in admin |
-| `react-firebase-hooks` 5.1.1 | Firestore query hooks (lazy admin) |
-| `uuid` 14.0.3 | Unique upload ids |
+| `@hello-pangea/dnd` 18.0.1 | Drag-and-drop ordering in the admin (galleries and images) |
+| `uuid` 14.0.3 | Stable ids for gallery image entries |
 
 ## MUI v9 migration notes
 
@@ -75,7 +75,7 @@ MUI v9 (no v8) removed deprecated APIs and system props. Current code follows th
 - Vite 8 with `@vitejs/plugin-react` 6; `globals` 17 and `eslint-plugin-react-refresh` 0.5.
 - `tsc -b && vite build`; `npm run build`.
 - Lazy routes + `Suspense`/`ErrorBoundary`; MUI, React and Firebase manual chunks in `vite.config.ts`.
-- `src/firebase.ts` is auth-only; `src/firebaseData.ts` loads Firestore/Storage with admin.
+- `src/firebase.ts` is auth-only; `src/firebaseData.ts` exports the Firestore handle and is loaded with the admin routes or lazily by the public gallery read.
 - GitHub Actions CI runs lint and build on push/PR (`.github/workflows/ci.yml`).
 - GitHub CLI for issues, PRs, and Actions.
 

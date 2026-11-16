@@ -25,11 +25,11 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 
 * **Knowledge foundation — done 2026-10-29.** `docs/wiki/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
 * **Baseline — green.** `npm run lint` and `npm run build` pass. CI runs both on push/PR.
-* **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The next build phase is the administrator work (issue #3). See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
+* **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The administrator section now manages galleries ([Decision 0016](/decisions/0016-gallery-management.md)); what remains is deploying the rules, seeding galleries and retiring the CDN fallback. See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
 * **Gallery refinements — 2026-11-07.** Covers are 4:3 with titles revealed on hover, the grid is tighter, images have pointer cursors, the EXIF label is gone and the single gallery is protected from right-click copying ([Decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 * **Libraries — in-range refresh done, MUI 9 adopted 2026-10-29.** `npm update` applied all compatible updates and the lockfile is authoritative. Material UI is now 9.5.0 ([Decision 0006](/decisions/0006-adopt-mui-9.md)); Vite 8, ESLint 10, uuid 14 and globals 17 are adopted ([Decision 0015](/decisions/0015-dependency-majors-batch.md)); TypeScript 7 is blocked by typescript-eslint and Firebase 13 is deferred, both in issue #6. The Firebase grpc advisory is in issue #5.
-* **Admin — protected (issue #3).** Admin routes sit under `ProtectedRoute`, and Firestore/Storage rules allow writes only for UIDs in `admins/{uid}` ([Decision 0014](/decisions/0014-admin-route-protection.md)). Rules are not yet deployed or emulator-tested.
-* **Images — Adobe CDN for now.** Firebase Storage migration is phase 6.
+* **Admin — galleries done (2026-11-16).** The Storage-upload screens were replaced by a gallery admin: Firestore `galleries` with embedded images, full CRUD, drag-and-drop ordering, image previews and per-image alt/title/ratio. Image files are static assets in `public/galleries/`; `storage.rules` is gone. The public site reads Firestore and falls back to the static CDN dataset ([Decision 0016](/decisions/0016-gallery-management.md)). Rules are not yet deployed or emulator-tested.
+* **Images — repository assets, not Firebase Storage.** `/galleries/<file>` paths are deployed with the site; the old Adobe CDN dataset remains the public fallback until the owner seeds galleries.
 
 > [!WARNING] Contradiction — exact clone vs modern reinterpretation
 > The Rebuild Plan originally said "modern reinterpretation (not pixel-clone)". The 2026-10-29 charter says "re-create the exact look & feel". [Decision 0003](/decisions/0003-exact-look-and-feel.md) resolves it: **visual parity, modern implementation**. Do not redesign the layout while calling it a rebuild.
@@ -41,10 +41,10 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 > [Project Roadmap](/concepts/roadmap.md) describes the original long-exposure plan and is now `deprecated`. For all current work, [Rebuild Plan](/rebuild-plan.md) is authoritative. The [blueprint](/sources/2026-03-03-blueprint.md) is archived history only.
 
 > [!QUESTION] Open questions
-> * Is Firebase the right long-term backend for the photos, or should the image bytes move to Cloudflare R2 in phase 6? See [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
 > * Has the admin rules deployment been done? See [Firebase Backend](/concepts/firebase-backend.md) and the [open items review](/reviews/2026-11-07-open-items.md).
-> * Home `/` = same cover grid as `/gallery`, or redirect? (Rebuild Plan phase 3 to decide once.)
-> * Firestore schema unchanged when the CDN phase ends? Assumed yes — revisit in phase 6.
+> * Should Firestore stay as the metadata store now that images are static repository assets? See [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
+> * When does the owner seed `galleries` and retire the Adobe CDN fallback?
+> * Home `/` = same cover grid as `/gallery`, or redirect? (Rebuild Plan phase 3 decided: same grid.)
 > * Which dependency majors are worth adopting? (Issue #1; requires a decision record per major.)
 
 ## Cluster map

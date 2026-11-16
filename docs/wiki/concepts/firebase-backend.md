@@ -1,14 +1,17 @@
 ---
 type: Reference
 title: Firebase Backend
-description: Authentication, Firestore, and Storage configuration for the portfolio.
-tags: [firebase, auth, firestore, storage, backend]
+description: Authentication and Firestore for the portfolio; image bytes are static repository assets.
+tags: [firebase, auth, firestore, rules, backend]
 status: stable
-generated: { by: opencode/deepseek-v4.1-flash, at: 2026-10-29T00:00:00Z }
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-16T00:00:00Z }
 sources:
   - id: firebase-init
     resource: https://github.com/AlexDevsTheWeb/alessandrotorri.it/blob/development/src/firebase.ts
     title: src/firebase.ts
+  - id: decision-0016
+    resource: /decisions/0016-gallery-management.md
+    title: Manage galleries in Firestore with static repository images
 ---
 
 # Firebase Backend
@@ -17,37 +20,36 @@ sources:
 
 - **Project ID:** `alessandrotorri-it` (from the existing environment wiring).
 - **Config:** loaded from `.env` via `VITE_FIREBASE_*` variables; `.env` is gitignored.
-- **Init:** `src/firebase.ts` exports the app and `auth`. `src/firebaseData.ts` exports `db` and `storage` so Firestore/Storage load only with the admin routes.
+- **Init:** `src/firebase.ts` exports the app and `auth`. `src/firebaseData.ts` exports `db` only.
 
 ## Authentication
 
-- **Methods:** Google sign-in (the UI also has an email/password action in the store).
+- **Methods:** Google sign-in (the store also has an email/password action).
 - **Library:** `firebase/auth` + a Zustand `authStore`.
 - **State sync:** `onAuthStateChanged` in `src/App.tsx`.
 - **Route protection:** `ProtectedRoute` wraps the admin routes. `authStore.isAuthReady` prevents a refreshed `/admin` from redirecting before auth resolves ([decision 0014](/decisions/0014-admin-route-protection.md)).
 
 ## Firestore
 
-- **Collection:** `images`.
-- **Schema:** see [Photo Management](/concepts/photo-management.md).
-- **Queries:** filter by `collection`, `isVisible == true`, and order by `order`.
-- **Document id:** the id is the Firestore document key, not a stored field. `react-firebase-hooks` 5.1.1 does not inject it, so map `document.id` explicitly when using `useCollection`.
+- **Collection:** `galleries`, one document per gallery with embedded images ([Photo Management](/concepts/photo-management.md)).
+- **Queries:** `orderBy('displayOrder')` for the grid; the feed reads the document array.
+- **Access:** public read; writes require a document `admins/{uid}`.
+- **Document id:** the Firestore key, mapped explicitly by `normalizeGallery`; it is not stored in the document.
 
 ## Storage
 
-- **Path:** `images/{filename}`.
-- **Upload:** `uploadBytesResumable` with progress tracking.
-- **Download URLs:** stored in the Firestore document `url` field.
+Removed on 2026-11-16. Image files live in `public/galleries/` and are deployed with the static host ([Decision 0016](/decisions/0016-gallery-management.md)). `storage.rules` and the `storage` section of `firebase.json` were deleted; `src/firebaseData.ts` no longer exports a Storage handle. `storageBucket` stays in the Firebase config because the console initialises the app with it.
 
 ## Backend choice
 
-Firebase is fine for auth and metadata at this scale. Whether to keep Firebase Storage for the image bytes, or move them to Cloudflare R2, is open. See [Photo Storage and Backend Options](/concepts/photo-storage-options.md) for the cost comparison and alternatives.
+Firebase still owns auth and metadata; it no longer owns the photo bytes. Whether Firestore itself stays long-term is open — see [Photo Storage and Backend Options](/concepts/photo-storage-options.md). Firebase 13 (issue #21) depends on that decision.
 
-## Owner actions before admin uploads work
+## Owner actions before the admin works
 
 1. In the Firebase console, create `admins/{uid}` with the Auth UID of the owner account.
-2. Deploy the rules: `firebase deploy --only firestore:rules,storage --project alessandrotorri-it`.
-3. Smoke-test as the owner (upload, edit, reorder) and as a second Google account (expect denial).
+2. Deploy the rules: `firebase deploy --only firestore:rules --project alessandrotorri-it`.
+3. Seed at least one gallery (or accept the static fallback on the public site).
+4. Smoke-test as the owner (create, reorder, save) and as a second Google account (expect denial).
 
 ## Dependency note
 
@@ -55,10 +57,11 @@ Firebase is fine for auth and metadata at this scale. Whether to keep Firebase S
 
 ## Security rules
 
-- `firestore.rules` and `storage.rules` are in the repository, referenced by `firebase.json`.
-- Writes to `images` and Storage uploads require a document `admins/{uid}`; `admins` is read-only from clients and managed in the console.
-- `images` documents are readable when `isVisible == true`; Storage `images/` is public-read, with uploads limited to `image/*` and 50 MB.
-- Deploy manually once the admin UID is in `admins`: `firebase deploy --only firestore:rules,storage --project alessandrotorri-it`. Not yet deployed or emulator-tested.
+- `firestore.rules` is referenced by `firebase.json` and is the only ruleset left.
+- `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric order, list of at most 500 images, timestamp `updatedAt`); delete requires `isAdmin()`.
+- `admins/{uid}` is readable only by that user and never writable from clients.
+- The catch-all denies everything else, including the retired `images` collection.
+- Not yet deployed or emulator-tested.
 
 ## Related
 

@@ -104,16 +104,17 @@ docs/
 ```bash
 npm run lint
 npm run build
-# manual: npm run dev → /, /gallery, /gallery/<slug>, /admin on desktop + 390px
+# manual: npm run dev → /, /gallery, /gallery/<slug>, /admin, /admin/gallery/<id> on desktop + 390px
 ```
 
 Baseline is green as of 2026-10-29. If it is red, fix or document it before starting new work.
 
 ## 9. Current state and next
 
-- Public rebuild: phases 0–5 done. Admin route protection done (issue #3); deploy the rules and finish the administrator polish. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
+- Public rebuild: phases 0–5 done. Admin gallery management done 2026-11-16 ([decision 0016](docs/wiki/decisions/0016-gallery-management.md)); deploy the rules and seed galleries. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
 - Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; Vite 8, ESLint 10, uuid 14, globals 17 adopted 2026-11-07. TypeScript 7 is blocked by typescript-eslint and Firebase 13 is deferred (issue #6). The grpc advisory is cleared by a scoped override (issue #5, decision 0013).
-- Next: deploy the admin rules and smoke-test them (issue #3); deployed Lighthouse (issue #14); remaining majors (issue #6).
-- Admin routes are behind `ProtectedRoute` and gated by `firestore.rules` / `storage.rules` (admins allowlist via `admins/{uid}`), issue #3. Any new admin route must sit under the same guard.
+- Next: deploy the Firestore rules and smoke-test the gallery admin (issue #3); seed Firestore galleries and retire the CDN fallback; deployed Lighthouse (issue #14); remaining majors (issue #6).
+- Admin routes are behind `ProtectedRoute` and gated by `firestore.rules` (admins allowlist via `admins/{uid}`), issue #3. Any new admin route must sit under the same guard.
+- Galleries are `galleries` documents with embedded images; image files live in `public/galleries/` and are deployed with the site. There is no Firebase Storage path anymore.

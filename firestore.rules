@@ -8,14 +8,27 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    function isValidGallery() {
+      return request.resource.data.name is string
+        && request.resource.data.slug is string
+        && request.resource.data.slug.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
+        && request.resource.data.description is string
+        && request.resource.data.displayOrder is number
+        && request.resource.data.coverImageUrl is string
+        && request.resource.data.images is list
+        && request.resource.data.images.size() <= 500
+        && request.resource.data.updatedAt is timestamp;
+    }
+
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;
     }
 
-    match /images/{imageId} {
-      allow read: if resource.data.isVisible == true || isAdmin();
-      allow create, update, delete: if isAdmin();
+    match /galleries/{galleryId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidGallery();
+      allow delete: if isAdmin();
     }
 
     match /{document=**} {

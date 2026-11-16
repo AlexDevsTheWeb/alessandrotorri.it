@@ -44,10 +44,10 @@ The canonical schema is the repository-root `AGENTS.md`. This page is the wiki c
 
 - All public pages render inside `SharedLayout` (Navbar + Footer + BackToTop).
 - Admin routes must be wrapped in `ProtectedRoute`. This is enabled in `src/App.tsx` ([decision 0014](/decisions/0014-admin-route-protection.md)).
-- Images upload to Firebase Storage at `images/{filename}`.
-- Image metadata lives in the Firestore `images` collection.
-- Collections are derived from the `collection` field — there is no separate collection entity.
-- The Firestore document id is not a stored field; map `document.id` explicitly when using `useCollection`.
+- Images are static repository files in `public/galleries/`; the admin stores their paths, never the bytes ([decision 0016](/decisions/0016-gallery-management.md)).
+- Gallery metadata lives in the Firestore `galleries` collection, one document per gallery with an embedded `images` array.
+- The public grid and feed read `galleries` and fall back to `src/data/collections.*` when Firestore is empty or unavailable.
+- The Firestore document id is not a stored field; map `document.id` explicitly.
 - See [Site Architecture](/concepts/site-architecture.md) for routes.
 
 ## Content and language
