@@ -14,16 +14,17 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AdminNav from '../components/AdminNav.component';
 import GalleryFields from '../components/GalleryFields.component';
 import GalleryList from '../components/GalleryList.component';
 import {
   createEmptyDraft,
-  describeGalleryError,
-  slugify,
   toGalleryDraft,
   validateGalleryDraft,
 } from '../services/galleries.service';
+import { describeFirestoreError } from '../services/firestore.service';
+import { slugify } from '../services/slug.service';
 import { useAuthStore } from '../store/authStore';
 import { useGalleryStore } from '../store/galleryStore';
 import type { Gallery, GalleryDraft } from '../types/gallery.types';
@@ -117,7 +118,7 @@ const AdminDashboard: React.FC = () => {
         setIsDialogOpen(false);
       }
     } catch (submitError) {
-      setDialogError(describeGalleryError(submitError));
+      setDialogError(describeFirestoreError(submitError));
     } finally {
       setIsSaving(false);
     }
@@ -139,6 +140,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: { xs: 4, md: 6 } }}>
+        <AdminNav onLogout={() => void logout()} />
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
@@ -152,17 +154,9 @@ const AdminDashboard: React.FC = () => {
               Crea, ordina e modifica le gallerie pubblicate e le loro immagini.
             </Typography>
           </Box>
-          <Stack direction="row" spacing={1}>
-            <Button component={RouterLink} to="/gallery" nativeButton={false} size="small">
-              Vedi sito
-            </Button>
-            <Button variant="contained" size="small" onClick={openCreate}>
-              Nuova galleria
-            </Button>
-            <Button size="small" onClick={() => void logout()}>
-              Esci
-            </Button>
-          </Stack>
+          <Button variant="contained" size="small" onClick={openCreate}>
+            Nuova galleria
+          </Button>
         </Stack>
 
         {adminStatus === 'not-admin' && (

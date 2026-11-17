@@ -16,6 +16,7 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const CollectionPage = lazy(() => import('./pages/CollectionPage'));
 const AdminGalleryDetailPage = lazy(() => import('./pages/AdminGalleryDetailPage'));
+const AdminImagesPage = lazy(() => import('./pages/AdminImagesPage'));
 
 function App() {
   const { themeMode } = useThemeStore();
@@ -41,6 +42,7 @@ function App() {
             <Route path="/gallery/:collectionName" element={<CollectionPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/images" element={<AdminImagesPage />} />
               <Route path="/admin/gallery/:galleryId" element={<AdminGalleryDetailPage />} />
             </Route>
           </Route>

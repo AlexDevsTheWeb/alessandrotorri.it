@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react';
 import CollectionGrid from '../components/CollectionGrid.component';
 import { COLLECTIONS } from '../data/collections.data';
-import { galleryToCover } from '../data/galleries.mapper';
+import { galleryToCover, sortFeaturedFirst } from '../data/galleries.mapper';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { usePublicGalleries } from '../hooks/usePublicGalleries';
 
 const GalleryPage: React.FC = () => {
   const { galleries } = usePublicGalleries();
   const collections = useMemo(
-    () => (galleries.length > 0 ? galleries.map(galleryToCover) : COLLECTIONS),
+    () =>
+      sortFeaturedFirst(galleries.length > 0 ? galleries.map(galleryToCover) : COLLECTIONS),
     [galleries],
   );
 

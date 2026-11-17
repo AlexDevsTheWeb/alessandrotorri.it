@@ -1,0 +1,238 @@
+import { Box, Button, Card, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import type { Gallery, ImageAspectRatio } from '../types/gallery.types';
+import type { CatalogEntry, CatalogImageDraft } from '../types/image.types';
+
+const ASPECT_RATIO_OPTIONS: Array<{ value: ImageAspectRatio; label: string }> = [
+  { value: 'auto', label: 'Naturale' },
+  { value: '16:9', label: '16:9' },
+  { value: '3:2', label: '3:2' },
+  { value: '4:3', label: '4:3' },
+  { value: '1:1', label: '1:1' },
+];
+
+interface ImageCatalogCardProps {
+  entry: CatalogEntry;
+  galleries: Gallery[];
+  disabled?: boolean;
+  onIndex: () => Promise<void>;
+  onSave: (patch: Partial<CatalogImageDraft>) => Promise<void>;
+  onAssign: (galleryId: string) => Promise<void>;
+  onCreateGallery: () => void;
+}
+
+const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
+  entry,
+  galleries,
+  disabled = false,
+  onIndex,
+  onSave,
+  onAssign,
+  onCreateGallery,
+}) => {
+  const { image } = entry;
+  const [title, setTitle] = useState(image?.title ?? '');
+  const [description, setDescription] = useState(image?.description ?? '');
+  const [alt, setAlt] = useState(image?.alt ?? '');
+  const [aspectRatio, setAspectRatio] = useState<ImageAspectRatio>(image?.aspectRatio ?? 'auto');
+  const [isBusy, setIsBusy] = useState(false);
+
+  const isDirty =
+    image !== null &&
+    (title.trim() !== image.title ||
+      description.trim() !== image.description ||
+      alt.trim() !== image.alt ||
+      aspectRatio !== image.aspectRatio);
+
+  const assignedGalleries = image
+    ? image.galleryIds.map((id) => ({
+        id,
+        name: galleries.find((gallery) => gallery.id === id)?.name ?? id,
+      }))
+    : [];
+
+  const handleSave = async () => {
+    setIsBusy(true);
+    try {
+      await onSave({ title, description, alt, aspectRatio });
+      setTitle(title.trim());
+      setDescription(description.trim());
+      setAlt(alt.trim());
+    } catch {
+      return;
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleAssign = async (galleryId: string) => {
+    if (!galleryId) return;
+    setIsBusy(true);
+    try {
+      await onAssign(galleryId);
+    } catch {
+      return;
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const isDisabled = disabled || isBusy;
+
+  return (
+    <Card sx={{ p: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+      <Box
+        sx={{
+          width: { xs: '100%', sm: 180 },
+          flexShrink: 0,
+          aspectRatio: '4/3',
+          overflow: 'hidden',
+          backgroundColor: (theme) => theme.palette.action.hover,
+        }}
+      >
+        <Box
+          component="img"
+          src={entry.path}
+          alt={image?.alt || image?.title || entry.filename}
+          loading="lazy"
+          decoding="async"
+          sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+        />
+      </Box>
+
+      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start' }}>
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Typography variant="subtitle1" noWrap>
+              {entry.filename}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" noWrap component="p">
+              {entry.path}
+            </Typography>
+          </Box>
+          <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            {!entry.isFromRepository && <Chip size="small" label="Fuori repository" />}
+            {image && (
+              <Chip
+                size="small"
+                color={assignedGalleries.length > 0 ? 'primary' : 'default'}
+                variant={assignedGalleries.length > 0 ? 'outlined' : 'filled'}
+                label={
+                  assignedGalleries.length > 0
+                    ? `${assignedGalleries.length} gallerie`
+                    : 'Non assegnata'
+                }
+              />
+            )}
+          </Stack>
+        </Stack>
+
+        {!image ? (
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.5}
+            sx={{ mt: 1.5, alignItems: { sm: 'center' } }}
+          >
+            <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
+              Presente in <code>public/galleries/</code>, non ancora indicizzata.
+            </Typography>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => void onIndex()}
+              disabled={isDisabled}
+            >
+              Indicizza
+            </Button>
+          </Stack>
+        ) : (
+          <Stack spacing={1.5} sx={{ mt: 1.5 }}>
+            <TextField
+              label="Titolo"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              fullWidth
+              size="small"
+              disabled={isDisabled}
+            />
+            <TextField
+              label="Descrizione"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              fullWidth
+              multiline
+              minRows={2}
+              size="small"
+              disabled={isDisabled}
+            />
+            <TextField
+              label="Testo alternativo"
+              value={alt}
+              onChange={(event) => setAlt(event.target.value)}
+              fullWidth
+              size="small"
+              disabled={isDisabled}
+            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+              <TextField
+                select
+                label="Rapporto"
+                value={aspectRatio}
+                onChange={(event) => setAspectRatio(event.target.value as ImageAspectRatio)}
+                size="small"
+                sx={{ minWidth: 140 }}
+                disabled={isDisabled}
+              >
+                {ASPECT_RATIO_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Assegna a una galleria"
+                value=""
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === '__new__') onCreateGallery();
+                  else void handleAssign(value);
+                }}
+                size="small"
+                sx={{ flexGrow: 1 }}
+                disabled={isDisabled}
+              >
+                <MenuItem value="" disabled>
+                  Scegli una galleria...
+                </MenuItem>
+                {galleries.map((gallery) => (
+                  <MenuItem key={gallery.id} value={gallery.id}>
+                    {gallery.name}
+                  </MenuItem>
+                ))}
+                <MenuItem value="__new__">+ Nuova galleria</MenuItem>
+              </TextField>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => void handleSave()}
+                disabled={!isDirty || isDisabled}
+              >
+                Salva
+              </Button>
+            </Stack>
+            {assignedGalleries.length > 0 && (
+              <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
+                {assignedGalleries.map((gallery) => (
+                  <Chip key={gallery.id} size="small" label={gallery.name} />
+                ))}
+              </Stack>
+            )}
+          </Stack>
+        )}
+      </Box>
+    </Card>
+  );
+};
+
+export default ImageCatalogCard;

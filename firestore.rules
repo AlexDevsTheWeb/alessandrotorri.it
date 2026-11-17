@@ -14,15 +14,39 @@ service cloud.firestore {
         && request.resource.data.slug.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
         && request.resource.data.description is string
         && request.resource.data.displayOrder is number
+        && request.resource.data.isFeatured is bool
+        && request.resource.data.featuredOrder is number
+        && request.resource.data.coverImageId is string
         && request.resource.data.coverImageUrl is string
-        && request.resource.data.images is list
-        && request.resource.data.images.size() <= 500
+        && request.resource.data.imageIds is list
+        && request.resource.data.imageIds.size() <= 500
+        && request.resource.data.layoutConfig is map
+        && request.resource.data.layoutConfig.aspectRatio in ['16:9', '3:2', '4:3', '1:1', 'auto']
+        && request.resource.data.layoutConfig.padding in ['none', 'small', 'medium', 'large']
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    function isValidImage() {
+      return request.resource.data.filename is string
+        && request.resource.data.path is string
+        && request.resource.data.title is string
+        && request.resource.data.description is string
+        && request.resource.data.alt is string
+        && request.resource.data.aspectRatio in ['16:9', '3:2', '4:3', '1:1', 'auto']
+        && request.resource.data.galleryIds is list
+        && request.resource.data.galleryIds.size() <= 100
         && request.resource.data.updatedAt is timestamp;
     }
 
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;
+    }
+
+    match /images/{imageId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
     }
 
     match /galleries/{galleryId} {

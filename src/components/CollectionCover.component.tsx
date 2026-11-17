@@ -9,8 +9,7 @@ interface CollectionCoverProps {
   priority?: boolean;
 }
 
-const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority = false }) => (
-  <Box
+const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority = false }) => (  <Box
     component={Link}
     to={`/gallery/${collection.slug}`}
     aria-label={collection.title}
@@ -42,7 +41,7 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority 
         src={collection.cover}
         placeholder={collection.placeholder}
         alt={collection.title}
-        ratio="4/3"
+        ratio={collection.aspectRatio ?? '4/3'}
         priority={priority}
       />
     </Box>

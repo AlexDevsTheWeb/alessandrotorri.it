@@ -3,6 +3,9 @@ export interface CollectionCover {
   title: string;
   cover: string;
   placeholder?: string;
+  aspectRatio?: string;
+  isFeatured?: boolean;
+  featuredOrder?: number;
 }
 
 export interface CollectionPhoto {

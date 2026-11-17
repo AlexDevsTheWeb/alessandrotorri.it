@@ -2,7 +2,7 @@ import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-p
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import type { Gallery } from '../types/gallery.types';
@@ -44,7 +44,7 @@ const GalleryList: React.FC<GalleryListProps> = ({
         {(provided) => (
           <Stack spacing={1.5} ref={provided.innerRef} {...provided.droppableProps}>
             {galleries.map((gallery, index) => {
-              const cover = gallery.coverImageUrl || gallery.images[0]?.url || '';
+              const cover = gallery.coverImageUrl;
               return (
                 <Draggable
                   key={gallery.id}
@@ -90,11 +90,16 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         )}
                       </Box>
                       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" noWrap>
-                          {gallery.name}
-                        </Typography>
+                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                          <Typography variant="subtitle1" noWrap>
+                            {gallery.name}
+                          </Typography>
+                          {gallery.isFeatured && (
+                            <Chip size="small" label="In evidenza" color="primary" variant="outlined" />
+                          )}
+                        </Stack>
                         <Typography variant="body2" color="text.secondary" noWrap>
-                          /gallery/{gallery.slug} · {gallery.images.length} immagini · ordine{' '}
+                          /gallery/{gallery.slug} · {gallery.imageIds.length} immagini · ordine{' '}
                           {gallery.displayOrder}
                         </Typography>
                       </Box>

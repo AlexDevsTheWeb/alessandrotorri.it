@@ -10,6 +10,14 @@ import ProgressiveImage from '../components/ProgressiveImage.component';
 import PageLoader from '../components/PageLoader.component';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { usePublicGalleries } from '../hooks/usePublicGalleries';
+import type { GalleryPadding } from '../types/gallery.types';
+
+const FEED_SPACING: Record<GalleryPadding, number> = {
+  none: 0,
+  small: 1,
+  medium: 2,
+  large: 3,
+};
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
@@ -25,6 +33,7 @@ const CollectionPage: React.FC = () => {
   }, [remoteGallery, staticCollection]);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const spacing = remoteGallery ? FEED_SPACING[remoteGallery.layoutConfig.padding] : 2;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const isTablet = useMediaQuery(theme.breakpoints.up('sm'));
@@ -79,7 +88,7 @@ const CollectionPage: React.FC = () => {
       ) : (
         <Masonry
           columns={columns}
-          spacing={2}
+          spacing={spacing}
           sx={{ m: '0 !important' }}
         >
           {photos.map((photo, index) => (
