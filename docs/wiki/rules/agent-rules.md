@@ -36,7 +36,7 @@ The canonical schema is the repository-root `AGENTS.md`. This page is the wiki c
 
 1. `npm run lint` — clean.
 2. `npm run build` — succeeds.
-3. No `console.log` left in code.
+3. No `console.log` left in code. `console.error` in the Firestore failure logger (`src/services/galleries.service.ts`) is intentional and documented ([decision 0017](/decisions/0017-firestore-permission-diagnostics.md)); do not remove it.
 4. No secrets or API keys staged; `.env` stays ignored.
 5. Wiki pages and `docs/wiki/log.md` updated in the same PR.
 

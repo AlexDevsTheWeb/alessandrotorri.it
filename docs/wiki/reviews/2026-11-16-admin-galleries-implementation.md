@@ -82,11 +82,12 @@ Source: `docs/raw/2026-11-16-admin-galleries.md`. Branch `feat/admin-galleries`,
 | Public grid | headless Chrome on `npm run preview`: `/gallery` renders the 9 fallback covers |
 | Public feed | `/gallery/01-favorite` renders the 24-photo fallback feed with captions and `srcset` |
 | Bundle split | `galleries.service` emitted separately at 2.41 kB (1.11 kB gzip); Firestore stays in `firebase-data` |
+| Rules + payload | Firestore emulator with the exact payload: denied without `admins/{uid}`, create/update/read succeed with it (follow-up, see §8) |
 
 ## 4. Not verified
 
 - Live Firestore reads/writes: no deployed rules or owner session in this loop.
-- Rules deployment and emulator tests.
+- Rules deployment to the project (emulator-tested only; see §8).
 - Browser drag-and-drop and form flows inside `/admin`.
 - Signed-in `/admin` rendering: headless Chrome never resolved Firebase auth, so the route stayed on `PageLoader`.
 
@@ -123,3 +124,7 @@ Source: `docs/raw/2026-11-16-admin-galleries.md`. Branch `feat/admin-galleries`,
 - [Firebase Backend](/concepts/firebase-backend.md)
 - [Rebuild Plan](/rebuild-plan.md)
 - [PR #24](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/24)
+
+## 8. Follow-up — permission failure (same day)
+
+The first live attempt to create a gallery returned `Missing or insufficient permissions`. An emulator run with the exact payload confirmed the rules match the payload and that the denial comes from the missing `admins/{uid}` gate (or an undeployed ruleset). The client now logs structured failures, translates the error for the UI and preflights `admins/{uid}` with the UID in a banner. No rule was relaxed. See [the Firestore check source summary](/sources/2026-11-16-firestore-check.md), [Decision 0017](/decisions/0017-firestore-permission-diagnostics.md) and the [playbook](/rules/firestore-permissions.md).

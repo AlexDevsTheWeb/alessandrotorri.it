@@ -118,3 +118,4 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 - Next: deploy the Firestore rules and smoke-test the gallery admin (issue #3); seed Firestore galleries and retire the CDN fallback; deployed Lighthouse (issue #14); remaining majors (issue #6).
 - Admin routes are behind `ProtectedRoute` and gated by `firestore.rules` (admins allowlist via `admins/{uid}`), issue #3. Any new admin route must sit under the same guard.
 - Galleries are `galleries` documents with embedded images; image files live in `public/galleries/` and are deployed with the site. There is no Firebase Storage path anymore.
+- Firestore permission errors on gallery writes: follow [`docs/wiki/rules/firestore-permissions.md`](docs/wiki/rules/firestore-permissions.md). The admin preflights `admins/{uid}` and logs structured failures; do not relax the rules to work around a deployment mistake.

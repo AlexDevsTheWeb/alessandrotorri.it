@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertTitle,
   Box,
   Button,
   Container,
@@ -18,6 +19,7 @@ import GalleryFields from '../components/GalleryFields.component';
 import GalleryList from '../components/GalleryList.component';
 import {
   createEmptyDraft,
+  describeGalleryError,
   slugify,
   toGalleryDraft,
   validateGalleryDraft,
@@ -30,12 +32,14 @@ type DialogMode = 'create' | 'edit';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const {
     galleries,
     status,
     error,
+    adminStatus,
     fetchGalleries,
+    checkAdminAccess,
     createGallery,
     saveGallery,
     deleteGallery,
@@ -54,6 +58,10 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     void fetchGalleries();
   }, [fetchGalleries]);
+
+  useEffect(() => {
+    if (user?.uid) void checkAdminAccess(user.uid);
+  }, [checkAdminAccess, user?.uid]);
 
   const openCreate = () => {
     setMode('create');
@@ -109,9 +117,7 @@ const AdminDashboard: React.FC = () => {
         setIsDialogOpen(false);
       }
     } catch (submitError) {
-      setDialogError(
-        submitError instanceof Error ? submitError.message : 'Operazione non riuscita.',
-      );
+      setDialogError(describeGalleryError(submitError));
     } finally {
       setIsSaving(false);
     }
@@ -158,6 +164,25 @@ const AdminDashboard: React.FC = () => {
             </Button>
           </Stack>
         </Stack>
+
+        {adminStatus === 'not-admin' && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            <AlertTitle>Account non abilitato alla scrittura</AlertTitle>
+            L&apos;account {user?.email ?? ''} (UID <code>{user?.uid}</code>) non è presente in{' '}
+            <code>admins/{user?.uid}</code>. Nella console Firebase apri Firestore, crea la
+            collezione <code>admins</code> e un documento con ID uguale all&apos;UID. Senza quel
+            documento Firestore rifiuta ogni salvataggio con &quot;Missing or insufficient
+            permissions&quot;.
+          </Alert>
+        )}
+
+        {adminStatus === 'error' && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            <AlertTitle>Permessi non verificabili</AlertTitle>
+            Non riesco a leggere <code>admins/{user?.uid}</code>. Controlla che le regole Firestore
+            siano pubblicate: <code>firebase deploy --only firestore:rules --project alessandrotorri-it</code>.
+          </Alert>
+        )}
 
         {status === 'loading' && galleries.length === 0 && <LinearProgress sx={{ mb: 2 }} />}
         {error && (

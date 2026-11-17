@@ -31,3 +31,5 @@ export type GalleryDraft = Omit<Gallery, 'id' | 'createdAt' | 'updatedAt'>;
 export type GalleryImageDraft = Omit<GalleryImage, 'id' | 'order'>;
 
 export type GalleryStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+export type AdminAccessStatus = 'idle' | 'checking' | 'admin' | 'not-admin' | 'error';
