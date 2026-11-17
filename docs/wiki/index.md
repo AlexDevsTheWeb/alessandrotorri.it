@@ -81,6 +81,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 ## Reviews
 
+* [Image catalog and layout implementation report — 2026-11-17](/reviews/2026-11-17-image-catalog-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Admin galleries implementation report — 2026-11-16](/reviews/2026-11-16-admin-galleries-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Open items and library review — 2026-11-07](/reviews/2026-11-07-open-items.md) - Disposition of every open item, library status, accepted risks.
 * [Docs and baseline audit — 2026-10-29](/reviews/2026-10-29-docs-audit.md) - Keep/update/archive verdicts and baseline fix.

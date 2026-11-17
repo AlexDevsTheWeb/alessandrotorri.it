@@ -139,3 +139,9 @@ npm run build
 ```
 
 Live Firestore writes, rules deployment and the GitHub call need credentials/network and are listed for the owner.
+
+## 8. Execution outcome
+
+Delivered on `feat/image-catalog-and-layout`, draft PR [#26](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/26): the `images` catalog and membership batching, `/admin/images` with GitHub discovery and filters, cover/featured/layout controls in the gallery editor, featured full-width covers, per-gallery feed ratio and spacing, `object-fit: cover` rendering, the rules update and the full wiki slice.
+
+`npm run lint` and `npm run build` pass. Headless Chrome on `npm run preview` renders the 9 fallback covers on `/` and `/gallery` and the 24-photo feed on `/gallery/01-favorite`. Live Firestore, rules deployment, the GitHub call against committed files and the admin browser flows are not verified; see the [implementation report](docs/wiki/reviews/2026-11-17-image-catalog-implementation.md).

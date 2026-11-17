@@ -54,3 +54,10 @@ The 2026-11-16 gallery admin is extended into a photo-first workflow:
 - Deploy `firestore.rules` and create `admins/{uid}` (issue #3).
 - Commit the photos to `public/galleries/`, index them and assign galleries.
 - Delete any leftover documents from the retired 2026-03 `images` collection; the new reads ignore them.
+
+## Links
+
+- [Decision 0018](/decisions/0018-image-catalog-and-layout.md)
+- [Implementation report](/reviews/2026-11-17-image-catalog-implementation.md)
+- [Admin Dashboard](/concepts/admin-dashboard.md)
+- [Photo Management](/concepts/photo-management.md)
