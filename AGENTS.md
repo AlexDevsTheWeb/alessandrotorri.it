@@ -111,11 +111,12 @@ Baseline is green as of 2026-10-29. If it is red, fix or document it before star
 
 ## 9. Current state and next
 
-- Public rebuild: phases 0–5 done. Admin gallery management done 2026-11-16 ([decision 0016](docs/wiki/decisions/0016-gallery-management.md)); deploy the rules and seed galleries. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
+- Public rebuild: phases 0–5 done. Admin gallery management done 2026-11-16 ([decision 0016](docs/wiki/decisions/0016-gallery-management.md)); image catalog, GitHub discovery, featured galleries and layout controls done 2026-11-17 ([decision 0018](docs/wiki/decisions/0018-image-catalog-and-layout.md)). Deploy the rules and seed the catalog. See [`docs/wiki/rebuild-plan.md`](docs/wiki/rebuild-plan.md).
 - Knowledge foundation: done 2026-10-29 (wiki compliance, docs audit, agent schema, skills, green baseline).
 - Wiki layout: `docs/wiki/` is the OKF bundle, sibling of `docs/raw/`; sections are fixed by decision 0004.
 - Dependencies: in-range refresh done; MUI 9.5 adopted 2026-10-29; Vite 8, ESLint 10, uuid 14, globals 17 adopted 2026-11-07. TypeScript 7 is blocked by typescript-eslint and Firebase 13 is deferred (issue #6). The grpc advisory is cleared by a scoped override (issue #5, decision 0013).
-- Next: deploy the Firestore rules and smoke-test the gallery admin (issue #3); seed Firestore galleries and retire the CDN fallback; deployed Lighthouse (issue #14); remaining majors (issue #6).
+- Next: deploy the Firestore rules and smoke-test the admin (issue #3); commit photos to `public/galleries/`, index them and assign galleries; retire the CDN fallback; deployed Lighthouse (issue #14); remaining majors (issue #6).
 - Admin routes are behind `ProtectedRoute` and gated by `firestore.rules` (admins allowlist via `admins/{uid}`), issue #3. Any new admin route must sit under the same guard.
-- Galleries are `galleries` documents with embedded images; image files live in `public/galleries/` and are deployed with the site. There is no Firebase Storage path anymore.
+- Image metadata is the `images` catalog; galleries hold ordered `imageIds`, plus `coverImageId`, `isFeatured` and `layoutConfig`. Membership changes must keep `imageIds` and `galleryIds` in one batch through the services.
+- Image files live in `public/galleries/` and are deployed with the site. There is no Firebase Storage path anymore.
 - Firestore permission errors on gallery writes: follow [`docs/wiki/rules/firestore-permissions.md`](docs/wiki/rules/firestore-permissions.md). The admin preflights `admins/{uid}` and logs structured failures; do not relax the rules to work around a deployment mistake.

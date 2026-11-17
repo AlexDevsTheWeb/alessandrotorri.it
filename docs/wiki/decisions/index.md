@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - Images catalog with `galleryIds`, galleries reference `imageIds`; GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured logs, actionable errors, admins/{uid} preflight; no rule relaxation.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Replaces Storage uploads; galleries collection, embedded images, public read with static fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.

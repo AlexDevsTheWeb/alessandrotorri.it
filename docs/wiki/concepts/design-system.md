@@ -66,16 +66,22 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 
 ## Covers
 
-- 4:3, `overflow: hidden`.
+- The static fallback uses 4:3; Firestore galleries use `layoutConfig.aspectRatio` (default `3/2`, owner-selectable `16:9`, `3:2`, `4:3`, `1:1`).
+- `overflow: hidden`, `object-fit: cover`, `object-position: center`.
 - Collection title is centered in the image and hidden until hover or keyboard focus; it fades in over a 0.6–0.85 black gradient ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - No entrance animation and no hover scale.
 - Hover only dims the image slightly (`brightness(0.86)`); no border, no outline.
 - Card links have `outline: none`, including focus, and a pointer cursor.
 
+> [!WARNING] Cover ratio superseded
+> [Decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md) fixed covers at 4:3. The 2026-11-17 specification makes the ratio per gallery with a `3/2` default ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)). The static CDN fallback still renders 4:3; the hover title, pointer and copy-guard rules stand.
+
 ## Collection feed
 
 - Masonry layout: 1 column on mobile, 2 from `sm`, 3 from `md`; `maxWidth="lg"`.
-- Each image keeps its intrinsic aspect ratio.
+- Images use the gallery's `layoutConfig.aspectRatio` (default `3/2`); `auto` keeps each image's own ratio.
+- Feed spacing comes from `layoutConfig.padding`: `none` 0, `small` 8 px, `medium` 16 px, `large` 24 px.
+- Every image is `object-fit: cover; object-position: center` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 - Caption is hidden by default and revealed on hover or keyboard focus.
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
 - Caption is white, centered, with a soft text shadow.

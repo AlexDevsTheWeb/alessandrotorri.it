@@ -1,81 +1,96 @@
 ---
 type: Reference
 title: Admin Dashboard
-description: Gallery CRUD, ordering, image assignment and previews in the protected administrator section.
-tags: [admin, dashboard, galleries, firestore, drag-and-drop, images]
+description: Gallery CRUD, ordering, the image catalog with GitHub discovery, cover designation and layout controls in the protected administrator section.
+tags: [admin, dashboard, galleries, images, catalog, github, firestore, drag-and-drop]
 status: stable
-generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-16T00:00:00Z }
+generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-17T00:00:00Z }
 sources:
-  - id: raw-admin-galleries
-    resource: ../../raw/2026-11-16-admin-galleries.md
-    title: Admin galleries specification (raw, immutable)
-  - id: decision-0016
-    resource: /decisions/0016-gallery-management.md
-    title: Manage galleries in Firestore with static repository images
+  - id: raw-admin-galleries-v2
+    resource: ../../raw/2026-11-17-admin-galleries-v2.md
+    title: Admin galleries v2 — image catalog, GitHub sync and layout system (raw, immutable)
+  - id: decision-0018
+    resource: /decisions/0018-image-catalog-and-layout.md
+    title: Master image catalog, GitHub discovery and per-gallery layout controls
 ---
 
 # Admin Dashboard
 
 > [!NOTE] Protected
-> Both admin routes sit under `ProtectedRoute` in `src/App.tsx`. Signed-out visitors are redirected to `/login`. Data access is gated by `firestore.rules`, which allows writes only for UIDs in `admins/{uid}` ([decision 0014](/decisions/0014-admin-route-protection.md), [decision 0016](/decisions/0016-gallery-management.md)).
+> Every admin route sits under `ProtectedRoute` in `src/App.tsx`. Signed-out visitors are redirected to `/login`. Data access is gated by `firestore.rules`, which allows writes only for UIDs in `admins/{uid}` ([decision 0014](/decisions/0014-admin-route-protection.md), [decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
 
 ## Routes
 
-- `/admin` — `AdminDashboard`: gallery list, create/edit dialogs, delete confirmation, logout.
-- `/admin/gallery/:galleryId` — `AdminGalleryDetailPage`: gallery fields plus image assignment and ordering.
+- `/admin` — `AdminDashboard`: gallery list, create/edit dialogs, delete confirmation.
+- `/admin/images` — `AdminImagesPage`: the image catalog, GitHub discovery, filters, inline edits, gallery assignment and the quick gallery modal.
+- `/admin/gallery/:galleryId` — `AdminGalleryDetailPage`: gallery fields, featured switch, layout config, catalog image assignment and ordering.
 
-The previous `/admin/collection/:collectionName` route and the Storage upload screens were removed on 2026-11-16.
+`AdminNav` gives the two sections plus "Vedi sito" and "Esci" on every admin page.
 
 ## Data model
 
-One Firestore document per gallery in `galleries`; images are embedded ([Photo Management](/concepts/photo-management.md), [Decision 0016](/decisions/0016-gallery-management.md)). Image files themselves live in `public/galleries/`, so the admin records paths, not bytes.
+Two public-read collections: `images` (the master catalog) and `galleries` (ordered `imageIds`, cover and layout). Image bytes live in `public/galleries/`; the admin records paths, not bytes ([Photo Management](/concepts/photo-management.md), [Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 
 ## AdminDashboard page
 
 - `useGalleryStore` fetches all galleries once on mount, ordered by `displayOrder`.
-- `GalleryList` renders the sortable list: cover thumbnail, name, slug, image count, current order, "Gestisci", edit and delete actions.
-- Drag-and-drop calls `reorderGalleries`, which writes `displayOrder = index` for every gallery in one batch. The explicit order field stays editable in the dialog.
+- `GalleryList` renders the sortable list: cover thumbnail, name, a "In evidenza" chip, slug, image count, order, "Gestisci", edit and delete actions.
+- Drag-and-drop calls `reorderGalleries`, which writes `displayOrder = index` for every gallery in one batch; the numeric field stays editable in the dialog.
 - "Nuova galleria" opens a dialog with `GalleryFields`; the slug is derived from the name until the owner edits it, then validated for pattern and uniqueness.
-- Delete asks for confirmation and removes the Firestore document only; repository files are untouched.
-- Italian copy throughout, a link to the public site, and logout.
+- Delete asks for confirmation, deletes the document and detaches it from the catalog images.
+
+## AdminImagesPage
+
+- `useImageStore` reads the catalog; the page scans `public/galleries/` through the GitHub contents API on mount (`VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`, default `development`) and merges repository files with catalog documents by filename.
+- Filters: **Tutte**, **Nuove / non indicizzate**, **Senza titolo**, **Senza descrizione**, **Non assegnate**, each with a live count, plus a text search.
+- Unindexed repository files show a preview and an "Indicizza" action; "Indicizza tutte" creates the missing documents in one pass.
+- Indexed cards edit `title`, `description`, `alt` and `aspectRatio` inline and save per card.
+- The assignment select adds the image to an existing gallery in one batch (both indexes); "+ Nuova galleria" opens a modal that creates the gallery and assigns the photo immediately.
+- A GitHub rate limit (60 requests/hour unauthenticated) shows a warning with retry; the catalog stays usable.
 
 ## GalleryEditor (detail page)
 
 - Local draft initialised from the loaded gallery, with a baseline snapshot for dirty tracking.
-- `GalleryFields`: name, slug (public URL hint), description, cover path with a live 4:3 preview, display order.
-- `GalleryImageList`: drag-and-drop rows with a live thumbnail, path/URL, title/caption, alt text and aspect ratio, plus an "Aggiungi immagine" form with its own preview.
-- "Salva modifiche" validates and persists the whole document in one write, so partial image edits cannot race. A dirty indicator disables Save when nothing changed.
-- The store refetches after every write, so the list order and counts stay truthful.
+- `GalleryFields`: name, slug, description, display order, featured switch and `featuredOrder`, layout ratio and padding selects, and a live cover preview.
+- `GalleryImageList`: assigned images resolved from the catalog, drag-and-drop order, cover star, remove, and an autocomplete to add unassigned catalog images.
+- Selecting the cover writes `coverImageId` and `coverImageUrl`; removing the cover image promotes the next image.
+- "Salva modifiche" validates and persists the gallery plus the membership diff in one batch. A dirty indicator disables Save when nothing changed.
+- A gallery that still has the legacy embedded `images` array and no `imageIds` shows a migration warning.
 
 ## Components
 
 | Component | Role |
 |-----------|------|
-| `GalleryList.component.tsx` | Sortable gallery list with actions |
-| `GalleryFields.component.tsx` | Shared gallery form fields and cover preview |
-| `GalleryImageList.component.tsx` | Image rows, add form, previews, drag-and-drop |
-| `GalleryEditor.component.tsx` | Detail-page draft, validation, save and feedback |
+| `AdminNav` | Section tabs and session actions |
+| `GalleryList` | Sortable gallery list with featured badge and actions |
+| `GalleryFields` | Gallery form, featured and layout controls, cover preview |
+| `GalleryImageList` | Catalog assignment, cover star, ordering |
+| `GalleryEditor` | Detail-page draft, validation, save and feedback |
+| `ImageCatalogCard` | One catalog or repository entry: preview, metadata, assignment |
 
-## Store and service
+## Store and services
 
 - `src/store/galleryStore.ts` — `galleries`, `status`, `error`, `adminStatus`, `fetchGalleries`, `checkAdminAccess`, `createGallery`, `saveGallery`, `deleteGallery`, `reorderGalleries`.
-- `src/services/galleries.service.ts` — the only Firestore gateway for galleries: normalization, slug helper, draft validation, reads and writes, plus the failure diagnostics.
-- The admin routes are lazy, so the store and `@hello-pangea/dnd` stay out of the public entry bundle.
+- `src/store/imageStore.ts` — `images`, `status`, `error`, `fetchImages`, `indexImage`, `indexImages`, `saveImage`, `assignToGallery`.
+- `src/services/galleries.service.ts` — gallery documents, membership diffs, deletion cleanup and assignment.
+- `src/services/images.service.ts` — catalog reads, indexing and metadata writes.
+- `src/services/githubImages.service.ts` — repository discovery only; no write path.
+- Admin routes are lazy, so the stores, `@hello-pangea/dnd` and the catalog UI stay out of the public entry bundle.
 
 ## Permissions diagnostics
 
-After sign-in the dashboard reads `admins/{uid}` (allowed by the rules) and shows:
+After sign-in the admin reads `admins/{uid}` (allowed by the rules) and shows:
 
 - a yellow **Account non abilitato alla scrittura** banner with the exact UID when the document is missing;
 - a red **Permessi non verificabili** banner when even that read is denied, which means the ruleset was never deployed.
 
-Every failed Firestore call logs `[galleries] <operation> failed (<code>)` with the target path and a payload snapshot, and the UI shows an Italian explanation instead of the raw Firebase message. Full decision tree in the [Firestore permissions playbook](/rules/firestore-permissions.md) ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
+Every failed Firestore call logs `[galleries]` or `[images]` with operation, path, payload snapshot, code and message; the UI shows an Italian explanation. Full decision tree in the [Firestore permissions playbook](/rules/firestore-permissions.md) ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
 
 ## Known issues
 
 - Rules are in the repository but not confirmed deployed; the preflight banner is the check ([Firebase Backend](/concepts/firebase-backend.md), issue #3).
-- Drag-and-drop, validation and live previews have only been type-checked and built; no browser or live-project run was possible in this session.
-- Adding an image requires committing the file to `public/galleries/` and deploying. This is the intended tradeoff of [Decision 0016](/decisions/0016-gallery-management.md).
+- Drag-and-drop, the GitHub call, inline editing and bulk indexing have only been type-checked and built; no browser or live-project run was possible in this session.
+- `public/galleries/` is empty, so the GitHub scan returns 404 and the catalog starts empty until photos are committed.
 
 ## Related
 

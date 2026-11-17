@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-17 — Image catalog, GitHub discovery and layout](/sources/2026-11-17-admin-galleries-v2.md) - Master `images` catalog, repository discovery, `/admin/images` filters, cover designation, featured galleries and layout config.
 * [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - "Missing or insufficient permissions" on gallery writes: payload/rules verified, cause is the admins/{uid} gate or undeployed rules; diagnostics added.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review, Firestore galleries, static repository images, admin CRUD/ordering, public read with fallback.
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
@@ -37,6 +38,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - `images` catalog, gallery `imageIds`, GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured failure logs, actionable errors and an admins/{uid} preflight; rules stay strict.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Storage uploads replaced; galleries collection, embedded images, public read with fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.
@@ -60,13 +62,13 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [Site Architecture](/concepts/site-architecture.md) - Routing, pages, layout shell.
 * [Tech Stack](/concepts/tech-stack.md) - Frameworks, libraries, toolchain.
 * [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore galleries, rules (no Storage).
-* [Photo Management](/concepts/photo-management.md) - Gallery schema, static image assets, ordering.
+* [Photo Management](/concepts/photo-management.md) - Master image catalog, gallery membership, ordering, GitHub discovery.
 * [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft; image storage resolved).
-* [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, progressive images.
+* [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, featured covers, layout config, progressive images.
 * [Design System](/concepts/design-system.md) - MUI theme, typography, color, responsiveness.
 * [SEO and Metadata](/concepts/seo-metadata.md) - Titles, canonical, Open Graph, robots and sitemap.
 * [State Management](/concepts/state-management.md) - Zustand stores.
-* [Admin Dashboard](/concepts/admin-dashboard.md) - Gallery CRUD, ordering, image assignment and previews.
+* [Admin Dashboard](/concepts/admin-dashboard.md) - Gallery CRUD, image catalog, GitHub discovery, covers, featured and layout controls.
 * [Project Roadmap](/concepts/roadmap.md) - Original phased plan (deprecated).
 
 ## Rules
