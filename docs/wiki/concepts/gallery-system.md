@@ -50,7 +50,7 @@ sources:
 
 - Both render `CollectionGrid` with the Firestore covers or, when empty, the static `COLLECTIONS`; a `PageLoader` renders until the first read resolves.
 - `Container maxWidth="lg"`.
-- Featured galleries (`isFeatured`) render full-width (both columns) at the top, ordered by `featuredOrder`; the rest stay in the two-column grid. The shared grid means `/gallery` follows the same order.
+- Featured galleries (`isFeatured`) render full-width (both columns) at the top, ordered by `featuredOrder`; the rest stay in the two-column grid. A centered, solid `Divider` labelled **LUOGHI** separates the two groups when both are present ([Decision 0023](/decisions/0023-featured-gallery-divider.md)). The shared grid means `/gallery` follows the same order and divider.
 - Covers use the gallery's `layoutConfig.aspectRatio` (default `3/2`); the static fallback keeps 4:3 ([decision 0018](/decisions/0018-image-catalog-and-layout.md), superseding the fixed 4:3 of [0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)). In `Naturale` the cover uses the resolved cover image's ratio. `layoutConfig.coverSpacing` adds 0/8/16/24 px of padding around the cover inside its grid cell ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - 1 column on mobile / 2 from `sm` up, 8px gap on mobile and 16px from `md`.
 - Title hidden by default; on hover or focus it fades in at the center over a dark gradient.
@@ -76,6 +76,8 @@ sources:
 
 - Renders a `CollectionCoverData[]` prop (default: the static `COLLECTIONS`) as a responsive `Grid` (`xs: 12`, `sm: 6`).
 - Featured collections take the full row (`sm: 12`); the page sorts them first by `featuredOrder`.
+- A full-width centered `Divider` labelled **LUOGHI** separates featured from the rest when both groups exist; 1 px solid lines, uppercase caption-size label ([Decision 0023](/decisions/0023-featured-gallery-divider.md)).
+- Applies `coverSpacing` as padding around each cover inside its cell.
 - Used by both `/` and `/gallery`.
 
 ### CollectionCover (`src/components/CollectionCover.component.tsx`)

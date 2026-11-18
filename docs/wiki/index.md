@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
 * [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.
 * [2026-11-18 — Visibility and ratio polish](/sources/2026-11-18-visibility-and-polish.md) - Empty galleries hidden, visible/not-visible flags for galleries and photos, ratio precedence clarified, smaller lightbox caption.
 * [2026-11-18 — Gallery removal and home flash](/sources/2026-11-18-gallery-removal-and-home-flash.md) - Assigned photos could not be removed from the image card; the home grid flashed the static placeholders before Firestore on every visit.
@@ -42,6 +43,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
 * [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
 * [0021 — Hide empty galleries and add visibility flags](/decisions/0021-visibility-and-empty-galleries.md) - `isVisible` on galleries and images, empty/hidden galleries filtered from the public site, explicit ratio precedence, smaller lightbox caption.
 * [0020 — Detach images directly and cache public gallery reads](/decisions/0020-gallery-detach-and-public-cache.md) - Removable gallery chips with atomic detach and cover promotion; cached public reads with a loader instead of a placeholder flash.

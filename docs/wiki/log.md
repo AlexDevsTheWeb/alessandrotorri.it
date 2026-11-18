@@ -1,6 +1,10 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-18
+* **Featured divider**: the shared grid now renders featured galleries first, then a full-width centered `Divider` labelled **LUOGHI** (1 px solid lines, uppercase 0.7 rem, 0.35em tracking), then the remaining galleries. The divider appears only when both groups exist. Applies to `/` and `/gallery` for parity.
+* **Decision**: [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md).
+* **Wiki**: added the [source summary](/sources/2026-11-18-featured-divider.md) and decision 0023; updated [Gallery System](/concepts/gallery-system.md), [Design System](/concepts/design-system.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md) and the indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Headless Chrome on a mock grid confirmed featured → divider → rest, `solid 1px` lines and the `coverSpacing` inset. The live site currently has no non-featured gallery, so the divider is not visible there yet.
 * **Cover picker**: the gallery cover is now a select built from the gallery's own `imageIds` (plus "Nessuna (prima foto)") in `GalleryFields`; it writes `coverImageId` and `coverImageUrl` together, keeps the star shortcut, flags a stale cover and previews the selected image. The `/admin` dialog loads the catalog so it can offer the select.
 * **Spacing**: added `layoutConfig.coverSpacing` ("Spaziatura galleria", 0/8/16/24 px, default none) applied around the cover in `CollectionGrid`. `layoutConfig.padding` remains "Spaziatura foto" inside the gallery; the two controls are independent.
 * **Photo ratios**: an explicit photo `aspectRatio` now wins in the feed; the gallery ratio is the fallback for `Naturale` photos and sets the cover. Verified live: the 1:1 test photo rendered 368×368 in a 16:9 gallery.

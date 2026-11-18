@@ -82,6 +82,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Images use their own `aspectRatio` when set, otherwise the gallery's `layoutConfig.aspectRatio` (default `3/2`); `auto` falls back to 3:2 ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - Feed spacing comes from `layoutConfig.padding`: `none` 0, `small` 8 px, `medium` 16 px, `large` 24 px.
 - The gallery cover grid adds a per-gallery `coverSpacing` (0/8/16/24 px) inside the card cell, independent of the feed spacing ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
+- The featured block and the remaining galleries are separated by a centered `LUOGHI` divider: full-width, 1 px solid lines on both sides, uppercase `0.7rem` label with `0.35em` letter spacing in `text.secondary`, vertical margins 2/3 ([Decision 0023](/decisions/0023-featured-gallery-divider.md)).
 - Every image is `object-fit: cover; object-position: center` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 - Caption is hidden by default and revealed on hover or keyboard focus.
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.

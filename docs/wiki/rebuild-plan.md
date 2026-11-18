@@ -195,6 +195,7 @@ Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin
 - [x] Galleries and catalog images have an `isVisible` flag; hidden galleries and galleries with no visible photos are filtered out of the public site (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - [x] Aspect-ratio precedence documented and made visible in the admin previews; `Naturale` covers use the image ratio. Lightbox caption reduced to `body2` (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - [x] Gallery cover chosen from the gallery's own photos via a select; `coverSpacing` separates gallery spacing from photo spacing; an explicit photo ratio wins in the feed (2026-11-18, [decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
+- [x] Featured galleries separated from the rest by a centered solid `LUOGHI` divider in the shared grid (2026-11-18, [decision 0023](/decisions/0023-featured-gallery-divider.md)).
 - [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
 - [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
 
