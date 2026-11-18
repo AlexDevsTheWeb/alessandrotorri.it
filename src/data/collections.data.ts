@@ -1,9 +1,12 @@
+import type { GalleryPadding } from '../types/gallery.types';
+
 export interface CollectionCover {
   slug: string;
   title: string;
   cover: string;
   placeholder?: string;
   aspectRatio?: string;
+  coverSpacing?: GalleryPadding;
   isFeatured?: boolean;
   featuredOrder?: number;
 }

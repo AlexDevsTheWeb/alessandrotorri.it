@@ -10,8 +10,8 @@ import type { CollectionCover, CollectionPhoto } from './collections.data';
 const cssRatio = (ratio: string): string => ratio.replace(':', '/');
 
 const imageRatio = (image: CatalogImage, layout: GalleryLayoutConfig): string => {
-  if (layout.aspectRatio !== 'auto') return cssRatio(layout.aspectRatio);
   if (image.aspectRatio !== 'auto') return cssRatio(image.aspectRatio);
+  if (layout.aspectRatio !== 'auto') return cssRatio(layout.aspectRatio);
   return '3/2';
 };
 
@@ -54,6 +54,7 @@ export const galleryToCover = (gallery: PublicGallery): CollectionCover => {
     title: gallery.name.toUpperCase(),
     cover: cover?.url ?? '',
     aspectRatio: ratio,
+    coverSpacing: gallery.layoutConfig.coverSpacing,
     isFeatured: gallery.isFeatured,
     featuredOrder: gallery.featuredOrder,
   };

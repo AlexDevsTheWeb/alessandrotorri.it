@@ -37,6 +37,7 @@ export const GALLERY_PADDINGS: GalleryPadding[] = ['none', 'small', 'medium', 'l
 export const DEFAULT_LAYOUT_CONFIG: GalleryLayoutConfig = {
   aspectRatio: '3:2',
   padding: 'medium',
+  coverSpacing: 'none',
 };
 
 const asString = (value: unknown, fallback = ''): string =>
@@ -65,6 +66,7 @@ const normalizeLayoutConfig = (value: unknown): GalleryLayoutConfig => {
   return {
     aspectRatio: asAspectRatio(source.aspectRatio),
     padding: asPadding(source.padding),
+    coverSpacing: asPadding(source.coverSpacing ?? 'none'),
   };
 };
 
@@ -152,6 +154,7 @@ const buildGalleryPayload = (draft: GalleryDraft) => ({
   layoutConfig: {
     aspectRatio: draft.layoutConfig.aspectRatio,
     padding: draft.layoutConfig.padding,
+    coverSpacing: draft.layoutConfig.coverSpacing,
   },
 });
 

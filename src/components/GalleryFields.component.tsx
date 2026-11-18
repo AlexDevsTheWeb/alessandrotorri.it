@@ -9,16 +9,19 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { resolveImageIds } from '../data/galleries.mapper';
 import { repositoryImageFallback } from '../services/githubImages.service';
 import type {
   GalleryDraft,
   GalleryPadding,
   ImageAspectRatio,
 } from '../types/gallery.types';
+import type { CatalogImage } from '../types/image.types';
 import RepositoryImage from './RepositoryImage.component';
 
 interface GalleryFieldsProps {
   value: GalleryDraft;
+  catalog: CatalogImage[];
   onChange: (patch: Partial<GalleryDraft>) => void;
   disabled?: boolean;
 }
@@ -38,11 +41,26 @@ const PADDING_OPTIONS: Array<{ value: GalleryPadding; label: string }> = [
   { value: 'large', label: 'Grande (24 px)' },
 ];
 
-const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled = false }) => {
+const GalleryFields: React.FC<GalleryFieldsProps> = ({
+  value,
+  catalog,
+  onChange,
+  disabled = false,
+}) => {
+  const coverImages = resolveImageIds(value.imageIds, catalog, value.layoutConfig);
+  const selectedCover =
+    coverImages.find((image) => image.id === value.coverImageId) ?? coverImages[0];
+  const coverIsStale =
+    value.coverImageId.length > 0 && !coverImages.some((image) => image.id === value.coverImageId);
   const previewRatio =
     value.layoutConfig.aspectRatio === 'auto'
-      ? '3/2'
+      ? (selectedCover?.ratio ?? '3/2')
       : value.layoutConfig.aspectRatio.replace(':', '/');
+
+  const handleCoverChange = (coverImageId: string) => {
+    const image = coverImages.find((item) => item.id === coverImageId);
+    onChange({ coverImageId, coverImageUrl: image?.url ?? '' });
+  };
 
   return (
     <Grid container spacing={2} sx={{ mt: 0 }}>
@@ -132,7 +150,7 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           helperText="Ordine tra le gallerie in evidenza."
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <TextField
           select
           label="Rapporto immagini"
@@ -147,7 +165,7 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           }
           fullWidth
           disabled={disabled}
-          helperText="Ritaglio delle foto e della copertina. Con Naturale vale il rapporto della singola foto."
+          helperText="Copertina e foto con rapporto Naturale. Ogni foto può avere il suo."
         >
           {ASPECT_RATIO_OPTIONS.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -156,10 +174,10 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           ))}
         </TextField>
       </Grid>
-      <Grid size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <TextField
           select
-          label="Spaziatura griglia"
+          label="Spaziatura foto"
           value={value.layoutConfig.padding}
           onChange={(event) =>
             onChange({
@@ -171,7 +189,31 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           }
           fullWidth
           disabled={disabled}
-          helperText="Distanza tra le foto della galleria."
+          helperText="Distanza tra le foto dentro la galleria."
+        >
+          {PADDING_OPTIONS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 4 }}>
+        <TextField
+          select
+          label="Spaziatura galleria"
+          value={value.layoutConfig.coverSpacing}
+          onChange={(event) =>
+            onChange({
+              layoutConfig: {
+                ...value.layoutConfig,
+                coverSpacing: event.target.value as GalleryPadding,
+              },
+            })
+          }
+          fullWidth
+          disabled={disabled}
+          helperText="Spazio attorno alla copertina nella griglia delle gallerie."
         >
           {PADDING_OPTIONS.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -183,12 +225,28 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
       <Grid size={12}>
         <Stack spacing={1}>
           <TextField
+            select
             label="Immagine di copertina"
-            value={value.coverImageUrl}
+            value={coverIsStale ? '' : value.coverImageId}
+            onChange={(event) => handleCoverChange(event.target.value)}
             fullWidth
-            disabled
-            helperText="Si sceglie dall'elenco immagini qui sotto con l'icona a stella."
-          />
+            disabled={disabled || coverImages.length === 0}
+            error={coverIsStale}
+            helperText={
+              coverIsStale
+                ? "La copertina salvata non è più nella galleria: scegline una."
+                : coverImages.length === 0
+                  ? 'Aggiungi prima le foto alla galleria.'
+                  : 'Scegli tra le foto della galleria.'
+            }
+          >
+            <MenuItem value="">Nessuna (prima foto)</MenuItem>
+            {coverImages.map((image) => (
+              <MenuItem key={image.id} value={image.id}>
+                {image.title || image.url}
+              </MenuItem>
+            ))}
+          </TextField>
           <Box
             sx={{
               position: 'relative',
@@ -201,10 +259,10 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
               placeItems: 'center',
             }}
           >
-            {value.coverImageUrl ? (
+            {selectedCover ? (
               <RepositoryImage
-                src={value.coverImageUrl}
-                fallbackSrc={repositoryImageFallback(value.coverImageUrl)}
+                src={selectedCover.url}
+                fallbackSrc={repositoryImageFallback(selectedCover.url)}
                 alt={`Anteprima copertina ${value.name || 'galleria'}`}
                 sx={{
                   width: '100%',

@@ -209,7 +209,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
                 size="small"
                 sx={{ minWidth: 140 }}
                 disabled={isDisabled}
-                helperText="Usato quando la galleria è su Naturale."
+                helperText="Rapporto della foto nel feed; prevale su quello della galleria."
               >
                 {ASPECT_RATIO_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

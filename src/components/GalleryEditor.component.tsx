@@ -95,7 +95,7 @@ const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, catal
         </Alert>
       )}
 
-      <GalleryFields value={draft} onChange={handleChange} disabled={isSaving} />
+      <GalleryFields value={draft} catalog={catalog} onChange={handleChange} disabled={isSaving} />
 
       <Divider />
 

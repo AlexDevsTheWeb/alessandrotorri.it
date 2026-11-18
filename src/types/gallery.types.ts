@@ -7,6 +7,7 @@ export type GalleryPadding = 'none' | 'small' | 'medium' | 'large';
 export interface GalleryLayoutConfig {
   aspectRatio: ImageAspectRatio;
   padding: GalleryPadding;
+  coverSpacing: GalleryPadding;
 }
 
 export interface GalleryImage {

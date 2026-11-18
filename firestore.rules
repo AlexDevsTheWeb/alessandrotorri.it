@@ -24,6 +24,7 @@ service cloud.firestore {
         && request.resource.data.layoutConfig is map
         && request.resource.data.layoutConfig.aspectRatio in ['16:9', '3:2', '4:3', '1:1', 'auto']
         && request.resource.data.layoutConfig.padding in ['none', 'small', 'medium', 'large']
+        && request.resource.data.layoutConfig.get('coverSpacing', 'none') in ['none', 'small', 'medium', 'large']
         && request.resource.data.updatedAt is timestamp;
     }
 

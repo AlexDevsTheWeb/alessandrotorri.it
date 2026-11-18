@@ -27,6 +27,7 @@ import { describeFirestoreError } from '../services/firestore.service';
 import { slugify } from '../services/slug.service';
 import { useAuthStore } from '../store/authStore';
 import { useGalleryStore } from '../store/galleryStore';
+import { useImageStore } from '../store/imageStore';
 import type { Gallery, GalleryDraft } from '../types/gallery.types';
 
 type DialogMode = 'create' | 'edit';
@@ -48,6 +49,8 @@ const AdminDashboard: React.FC = () => {
   } = useGalleryStore();
 
   const [mode, setMode] = useState<DialogMode>('create');
+  const catalog = useImageStore((state) => state.images);
+  const fetchImages = useImageStore((state) => state.fetchImages);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [draft, setDraft] = useState<GalleryDraft>(() => createEmptyDraft());
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -59,6 +62,10 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     void fetchGalleries();
   }, [fetchGalleries]);
+
+  useEffect(() => {
+    void fetchImages();
+  }, [fetchImages]);
 
   useEffect(() => {
     if (user?.uid) void checkAdminAccess(user.uid);
@@ -204,7 +211,7 @@ const AdminDashboard: React.FC = () => {
       <Dialog open={isDialogOpen} onClose={closeDialog} fullWidth maxWidth="md">
         <DialogTitle>{mode === 'create' ? 'Nuova galleria' : 'Modifica galleria'}</DialogTitle>
         <DialogContent dividers>
-          <GalleryFields value={draft} onChange={handleDraftChange} disabled={isSaving} />
+          <GalleryFields value={draft} catalog={catalog} onChange={handleDraftChange} disabled={isSaving} />
           {dialogError && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {dialogError}
