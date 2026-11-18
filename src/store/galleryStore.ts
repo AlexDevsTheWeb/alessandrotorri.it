@@ -9,6 +9,7 @@ import {
   saveGallery as saveGalleryDocument,
 } from '../services/galleries.service';
 import { describeFirestoreError } from '../services/firestore.service';
+import { clearPublicGalleriesCache } from '../services/publicGalleries.service';
 import type {
   AdminAccessStatus,
   Gallery,
@@ -62,6 +63,7 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
     set({ error: null });
     try {
       const id = await createGalleryDocument(draft ?? createEmptyDraft(get().galleries.length));
+      clearPublicGalleriesCache();
       await get().fetchGalleries();
       return id;
     } catch (error) {
@@ -75,6 +77,7 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
     const previous = get().galleries.find((gallery) => gallery.id === id);
     try {
       await saveGalleryDocument(id, draft, previous?.imageIds ?? []);
+      clearPublicGalleriesCache();
       await get().fetchGalleries();
     } catch (error) {
       set({ error: describeFirestoreError(error) });
@@ -86,6 +89,7 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
     set({ error: null });
     try {
       await deleteGalleryDocument(id);
+      clearPublicGalleriesCache();
       set((state) => ({ galleries: state.galleries.filter((gallery) => gallery.id !== id) }));
     } catch (error) {
       set({ error: describeFirestoreError(error) });
@@ -107,6 +111,7 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
       await reorderGalleryDocuments(
         next.map(({ id, displayOrder }) => ({ id, displayOrder })),
       );
+      clearPublicGalleriesCache();
     } catch (error) {
       set({ galleries: previous, error: describeFirestoreError(error) });
       throw error;

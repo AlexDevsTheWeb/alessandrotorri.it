@@ -19,6 +19,7 @@ interface ImageCatalogCardProps {
   onIndex: () => Promise<void>;
   onSave: (patch: Partial<CatalogImageDraft>) => Promise<void>;
   onAssign: (galleryId: string) => Promise<void>;
+  onUnassign: (galleryId: string) => Promise<void>;
   onCreateGallery: () => void;
 }
 
@@ -29,6 +30,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
   onIndex,
   onSave,
   onAssign,
+  onUnassign,
   onCreateGallery,
 }) => {
   const { image } = entry;
@@ -71,6 +73,17 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
     setIsBusy(true);
     try {
       await onAssign(galleryId);
+    } catch {
+      return;
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleUnassign = async (galleryId: string) => {
+    setIsBusy(true);
+    try {
+      await onUnassign(galleryId);
     } catch {
       return;
     } finally {
@@ -204,11 +217,13 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
                 <MenuItem value="" disabled>
                   Scegli una galleria...
                 </MenuItem>
-                {galleries.map((gallery) => (
-                  <MenuItem key={gallery.id} value={gallery.id}>
-                    {gallery.name}
-                  </MenuItem>
-                ))}
+                {galleries
+                  .filter((gallery) => !image?.galleryIds.includes(gallery.id))
+                  .map((gallery) => (
+                    <MenuItem key={gallery.id} value={gallery.id}>
+                      {gallery.name}
+                    </MenuItem>
+                  ))}
                 <MenuItem value="__new__">+ Nuova galleria</MenuItem>
               </TextField>
               <Button
@@ -223,7 +238,13 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
             {assignedGalleries.length > 0 && (
               <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
                 {assignedGalleries.map((gallery) => (
-                  <Chip key={gallery.id} size="small" label={gallery.name} />
+                  <Chip
+                    key={gallery.id}
+                    size="small"
+                    label={gallery.name}
+                    onDelete={() => void handleUnassign(gallery.id)}
+                    disabled={isDisabled}
+                  />
                 ))}
               </Stack>
             )}

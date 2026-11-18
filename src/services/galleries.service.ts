@@ -8,6 +8,7 @@ import {
   getDocs,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
   where,
   writeBatch,
@@ -305,6 +306,49 @@ export const assignImageToGallery = async (imageId: string, galleryId: string): 
     await batch.commit();
   } catch (error) {
     logFirestoreFailure('galleries', 'assign-image', `${GALLERIES}/${galleryId}`, { imageId }, error);
+    throw error;
+  }
+};
+
+export const detachImageFromGallery = async (
+  imageId: string,
+  galleryId: string,
+): Promise<void> => {
+  try {
+    await runTransaction(db, async (transaction) => {
+      const imageReference = doc(db, IMAGES, imageId);
+      const galleryReference = doc(db, GALLERIES, galleryId);
+      const imageSnapshot = await transaction.get(imageReference);
+      const gallerySnapshot = await transaction.get(galleryReference);
+
+      if (!gallerySnapshot.exists()) throw new Error('Galleria non trovata.');
+      if (!imageSnapshot.exists()) throw new Error('Immagine non trovata.');
+
+      const gallery = normalizeGallery(galleryId, gallerySnapshot.data());
+      const imagePath = asString(imageSnapshot.data().path);
+      const remainingIds = gallery.imageIds.filter((id) => id !== imageId);
+      const wasCover = gallery.coverImageId === imageId || gallery.coverImageUrl === imagePath;
+      const coverImageId = wasCover ? (remainingIds[0] ?? '') : gallery.coverImageId;
+      let coverImageUrl = wasCover ? '' : gallery.coverImageUrl;
+
+      if (wasCover && coverImageId) {
+        const coverSnapshot = await transaction.get(doc(db, IMAGES, coverImageId));
+        coverImageUrl = coverSnapshot.exists() ? asString(coverSnapshot.data().path) : '';
+      }
+
+      transaction.update(imageReference, {
+        galleryIds: arrayRemove(galleryId),
+        updatedAt: serverTimestamp(),
+      });
+      transaction.update(galleryReference, {
+        imageIds: remainingIds,
+        coverImageId,
+        coverImageUrl,
+        updatedAt: serverTimestamp(),
+      });
+    });
+  } catch (error) {
+    logFirestoreFailure('galleries', 'detach-image', `${GALLERIES}/${galleryId}`, { imageId }, error);
     throw error;
   }
 };

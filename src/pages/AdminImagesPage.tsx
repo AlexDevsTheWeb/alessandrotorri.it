@@ -65,6 +65,7 @@ const AdminImagesPage: React.FC = () => {
     indexImages,
     saveImage,
     assignToGallery,
+    unassignFromGallery,
   } = useImageStore();
 
   const [filter, setFilter] = useState<ImageFilter>('all');
@@ -211,6 +212,15 @@ const AdminImagesPage: React.FC = () => {
   const handleAssign = async (imageId: string, galleryId: string) => {
     try {
       await assignToGallery(imageId, galleryId);
+      await fetchGalleries();
+    } catch {
+      return;
+    }
+  };
+
+  const handleUnassign = async (imageId: string, galleryId: string) => {
+    try {
+      await unassignFromGallery(imageId, galleryId);
       await fetchGalleries();
     } catch {
       return;
@@ -389,6 +399,9 @@ const AdminImagesPage: React.FC = () => {
                 }
                 onAssign={(galleryId) =>
                   entry.image ? handleAssign(entry.image.id, galleryId) : Promise.resolve()
+                }
+                onUnassign={(galleryId) =>
+                  entry.image ? handleUnassign(entry.image.id, galleryId) : Promise.resolve()
                 }
                 onCreateGallery={() => {
                   if (!entry.image) return;

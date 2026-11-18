@@ -48,7 +48,7 @@ const CollectionPage: React.FC = () => {
     path: collection ? `/gallery/${collection.slug}` : '/gallery',
   });
 
-  if (!isReady && !collection) {
+  if (!isReady) {
     return <PageLoader />;
   }
 

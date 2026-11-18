@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { assignImageToGallery } from '../services/galleries.service';
+import { assignImageToGallery, detachImageFromGallery } from '../services/galleries.service';
 import { describeFirestoreError } from '../services/firestore.service';
+import { clearPublicGalleriesCache } from '../services/publicGalleries.service';
 import { fetchImages, indexImage, saveImage } from '../services/images.service';
 import type {
   CatalogImage,
@@ -18,6 +19,7 @@ interface ImageStore {
   indexImages: (files: RepositoryImageFile[]) => Promise<number>;
   saveImage: (id: string, patch: Partial<CatalogImageDraft>) => Promise<void>;
   assignToGallery: (imageId: string, galleryId: string) => Promise<void>;
+  unassignFromGallery: (imageId: string, galleryId: string) => Promise<void>;
 }
 
 const byFilename = (a: CatalogImage, b: CatalogImage): number =>
@@ -69,6 +71,7 @@ export const useImageStore = create<ImageStore>((set, get) => ({
     set({ error: null });
     try {
       await saveImage(id, patch);
+      clearPublicGalleriesCache();
       await get().fetchImages();
     } catch (error) {
       set({ error: describeFirestoreError(error) });
@@ -80,6 +83,19 @@ export const useImageStore = create<ImageStore>((set, get) => ({
     set({ error: null });
     try {
       await assignImageToGallery(imageId, galleryId);
+      clearPublicGalleriesCache();
+      await get().fetchImages();
+    } catch (error) {
+      set({ error: describeFirestoreError(error) });
+      throw error;
+    }
+  },
+
+  unassignFromGallery: async (imageId, galleryId) => {
+    set({ error: null });
+    try {
+      await detachImageFromGallery(imageId, galleryId);
+      clearPublicGalleriesCache();
       await get().fetchImages();
     } catch (error) {
       set({ error: describeFirestoreError(error) });
