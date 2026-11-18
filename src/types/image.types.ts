@@ -30,6 +30,7 @@ export type ImageFilter = 'all' | 'new' | 'missing-title' | 'missing-description
 export interface CatalogEntry {
   filename: string;
   path: string;
+  remoteUrl: string;
   image: CatalogImage | null;
   isFromRepository: boolean;
 }

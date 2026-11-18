@@ -9,11 +9,13 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { repositoryImageFallback } from '../services/githubImages.service';
 import type {
   GalleryDraft,
   GalleryPadding,
   ImageAspectRatio,
 } from '../types/gallery.types';
+import RepositoryImage from './RepositoryImage.component';
 
 interface GalleryFieldsProps {
   value: GalleryDraft;
@@ -189,9 +191,9 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
             }}
           >
             {value.coverImageUrl ? (
-              <Box
-                component="img"
+              <RepositoryImage
                 src={value.coverImageUrl}
+                fallbackSrc={repositoryImageFallback(value.coverImageUrl)}
                 alt={`Anteprima copertina ${value.name || 'galleria'}`}
                 sx={{
                   width: '100%',

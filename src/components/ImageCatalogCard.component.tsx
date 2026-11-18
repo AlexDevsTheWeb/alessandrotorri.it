@@ -2,6 +2,7 @@ import { Box, Button, Card, Chip, MenuItem, Stack, TextField, Typography } from 
 import React, { useState } from 'react';
 import type { Gallery, ImageAspectRatio } from '../types/gallery.types';
 import type { CatalogEntry, CatalogImageDraft } from '../types/image.types';
+import RepositoryImage from './RepositoryImage.component';
 
 const ASPECT_RATIO_OPTIONS: Array<{ value: ImageAspectRatio; label: string }> = [
   { value: 'auto', label: 'Naturale' },
@@ -90,12 +91,10 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
           backgroundColor: (theme) => theme.palette.action.hover,
         }}
       >
-        <Box
-          component="img"
+        <RepositoryImage
           src={entry.path}
+          fallbackSrc={entry.remoteUrl}
           alt={image?.alt || image?.title || entry.filename}
-          loading="lazy"
-          decoding="async"
           sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         />
       </Box>

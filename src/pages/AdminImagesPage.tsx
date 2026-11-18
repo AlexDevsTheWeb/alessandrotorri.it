@@ -28,6 +28,7 @@ import {
   fetchRepositoryImages,
   GITHUB_BRANCH,
   GITHUB_REPOSITORY,
+  repositoryImageFallback,
 } from '../services/githubImages.service';
 import { useAuthStore } from '../store/authStore';
 import { useGalleryStore } from '../store/galleryStore';
@@ -121,6 +122,7 @@ const AdminImagesPage: React.FC = () => {
     const repoEntries: CatalogEntry[] = repoFiles.map((file) => ({
       filename: file.filename,
       path: file.path,
+      remoteUrl: file.downloadUrl || repositoryImageFallback(file.path),
       image: byFilename.get(file.filename) ?? null,
       isFromRepository: true,
     }));
@@ -130,6 +132,7 @@ const AdminImagesPage: React.FC = () => {
       .map((image) => ({
         filename: image.filename,
         path: image.path,
+        remoteUrl: repositoryImageFallback(image.path),
         image,
         isFromRepository: false,
       }));

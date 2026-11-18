@@ -5,7 +5,9 @@ import EditIcon from '@mui/icons-material/EditOutlined';
 import { Box, Button, Card, Chip, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { repositoryImageFallback } from '../services/githubImages.service';
 import type { Gallery } from '../types/gallery.types';
+import RepositoryImage from './RepositoryImage.component';
 
 interface GalleryListProps {
   galleries: Gallery[];
@@ -77,9 +79,9 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         }}
                       >
                         {cover ? (
-                          <Box
-                            component="img"
+                          <RepositoryImage
                             src={cover}
+                            fallbackSrc={repositoryImageFallback(cover)}
                             alt=""
                             sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />

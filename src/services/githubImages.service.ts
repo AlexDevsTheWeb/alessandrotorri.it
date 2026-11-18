@@ -12,6 +12,18 @@ const branch = (import.meta.env.VITE_GITHUB_BRANCH as string | undefined)?.trim(
 export const GITHUB_REPOSITORY = repository;
 export const GITHUB_BRANCH = branch;
 
+const RAW_BASE_URL = `https://raw.githubusercontent.com/${repository}/${branch}`;
+const GALLERIES_PREFIX = '/galleries/';
+
+export const repositoryImageUrl = (filename: string): string =>
+  `${RAW_BASE_URL}/${GALLERIES_PATH}/${encodeURIComponent(filename)}`;
+
+export const repositoryImageFallback = (path: string): string => {
+  if (!path.startsWith(GALLERIES_PREFIX)) return '';
+  const filename = path.slice(GALLERIES_PREFIX.length);
+  return filename ? repositoryImageUrl(filename) : '';
+};
+
 interface GitHubContentEntry {
   name: string;
   download_url: string;
@@ -62,6 +74,6 @@ export const fetchRepositoryImages = async (): Promise<RepositoryImageFile[]> =>
       filename: entry.name,
       path: imagePathFromFilename(entry.name),
       suggestedId: imageIdFromFilename(entry.name),
-      downloadUrl: entry.download_url,
+      downloadUrl: entry.download_url || repositoryImageUrl(entry.name),
     }));
 };

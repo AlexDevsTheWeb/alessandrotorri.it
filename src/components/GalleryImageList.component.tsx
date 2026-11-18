@@ -16,8 +16,10 @@ import {
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { resolveImageIds } from '../data/galleries.mapper';
+import { repositoryImageFallback } from '../services/githubImages.service';
 import type { GalleryDraft } from '../types/gallery.types';
 import type { CatalogImage } from '../types/image.types';
+import RepositoryImage from './RepositoryImage.component';
 
 interface GalleryImageListProps {
   value: GalleryDraft;
@@ -128,9 +130,9 @@ const GalleryImageList: React.FC<GalleryImageListProps> = ({
                               backgroundColor: (theme) => theme.palette.action.hover,
                             }}
                           >
-                            <Box
-                              component="img"
+                            <RepositoryImage
                               src={image.url}
+                              fallbackSrc={repositoryImageFallback(image.url)}
                               alt={image.alt || image.title || `Immagine ${index + 1}`}
                               sx={{
                                 width: '100%',
