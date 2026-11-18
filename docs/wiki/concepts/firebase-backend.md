@@ -65,7 +65,7 @@ If a write still returns `Missing or insufficient permissions`, follow the [Fire
 
 - `firestore.rules` is referenced by `firebase.json` and is the only ruleset left.
 - `images`: public read; create/update require `isAdmin()` and a valid shape (`filename`, `path`, title/description/alt strings, a valid `aspectRatio`, an optional boolean `isVisible`, a `galleryIds` list of at most 100, timestamp `updatedAt`); delete requires `isAdmin()`.
-- `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric orders, booleans including an optional `isVisible`, `imageIds` list of at most 500, `layoutConfig` with the allowed `aspectRatio` and `padding` values, timestamp `updatedAt`); delete requires `isAdmin()`.
+- `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric orders, booleans including an optional `isVisible`, `imageIds` list of at most 500, `layoutConfig` with the allowed `aspectRatio`, `padding` and optional `coverSpacing` values, timestamp `updatedAt`); delete requires `isAdmin()`.
 - `isVisible` is optional in the rules (`get('isVisible', true) is bool`) so documents created before [Decision 0021](/decisions/0021-visibility-and-empty-galleries.md) stay writable; the client treats a missing field as visible.
 - `admins/{uid}` is readable only by that user and never writable from clients.
 - The catch-all denies everything else. Leftover documents from the retired 2026-03 `images` model are technically readable but ignored by the client because they lack `filename`/`path`.

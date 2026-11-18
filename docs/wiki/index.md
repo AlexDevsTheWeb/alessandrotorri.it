@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.
 * [2026-11-18 — Visibility and ratio polish](/sources/2026-11-18-visibility-and-polish.md) - Empty galleries hidden, visible/not-visible flags for galleries and photos, ratio precedence clarified, smaller lightbox caption.
 * [2026-11-18 — Gallery removal and home flash](/sources/2026-11-18-gallery-removal-and-home-flash.md) - Assigned photos could not be removed from the image card; the home grid flashed the static placeholders before Firestore on every visit.
 * [2026-11-18 — Missing image preview](/sources/2026-11-18-image-preview.md) - A photo uploaded on GitHub is listed by discovery but previews from the local path; fixed with a GitHub raw fallback.
@@ -41,6 +42,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
 * [0021 — Hide empty galleries and add visibility flags](/decisions/0021-visibility-and-empty-galleries.md) - `isVisible` on galleries and images, empty/hidden galleries filtered from the public site, explicit ratio precedence, smaller lightbox caption.
 * [0020 — Detach images directly and cache public gallery reads](/decisions/0020-gallery-detach-and-public-cache.md) - Removable gallery chips with atomic detach and cover promotion; cached public reads with a loader instead of a placeholder flash.
 * [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md) - Repository previews retry via raw.githubusercontent.com when the file is not in the checkout; public rendering unchanged.

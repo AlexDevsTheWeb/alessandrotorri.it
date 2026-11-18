@@ -19,6 +19,9 @@ sources:
 
 # 0021 — Hide empty galleries and add visibility flags for galleries and images
 
+> [!NOTE] Ratio precedence superseded
+> Point 4 below made the gallery ratio win in the feed. [Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md) reverses that: an explicit photo ratio wins, the gallery ratio is the fallback for `Naturale` photos and sets the cover.
+
 ## Context
 
 Four requests came in after the detach/caching fixes:

@@ -61,8 +61,8 @@ The id is `slugify(filename without extension)`. Re-indexing the same file is th
 | `isVisible` | boolean | Public visibility; missing or `true` means visible |
 | `isFeatured` | boolean | Pins the gallery full-width at the top of the grid |
 | `featuredOrder` | number | Order among featured galleries |
-| `coverImageId` | string | Catalog id of the selected cover |
-| `coverImageUrl` | string | Denormalized cover path; falls back to the first image |
+| `coverImageId` | string | Catalog id of the selected cover, chosen from the gallery's own `imageIds` |
+| `coverImageUrl` | string | Denormalized cover path, written with `coverImageId`; falls back to the first visible image |
 | `imageIds` | string[] | Ordered membership, authoritative |
 | `layoutConfig` | object | `{ aspectRatio, padding }`, see below |
 | `createdAt`, `updatedAt` | timestamp | Server timestamps |
@@ -71,8 +71,9 @@ The id is `slugify(filename without extension)`. Re-indexing the same file is th
 
 | Field | Values | Default | Effect |
 |-------|--------|---------|--------|
-| `aspectRatio` | `16:9`, `3:2`, `4:3`, `1:1`, `auto` | `3:2` | Crops the cover and the feed images; `auto` uses each image's own ratio |
-| `padding` | `none`, `small`, `medium`, `large` | `medium` | Feed spacing: 0, 8, 16, 24 px |
+| `aspectRatio` | `16:9`, `3:2`, `4:3`, `1:1`, `auto` | `3:2` | Cover ratio and fallback for photos set to `Naturale`; an explicit photo ratio wins in the feed |
+| `padding` | `none`, `small`, `medium`, `large` | `medium` | Photo spacing inside the gallery: 0, 8, 16, 24 px |
+| `coverSpacing` | `none`, `small`, `medium`, `large` | `none` | Space around the gallery cover in the shared home/gallery grid: 0, 8, 16, 24 px |
 
 The TypeScript mirrors are `CatalogImage`/`CatalogImageDraft` in `src/types/image.types.ts` and `Gallery`/`GalleryDraft`/`LayoutConfig` in `src/types/gallery.types.ts`.
 
@@ -82,6 +83,7 @@ The TypeScript mirrors are `CatalogImage`/`CatalogImageDraft` in `src/types/imag
 - `detachImageFromGallery` removes an image from one gallery in a single transaction: it drops the id from `imageIds`, the gallery id from `galleryIds`, and promotes the next image when the removed one was the cover (or clears the cover fields when the gallery becomes empty). It powers the removable chips on `/admin/images` ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - The gallery editor removes images through the draft and persists on save; the catalog card detaches immediately. Both keep the two indexes in sync.
 - Every image write carries `updatedAt: serverTimestamp()` because the rules validate it.
+- The cover is selected from the gallery's own images in `GalleryFields` (or with the star in the image list); both `coverImageId` and `coverImageUrl` are written together. A photo that is not in the gallery cannot be used as its cover ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - The two indexes are the only denormalization; there is no other duplicated metadata.
 
 ## Image files and discovery

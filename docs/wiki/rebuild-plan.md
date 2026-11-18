@@ -194,6 +194,7 @@ Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin
 - [x] Public galleries are cached between navigations; pages show a loader instead of the static placeholders before the first read (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - [x] Galleries and catalog images have an `isVisible` flag; hidden galleries and galleries with no visible photos are filtered out of the public site (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - [x] Aspect-ratio precedence documented and made visible in the admin previews; `Naturale` covers use the image ratio. Lightbox caption reduced to `body2` (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
+- [x] Gallery cover chosen from the gallery's own photos via a select; `coverSpacing` separates gallery spacing from photo spacing; an explicit photo ratio wins in the feed (2026-11-18, [decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
 - [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
 
@@ -241,14 +242,14 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/components/ImageCatalogCard.component.tsx` | Catalog entry: preview, metadata, assignment |
 | `src/components/RepositoryImage.component.tsx` | Admin preview with a GitHub raw fallback |
 | `src/components/GalleryEditor.component.tsx` | Draft editing, validation and save |
-| `src/components/GalleryFields.component.tsx` | Gallery fields, featured and layout controls, cover preview |
+| `src/components/GalleryFields.component.tsx` | Gallery fields, visibility, cover select, photo/gallery spacing, cover preview |
 | `src/components/GalleryImageList.component.tsx` | Catalog assignment, cover star and ordering |
 | `src/components/GalleryList.component.tsx` | Sortable gallery list |
 | `src/pages/HomePage.tsx` | renders the cover grid |
 | `src/pages/GalleryPage.tsx` | renders the cover grid |
 | `src/pages/CollectionPage.tsx` | Masonry feed + lightbox |
 | `src/components/CollectionCover.component.tsx` | cover card |
-| `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery` |
+| `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery`, applies `coverSpacing` |
 | `src/components/PhotoLightbox.component.tsx` | fullscreen photo lightbox |
 | `src/components/ProgressiveImage.component.tsx` | progressive image loader |
 | `src/components/ErrorBoundary.component.tsx` | route error fallback |

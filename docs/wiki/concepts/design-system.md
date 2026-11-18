@@ -79,8 +79,9 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 ## Collection feed
 
 - Masonry layout: 1 column on mobile, 2 from `sm`, 3 from `md`; `maxWidth="lg"`.
-- Images use the gallery's `layoutConfig.aspectRatio` (default `3/2`); `auto` keeps each image's own ratio.
+- Images use their own `aspectRatio` when set, otherwise the gallery's `layoutConfig.aspectRatio` (default `3/2`); `auto` falls back to 3:2 ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - Feed spacing comes from `layoutConfig.padding`: `none` 0, `small` 8 px, `medium` 16 px, `large` 24 px.
+- The gallery cover grid adds a per-gallery `coverSpacing` (0/8/16/24 px) inside the card cell, independent of the feed spacing ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - Every image is `object-fit: cover; object-position: center` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 - Caption is hidden by default and revealed on hover or keyboard focus.
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
