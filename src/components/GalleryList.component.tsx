@@ -104,6 +104,9 @@ const GalleryList: React.FC<GalleryListProps> = ({
                           /gallery/{gallery.slug} · {gallery.imageIds.length} immagini · ordine{' '}
                           {gallery.displayOrder}
                         </Typography>
+                        {!gallery.isVisible && (
+                          <Chip size="small" color="warning" label="Nascosta" sx={{ mt: 0.5 }} />
+                        )}
                       </Box>
                       <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                         <Button

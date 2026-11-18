@@ -8,21 +8,25 @@ import type { PublicGallery } from '../types/gallery.types';
 interface PublicGalleries {
   galleries: PublicGallery[];
   isReady: boolean;
+  hasRemoteGalleries: boolean;
 }
 
 export const usePublicGalleries = (): PublicGalleries => {
-  const [galleries, setGalleries] = useState<PublicGallery[]>(
-    () => getCachedPublicGalleries() ?? [],
+  const cached = getCachedPublicGalleries();
+  const [galleries, setGalleries] = useState<PublicGallery[]>(() => cached?.galleries ?? []);
+  const [hasRemoteGalleries, setHasRemoteGalleries] = useState(
+    () => cached?.hasRemoteGalleries ?? false,
   );
-  const [isReady, setIsReady] = useState(() => getCachedPublicGalleries() !== null);
+  const [isReady, setIsReady] = useState(() => cached !== null);
 
   useEffect(() => {
     let active = true;
 
     loadPublicGalleries()
-      .then((items) => {
+      .then((snapshot) => {
         if (!active) return;
-        setGalleries(items);
+        setGalleries(snapshot.galleries);
+        setHasRemoteGalleries(snapshot.hasRemoteGalleries);
         setIsReady(true);
       })
       .catch(() => {
@@ -34,5 +38,5 @@ export const usePublicGalleries = (): PublicGalleries => {
     };
   }, []);
 
-  return { galleries, isReady };
+  return { galleries, isReady, hasRemoteGalleries };
 };

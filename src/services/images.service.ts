@@ -54,6 +54,7 @@ export const normalizeCatalogImage = (id: string, data: DocumentData): CatalogIm
   description: asString(data.description),
   alt: asString(data.alt),
   aspectRatio: asAspectRatio(data.aspectRatio),
+  isVisible: data.isVisible !== false,
   galleryIds: Array.isArray(data.galleryIds)
     ? data.galleryIds.filter((value): value is string => typeof value === 'string')
     : [],
@@ -88,6 +89,7 @@ export const indexImage = async (file: RepositoryImageFile): Promise<string> => 
         description: '',
         alt: '',
         aspectRatio: 'auto',
+        isVisible: true,
         galleryIds: [],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -108,6 +110,7 @@ const buildImagePayload = (patch: Partial<CatalogImageDraft>) => {
   if (patch.description !== undefined) payload.description = patch.description.trim();
   if (patch.alt !== undefined) payload.alt = patch.alt.trim();
   if (patch.aspectRatio !== undefined) payload.aspectRatio = patch.aspectRatio;
+  if (patch.isVisible !== undefined) payload.isVisible = patch.isVisible;
   if (patch.galleryIds !== undefined) {
     payload.galleryIds = Array.from(new Set(patch.galleryIds.filter((id) => id.trim().length > 0)));
   }

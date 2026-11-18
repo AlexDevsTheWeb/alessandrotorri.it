@@ -21,16 +21,20 @@ const FEED_SPACING: Record<GalleryPadding, number> = {
 
 const CollectionPage: React.FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
-  const { galleries, isReady } = usePublicGalleries();
+  const { galleries, isReady, hasRemoteGalleries } = usePublicGalleries();
   const remoteGallery = galleries.find((gallery) => gallery.slug === collectionName);
   const staticCollection = COLLECTIONS.find((item) => item.slug === collectionName);
-  const collection = remoteGallery ? galleryToCover(remoteGallery) : staticCollection;
+  const collection = remoteGallery
+    ? galleryToCover(remoteGallery)
+    : hasRemoteGalleries
+      ? undefined
+      : staticCollection;
 
   const photos = useMemo(() => {
     if (remoteGallery) return galleryToPhotos(remoteGallery);
-    if (staticCollection) return PHOTOS[staticCollection.slug] ?? [];
+    if (!hasRemoteGalleries && staticCollection) return PHOTOS[staticCollection.slug] ?? [];
     return [];
-  }, [remoteGallery, staticCollection]);
+  }, [hasRemoteGalleries, remoteGallery, staticCollection]);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const spacing = remoteGallery ? FEED_SPACING[remoteGallery.layoutConfig.padding] : 2;

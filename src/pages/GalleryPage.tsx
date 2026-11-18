@@ -1,3 +1,4 @@
+import { Container, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import CollectionGrid from '../components/CollectionGrid.component';
 import PageLoader from '../components/PageLoader.component';
@@ -7,11 +8,13 @@ import { usePageMeta } from '../hooks/usePageMeta';
 import { usePublicGalleries } from '../hooks/usePublicGalleries';
 
 const GalleryPage: React.FC = () => {
-  const { galleries, isReady } = usePublicGalleries();
+  const { galleries, isReady, hasRemoteGalleries } = usePublicGalleries();
   const collections = useMemo(
     () =>
-      sortFeaturedFirst(galleries.length > 0 ? galleries.map(galleryToCover) : COLLECTIONS),
-    [galleries],
+      sortFeaturedFirst(
+        hasRemoteGalleries ? galleries.map(galleryToCover) : COLLECTIONS,
+      ),
+    [galleries, hasRemoteGalleries],
   );
 
   usePageMeta({
@@ -21,6 +24,14 @@ const GalleryPage: React.FC = () => {
   });
 
   if (!isReady) return <PageLoader />;
+
+  if (collections.length === 0) {
+    return (
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, textAlign: 'center' }}>
+        <Typography color="text.secondary">Nessuna galleria pubblicata.</Typography>
+      </Container>
+    );
+  }
 
   return <CollectionGrid collections={collections} />;
 };

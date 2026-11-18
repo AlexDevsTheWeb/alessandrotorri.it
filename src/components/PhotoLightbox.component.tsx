@@ -129,7 +129,11 @@ const PhotoLightbox: React.FC<PhotoLightboxProps> = ({ photos, index, onChange, 
             }}
           />
           <Box sx={{ color: 'white', textAlign: 'center', maxWidth: 640, mt: 2 }}>
-            <Typography id="photo-lightbox-title" variant="h6">
+            <Typography
+              id="photo-lightbox-title"
+              variant="body2"
+              sx={{ color: 'rgba(255, 255, 255, 0.75)', letterSpacing: '0.02em' }}
+            >
               {photo.caption}
             </Typography>
           </Box>

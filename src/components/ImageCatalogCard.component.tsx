@@ -1,4 +1,15 @@
-import { Box, Button, Card, Chip, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  FormControlLabel,
+  MenuItem,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import type { Gallery, ImageAspectRatio } from '../types/gallery.types';
 import type { CatalogEntry, CatalogImageDraft } from '../types/image.types';
@@ -38,6 +49,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
   const [description, setDescription] = useState(image?.description ?? '');
   const [alt, setAlt] = useState(image?.alt ?? '');
   const [aspectRatio, setAspectRatio] = useState<ImageAspectRatio>(image?.aspectRatio ?? 'auto');
+  const [isVisible, setIsVisible] = useState(image?.isVisible ?? true);
   const [isBusy, setIsBusy] = useState(false);
 
   const isDirty =
@@ -45,7 +57,8 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
     (title.trim() !== image.title ||
       description.trim() !== image.description ||
       alt.trim() !== image.alt ||
-      aspectRatio !== image.aspectRatio);
+      aspectRatio !== image.aspectRatio ||
+      isVisible !== image.isVisible);
 
   const assignedGalleries = image
     ? image.galleryIds.map((id) => ({
@@ -57,7 +70,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
   const handleSave = async () => {
     setIsBusy(true);
     try {
-      await onSave({ title, description, alt, aspectRatio });
+      await onSave({ title, description, alt, aspectRatio, isVisible });
       setTitle(title.trim());
       setDescription(description.trim());
       setAlt(alt.trim());
@@ -92,6 +105,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
   };
 
   const isDisabled = disabled || isBusy;
+  const previewRatio = aspectRatio === 'auto' ? '3/2' : aspectRatio.replace(':', '/');
 
   return (
     <Card sx={{ p: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
@@ -99,7 +113,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
         sx={{
           width: { xs: '100%', sm: 180 },
           flexShrink: 0,
-          aspectRatio: '4/3',
+          aspectRatio: previewRatio,
           overflow: 'hidden',
           backgroundColor: (theme) => theme.palette.action.hover,
         }}
@@ -124,6 +138,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
           </Box>
           <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {!entry.isFromRepository && <Chip size="small" label="Fuori repository" />}
+            {image && !isVisible && <Chip size="small" color="warning" label="Nascosta" />}
             {image && (
               <Chip
                 size="small"
@@ -194,6 +209,7 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
                 size="small"
                 sx={{ minWidth: 140 }}
                 disabled={isDisabled}
+                helperText="Usato quando la galleria è su Naturale."
               >
                 {ASPECT_RATIO_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -235,6 +251,16 @@ const ImageCatalogCard: React.FC<ImageCatalogCardProps> = ({
                 Salva
               </Button>
             </Stack>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isVisible}
+                  onChange={(event) => setIsVisible(event.target.checked)}
+                  disabled={isDisabled}
+                />
+              }
+              label="Visibile nel sito"
+            />
             {assignedGalleries.length > 0 && (
               <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
                 {assignedGalleries.map((gallery) => (

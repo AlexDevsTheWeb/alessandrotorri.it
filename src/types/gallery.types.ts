@@ -24,6 +24,7 @@ export interface Gallery {
   slug: string;
   description: string;
   displayOrder: number;
+  isVisible: boolean;
   isFeatured: boolean;
   featuredOrder: number;
   coverImageId: string;

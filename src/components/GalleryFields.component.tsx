@@ -97,6 +97,16 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           <FormControlLabel
             control={
               <Switch
+                checked={value.isVisible}
+                onChange={(event) => onChange({ isVisible: event.target.checked })}
+                disabled={disabled}
+              />
+            }
+            label="Visibile nel sito"
+          />
+          <FormControlLabel
+            control={
+              <Switch
                 checked={value.isFeatured}
                 onChange={(event) => onChange({ isFeatured: event.target.checked })}
                 disabled={disabled}
@@ -105,7 +115,8 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
             label="In evidenza in homepage"
           />
           <Typography variant="caption" color="text.secondary">
-            Occupa entrambe le colonne in cima alla griglia.
+            In evidenza occupa entrambe le colonne in cima. Una galleria nascosta o senza foto
+            visibili non compare nel sito.
           </Typography>
         </Stack>
       </Grid>
@@ -136,7 +147,7 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({ value, onChange, disabled
           }
           fullWidth
           disabled={disabled}
-          helperText="Ritaglio delle foto e della copertina."
+          helperText="Ritaglio delle foto e della copertina. Con Naturale vale il rapporto della singola foto."
         >
           {ASPECT_RATIO_OPTIONS.map((option) => (
             <MenuItem key={option.value} value={option.value}>

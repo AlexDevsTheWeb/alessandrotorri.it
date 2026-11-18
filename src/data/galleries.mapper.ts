@@ -41,14 +41,23 @@ export const resolveGalleryImages = (gallery: Gallery, catalog: CatalogImage[]):
   return gallery.legacyImages;
 };
 
-export const galleryToCover = (gallery: PublicGallery): CollectionCover => ({
-  slug: gallery.slug,
-  title: gallery.name.toUpperCase(),
-  cover: gallery.coverImageUrl || gallery.images[0]?.url || '',
-  aspectRatio: gallery.layoutConfig.aspectRatio === 'auto' ? '3/2' : gallery.layoutConfig.aspectRatio.replace(':', '/'),
-  isFeatured: gallery.isFeatured,
-  featuredOrder: gallery.featuredOrder,
-});
+export const galleryToCover = (gallery: PublicGallery): CollectionCover => {
+  const cover =
+    gallery.images.find((image) => image.url === gallery.coverImageUrl) ?? gallery.images[0];
+  const ratio =
+    gallery.layoutConfig.aspectRatio === 'auto'
+      ? (cover?.ratio ?? '3/2')
+      : gallery.layoutConfig.aspectRatio.replace(':', '/');
+
+  return {
+    slug: gallery.slug,
+    title: gallery.name.toUpperCase(),
+    cover: cover?.url ?? '',
+    aspectRatio: ratio,
+    isFeatured: gallery.isFeatured,
+    featuredOrder: gallery.featuredOrder,
+  };
+};
 
 export const sortFeaturedFirst = (collections: CollectionCover[]): CollectionCover[] =>
   [...collections].sort(

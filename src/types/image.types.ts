@@ -9,6 +9,7 @@ export interface CatalogImage {
   description: string;
   alt: string;
   aspectRatio: ImageAspectRatio;
+  isVisible: boolean;
   galleryIds: string[];
   createdAt: Timestamp | null;
   updatedAt: Timestamp | null;
