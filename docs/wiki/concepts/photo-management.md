@@ -18,6 +18,9 @@ sources:
   - id: decision-0019
     resource: /decisions/0019-admin-image-preview-fallback.md
     title: Admin previews fall back to the GitHub raw URL
+  - id: decision-0020
+    resource: /decisions/0020-gallery-detach-and-public-cache.md
+    title: Detach images directly and cache public gallery reads
 ---
 
 # Photo Management
@@ -71,6 +74,8 @@ The TypeScript mirrors are `CatalogImage`/`CatalogImageDraft` in `src/types/imag
 ## Membership writes
 
 - `imageIds` and `galleryIds` change in one `writeBatch`; `saveGallery` diffs against the previous ids, `assignImageToGallery` adds to both, and deleting a gallery detaches it from every image.
+- `detachImageFromGallery` removes an image from one gallery in a single transaction: it drops the id from `imageIds`, the gallery id from `galleryIds`, and promotes the next image when the removed one was the cover (or clears the cover fields when the gallery becomes empty). It powers the removable chips on `/admin/images` ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- The gallery editor removes images through the draft and persists on save; the catalog card detaches immediately. Both keep the two indexes in sync.
 - Every image write carries `updatedAt: serverTimestamp()` because the rules validate it.
 - The two indexes are the only denormalization; there is no other duplicated metadata.
 

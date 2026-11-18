@@ -15,6 +15,9 @@ sources:
   - id: decision-0019
     resource: /decisions/0019-admin-image-preview-fallback.md
     title: Admin previews fall back to the GitHub raw URL
+  - id: decision-0020
+    resource: /decisions/0020-gallery-detach-and-public-cache.md
+    title: Detach images directly and cache public gallery reads
 ---
 
 # Admin Dashboard
@@ -49,14 +52,15 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 - Unindexed repository files show a preview and an "Indicizza" action; "Indicizza tutte" creates the missing documents in one pass.
 - Previews try the served `/galleries/<file>` first and fall back to the GitHub raw URL, so a file that is on GitHub but not in the checkout still shows ([Decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
 - Indexed cards edit `title`, `description`, `alt` and `aspectRatio` inline and save per card.
-- The assignment select adds the image to an existing gallery in one batch (both indexes); "+ Nuova galleria" opens a modal that creates the gallery and assigns the photo immediately.
+- The assignment select adds the image to an existing gallery in one batch (both indexes); it only lists galleries the image is not already in. Assigned gallery chips have a delete action that detaches the image immediately and promotes the cover if needed ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- "+ Nuova galleria" opens a modal that creates the gallery and assigns the photo immediately.
 - A GitHub rate limit (60 requests/hour unauthenticated) shows a warning with retry; the catalog stays usable.
 
 ## GalleryEditor (detail page)
 
 - Local draft initialised from the loaded gallery, with a baseline snapshot for dirty tracking.
 - `GalleryFields`: name, slug, description, display order, featured switch and `featuredOrder`, layout ratio and padding selects, and a live cover preview.
-- `GalleryImageList`: assigned images resolved from the catalog, drag-and-drop order, cover star, remove, and an autocomplete to add unassigned catalog images.
+- `GalleryImageList`: assigned images resolved from the catalog, drag-and-drop order, cover star, remove (applied on "Salva modifiche"), and an autocomplete to add unassigned catalog images.
 - Selecting the cover writes `coverImageId` and `coverImageUrl`; removing the cover image promotes the next image.
 - "Salva modifiche" validates and persists the gallery plus the membership diff in one batch. A dirty indicator disables Save when nothing changed.
 - A gallery that still has the legacy embedded `images` array and no `imageIds` shows a migration warning.

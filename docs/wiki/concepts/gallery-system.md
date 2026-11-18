@@ -15,6 +15,9 @@ sources:
   - id: decision-0018
     resource: /decisions/0018-image-catalog-and-layout.md
     title: Master image catalog, GitHub discovery and per-gallery layout controls
+  - id: decision-0020
+    resource: /decisions/0020-gallery-detach-and-public-cache.md
+    title: Detach images directly and cache public gallery reads
 ---
 
 # Gallery System
@@ -25,7 +28,9 @@ sources:
 ## Data source
 
 - `usePublicGalleries` dynamically imports the gallery and image services after mount, so Firestore and the SDK stay off the critical path and in their own chunk.
-- The static dataset paints first; when Firestore returns at least one gallery it replaces the covers. A slow or failed query never blocks or blanks the page.
+- `src/services/publicGalleries.service.ts` caches the last successful join in module memory and deduplicates concurrent loads. A page paints the cache instantly when present and refreshes it in the background; a cold load renders `PageLoader` until the first query resolves, so the static dataset never flashes before Firestore ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- The static dataset is the fallback when Firestore returns no galleries or the read fails, not the first paint.
+- Admin writes (create/save/delete/reorder/assign/unassign/image save) clear the cache so the next public visit refetches.
 - If Firestore has galleries, it is authoritative for slugs: an unknown slug shows `Collezione non trovata` instead of resurrecting a deleted static collection.
 - The hook joins `galleries.imageIds` with the `images` catalog (`resolveGalleryImages`); a gallery with legacy embedded `images` and no ids still renders those.
 - Mapping lives in `src/data/galleries.mapper.ts`: `Gallery` → `CollectionCover` (name uppercase, cover = `coverImageUrl` or first resolved image, featured flags, layout ratio) and `Gallery` → `CollectionPhoto` (caption = title, alt = alt, ratio from the layout config or the image).
@@ -35,7 +40,7 @@ sources:
 
 ### GalleryPage (`/gallery`) and HomePage (`/`)
 
-- Both render `CollectionGrid` with the Firestore covers or, when empty, the static `COLLECTIONS`.
+- Both render `CollectionGrid` with the Firestore covers or, when empty, the static `COLLECTIONS`; a `PageLoader` renders until the first read resolves.
 - `Container maxWidth="lg"`.
 - Featured galleries (`isFeatured`) render full-width (both columns) at the top, ordered by `featuredOrder`; the rest stay in the two-column grid. The shared grid means `/gallery` follows the same order.
 - Covers use the gallery's `layoutConfig.aspectRatio` (default `3/2`); the static fallback keeps 4:3 ([decision 0018](/decisions/0018-image-catalog-and-layout.md), superseding the fixed 4:3 of [0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
@@ -55,7 +60,7 @@ sources:
 - MUI Masonry's negative root margin is neutralized (`margin: 0 !important`) so the mobile single column has equal left/right gutters.
 - Each image is a keyboard-accessible button wrapping `ProgressiveImage` (`loading="lazy"`), with a pointer cursor and the copy guard ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - `alt` comes from the image entry, falling back to the caption.
-- If the slug is unknown and the Firestore query has not resolved yet, a `PageLoader` renders; once resolved, `Collezione non trovata` links back to `/gallery`.
+- A `PageLoader` renders until the public galleries are ready; after that, an unknown slug shows `Collezione non trovata` and links back to `/gallery`.
 
 ## Components
 

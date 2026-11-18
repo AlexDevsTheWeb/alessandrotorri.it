@@ -190,6 +190,8 @@ Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin
 - [x] `layoutConfig` (aspect ratio, padding) applied to the cover and feed; `object-fit: cover; object-position: center`.
 - [x] Rules for `images` and the extended gallery validation.
 - [x] Admin previews fall back to the GitHub raw URL when a discovered file is not in the checkout (2026-11-18, [decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
+- [x] Assigned images can be detached from `/admin/images` with an atomic write and cover promotion (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- [x] Public galleries are cached between navigations; pages show a loader instead of the static placeholders before the first read (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
 - [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
 
@@ -226,7 +228,8 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/services/githubImages.service.ts` | Read-only GitHub discovery of `public/galleries/` |
 | `src/store/galleryStore.ts` | Zustand gallery store (admin) |
 | `src/store/imageStore.ts` | Zustand image catalog store (admin) |
-| `src/hooks/usePublicGalleries.ts` | Lazy public read + catalog join with fallback |
+| `src/hooks/usePublicGalleries.ts` | Cached public read + catalog join with fallback |
+| `src/services/publicGalleries.service.ts` | Public gallery cache, deduplicated load and invalidation |
 | `src/types/gallery.types.ts` | Gallery, layout and resolved-image types |
 | `src/types/image.types.ts` | Catalog image, repository file and filter types |
 | `src/pages/AdminDashboard.tsx` | Gallery list, create/edit/delete, ordering |
