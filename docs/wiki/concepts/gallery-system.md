@@ -18,6 +18,9 @@ sources:
   - id: decision-0020
     resource: /decisions/0020-gallery-detach-and-public-cache.md
     title: Detach images directly and cache public gallery reads
+  - id: decision-0021
+    resource: /decisions/0021-visibility-and-empty-galleries.md
+    title: Hide empty galleries and add visibility flags for galleries and images
 ---
 
 # Gallery System
@@ -31,7 +34,9 @@ sources:
 - `src/services/publicGalleries.service.ts` caches the last successful join in module memory and deduplicates concurrent loads. A page paints the cache instantly when present and refreshes it in the background; a cold load renders `PageLoader` until the first query resolves, so the static dataset never flashes before Firestore ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - The static dataset is the fallback when Firestore returns no galleries or the read fails, not the first paint.
 - Admin writes (create/save/delete/reorder/assign/unassign/image save) clear the cache so the next public visit refetches.
-- If Firestore has galleries, it is authoritative for slugs: an unknown slug shows `Collezione non trovata` instead of resurrecting a deleted static collection.
+- The joined result is filtered before caching: hidden galleries and hidden images are dropped, then galleries with no visible images are dropped. A gallery that was detached down to zero photos, or whose photos are all hidden, disappears from the grid and from direct links ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
+- `hasRemoteGalleries` records whether Firestore returned any gallery before filtering. When true, Firestore is authoritative and the static dataset is never used to fill the gap; the fallback applies only when the read fails or returns nothing.
+- If Firestore has galleries, it is authoritative for slugs: an unknown or hidden slug shows `Collezione non trovata` instead of resurrecting a deleted static collection.
 - The hook joins `galleries.imageIds` with the `images` catalog (`resolveGalleryImages`); a gallery with legacy embedded `images` and no ids still renders those.
 - Mapping lives in `src/data/galleries.mapper.ts`: `Gallery` → `CollectionCover` (name uppercase, cover = `coverImageUrl` or first resolved image, featured flags, layout ratio) and `Gallery` → `CollectionPhoto` (caption = title, alt = alt, ratio from the layout config or the image).
 - Fallback data: `src/data/collections.data.ts` (9 covers) and `src/data/collections.photos.ts` (89 photos).
@@ -43,7 +48,7 @@ sources:
 - Both render `CollectionGrid` with the Firestore covers or, when empty, the static `COLLECTIONS`; a `PageLoader` renders until the first read resolves.
 - `Container maxWidth="lg"`.
 - Featured galleries (`isFeatured`) render full-width (both columns) at the top, ordered by `featuredOrder`; the rest stay in the two-column grid. The shared grid means `/gallery` follows the same order.
-- Covers use the gallery's `layoutConfig.aspectRatio` (default `3/2`); the static fallback keeps 4:3 ([decision 0018](/decisions/0018-image-catalog-and-layout.md), superseding the fixed 4:3 of [0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Covers use the gallery's `layoutConfig.aspectRatio` (default `3/2`); the static fallback keeps 4:3 ([decision 0018](/decisions/0018-image-catalog-and-layout.md), superseding the fixed 4:3 of [0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)). In `Naturale` the cover uses the resolved cover image's ratio ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - 1 column on mobile / 2 from `sm` up, 8px gap on mobile and 16px from `md`.
 - Title hidden by default; on hover or focus it fades in at the center over a dark gradient.
 - Links to `/gallery/:slug`; pointer cursor across the whole cover.
@@ -79,7 +84,7 @@ sources:
 ### PhotoLightbox (`src/components/PhotoLightbox.component.tsx`)
 
 - Fullscreen dark `Dialog` with blurred backdrop.
-- Image `contain` at up to 75vh; caption only. The EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Image `contain` at up to 75vh; caption only, set in `body2` (0.875 rem, 75% white) since 2026-11-18 ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)). The EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - Image is not draggable and its context menu is cancelled; `alt` uses the photo alt text.
 - Prev/next buttons, Esc and arrow keys.
 - Side arrows on desktop, arrows below the caption on mobile.
@@ -98,7 +103,7 @@ sources:
 - Files in `public/galleries/` are pre-optimized by the owner: WebP/JPEG, ~1600 px long edge. There is no on-the-fly transform service.
 - No responsive `srcset` is generated for repository assets yet; `ProgressiveImage` accepts one but the mapper does not produce variants.
 - The static CDN dataset keeps its `carw_*` variants and 600w/1200w `srcset`.
-- `ratio` comes from the gallery layout (`layoutConfig.aspectRatio`) or, in `auto`, from the catalog image, so the feed reserves space and avoids layout shift.
+- `ratio` comes from the gallery layout (`layoutConfig.aspectRatio`) or, in `auto`, from the catalog image, so the feed reserves space and avoids layout shift. The gallery ratio wins when set; the per-image ratio is used only in `Naturale` ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 
 ## Related
 

@@ -18,6 +18,9 @@ sources:
   - id: decision-0020
     resource: /decisions/0020-gallery-detach-and-public-cache.md
     title: Detach images directly and cache public gallery reads
+  - id: decision-0021
+    resource: /decisions/0021-visibility-and-empty-galleries.md
+    title: Hide empty galleries and add visibility flags for galleries and images
 ---
 
 # Admin Dashboard
@@ -40,7 +43,7 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 ## AdminDashboard page
 
 - `useGalleryStore` fetches all galleries once on mount, ordered by `displayOrder`.
-- `GalleryList` renders the sortable list: cover thumbnail, name, a "In evidenza" chip, slug, image count, order, "Gestisci", edit and delete actions.
+- `GalleryList` renders the sortable list: cover thumbnail, name, a "In evidenza" chip, a "Nascosta" chip for hidden galleries, slug, image count, order, "Gestisci", edit and delete actions.
 - Drag-and-drop calls `reorderGalleries`, which writes `displayOrder = index` for every gallery in one batch; the numeric field stays editable in the dialog.
 - "Nuova galleria" opens a dialog with `GalleryFields`; the slug is derived from the name until the owner edits it, then validated for pattern and uniqueness.
 - Delete asks for confirmation, deletes the document and detaches it from the catalog images.
@@ -51,7 +54,8 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 - Filters: **Tutte**, **Nuove / non indicizzate**, **Senza titolo**, **Senza descrizione**, **Non assegnate**, each with a live count, plus a text search.
 - Unindexed repository files show a preview and an "Indicizza" action; "Indicizza tutte" creates the missing documents in one pass.
 - Previews try the served `/galleries/<file>` first and fall back to the GitHub raw URL, so a file that is on GitHub but not in the checkout still shows ([Decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
-- Indexed cards edit `title`, `description`, `alt` and `aspectRatio` inline and save per card.
+- Indexed cards edit `title`, `description`, `alt`, `aspectRatio` and `isVisible` inline and save per card; hidden photos show a "Nascosta" chip.
+- The card preview follows the selected image ratio (3:2 for `Naturale`). The image ratio applies only when the gallery layout is `Naturale`; helper text states it.
 - The assignment select adds the image to an existing gallery in one batch (both indexes); it only lists galleries the image is not already in. Assigned gallery chips have a delete action that detaches the image immediately and promotes the cover if needed ([Decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - "+ Nuova galleria" opens a modal that creates the gallery and assigns the photo immediately.
 - A GitHub rate limit (60 requests/hour unauthenticated) shows a warning with retry; the catalog stays usable.
@@ -59,7 +63,7 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 ## GalleryEditor (detail page)
 
 - Local draft initialised from the loaded gallery, with a baseline snapshot for dirty tracking.
-- `GalleryFields`: name, slug, description, display order, featured switch and `featuredOrder`, layout ratio and padding selects, and a live cover preview.
+- `GalleryFields`: name, slug, description, display order, a "Visibile nel sito" switch, featured switch and `featuredOrder`, layout ratio and padding selects, and a live cover preview. A hidden gallery or one without visible photos does not appear on the site.
 - `GalleryImageList`: assigned images resolved from the catalog, drag-and-drop order, cover star, remove (applied on "Salva modifiche"), and an autocomplete to add unassigned catalog images.
 - Selecting the cover writes `coverImageId` and `coverImageUrl`; removing the cover image promotes the next image.
 - "Salva modifiche" validates and persists the gallery plus the membership diff in one batch. A dirty indicator disables Save when nothing changed.

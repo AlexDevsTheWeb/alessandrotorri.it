@@ -2,6 +2,7 @@
 
 One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issue read online. Each summary records what the source says, what it changed, and which wiki pages it touched.
 
+* [2026-11-18 — Visibility and ratio polish](/sources/2026-11-18-visibility-and-polish.md) - Empty galleries hidden, visible/not-visible flags for galleries and photos, ratio precedence clarified, smaller lightbox caption.
 * [2026-11-18 — Gallery removal and home flash](/sources/2026-11-18-gallery-removal-and-home-flash.md) - Assigned photos could not be removed from the image card; the home grid flashed the static placeholders before Firestore.
 * [2026-11-18 — Missing image preview](/sources/2026-11-18-image-preview.md) - A photo uploaded on GitHub is listed by discovery but previews from the local path; the checkout, not the upload, was the gap.
 * [2026-11-17 — Image catalog, GitHub discovery and layout](/sources/2026-11-17-admin-galleries-v2.md) - Master `images` catalog, repository discovery, `/admin/images` filters, cover designation, featured galleries and layout config.

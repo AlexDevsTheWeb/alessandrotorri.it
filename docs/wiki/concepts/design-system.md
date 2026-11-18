@@ -94,6 +94,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Arrows on the sides (desktop) or below (mobile).
 - Esc/arrows keyboard support.
 - Caption only; the EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Caption typography is `body2` (0.875 rem) at 75% white since 2026-11-18, much smaller than the old `h6` ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - Feed and lightbox photos are not draggable and their context menu is cancelled.
 
 ## Footer

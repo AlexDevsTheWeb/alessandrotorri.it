@@ -21,6 +21,9 @@ sources:
   - id: decision-0020
     resource: /decisions/0020-gallery-detach-and-public-cache.md
     title: Detach images directly and cache public gallery reads
+  - id: decision-0021
+    resource: /decisions/0021-visibility-and-empty-galleries.md
+    title: Hide empty galleries and add visibility flags for galleries and images
 ---
 
 # Photo Management
@@ -40,6 +43,7 @@ Image metadata lives once in the Firestore `images` catalog. Galleries reference
 | `description` | string | Longer text, admin-only for now |
 | `alt` | string | Accessible description; falls back to the title |
 | `aspectRatio` | `16:9 \| 3:2 \| 4:3 \| 1:1 \| auto` | Intrinsic ratio; used when the gallery layout is `auto` |
+| `isVisible` | boolean | Public visibility; missing or `true` means visible |
 | `galleryIds` | string[] | Galleries containing the image, mirrored from `imageIds` |
 | `createdAt`, `updatedAt` | timestamp | Server timestamps; the rules require `updatedAt` |
 
@@ -54,6 +58,7 @@ The id is `slugify(filename without extension)`. Re-indexing the same file is th
 | `slug` | string | Public URL segment; `^[a-z0-9]+(-[a-z0-9]+)*$`, unique |
 | `description` | string | Intro text, admin-only for now |
 | `displayOrder` | number | Position in the public grid |
+| `isVisible` | boolean | Public visibility; missing or `true` means visible |
 | `isFeatured` | boolean | Pins the gallery full-width at the top of the grid |
 | `featuredOrder` | number | Order among featured galleries |
 | `coverImageId` | string | Catalog id of the selected cover |
@@ -104,6 +109,9 @@ Discovery reads GitHub, but previews render the served path. The two can disagre
 
 ## Visibility and deletion
 
+- A gallery is public when `isVisible` is not `false` **and** it resolves at least one visible image. Hidden galleries and galleries left with no visible photos disappear from `/`, `/gallery` and direct links ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
+- An image with `isVisible: false` is removed from every feed and gallery; if it was the last image, the gallery is hidden too. The cover falls back to the first visible image without rewriting `coverImageId`.
+- Both flags default to visible when the field is missing, so the existing documents need no migration; the admin writes the field on the next save.
 - There is no soft-delete flag: a gallery is published or deleted.
 - Deleting a gallery removes the document and detaches it from every image; files stay in the repository.
 - Deleting a catalog image is not exposed in the UI; remove the entry in the console if needed.
