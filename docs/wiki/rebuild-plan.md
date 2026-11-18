@@ -104,7 +104,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse moved to issue #22 (closed #14, 2026-11-07) |
 | 6 | Admin reconnect | in-progress | gallery admin, Firestore `galleries`, static images and public read with fallback done 2026-11-16 ([decision 0016](/decisions/0016-gallery-management.md)); deploy rules, seed galleries, retire the CDN fallback |
-| 7 | Image catalog & layout | done (2026-11-17) | master `images` catalog, GitHub discovery, `/admin/images` filters, cover designation, featured galleries, `layoutConfig` ([decision 0018](/decisions/0018-image-catalog-and-layout.md)); live project not exercised |
+| 7 | Image catalog & layout | done (2026-11-17) | master `images` catalog, GitHub discovery, `/admin/images` filters, cover designation, featured galleries, `layoutConfig` ([decision 0018](/decisions/0018-image-catalog-and-layout.md)); admin preview fallback added 2026-11-18 ([decision 0019](/decisions/0019-admin-image-preview-fallback.md)); live project not exercised |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
@@ -189,6 +189,7 @@ Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin
 - [x] `isFeatured` / `featuredOrder`, full-width featured covers at the top of the shared grid.
 - [x] `layoutConfig` (aspect ratio, padding) applied to the cover and feed; `object-fit: cover; object-position: center`.
 - [x] Rules for `images` and the extended gallery validation.
+- [x] Admin previews fall back to the GitHub raw URL when a discovered file is not in the checkout (2026-11-18, [decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
 - [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
 - [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
 
@@ -233,6 +234,7 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/pages/AdminGalleryDetailPage.tsx` | Gallery editor shell |
 | `src/components/AdminNav.component.tsx` | Admin section navigation |
 | `src/components/ImageCatalogCard.component.tsx` | Catalog entry: preview, metadata, assignment |
+| `src/components/RepositoryImage.component.tsx` | Admin preview with a GitHub raw fallback |
 | `src/components/GalleryEditor.component.tsx` | Draft editing, validation and save |
 | `src/components/GalleryFields.component.tsx` | Gallery fields, featured and layout controls, cover preview |
 | `src/components/GalleryImageList.component.tsx` | Catalog assignment, cover star and ordering |

@@ -15,6 +15,9 @@ sources:
   - id: decision-0018
     resource: /decisions/0018-image-catalog-and-layout.md
     title: Master image catalog, GitHub discovery and per-gallery layout controls
+  - id: decision-0019
+    resource: /decisions/0019-admin-image-preview-fallback.md
+    title: Admin previews fall back to the GitHub raw URL
 ---
 
 # Photo Management
@@ -77,6 +80,16 @@ The TypeScript mirrors are `CatalogImage`/`CatalogImageDraft` in `src/types/imag
 - Format: WebP/JPEG/PNG/AVIF, pre-optimized by the owner.
 - `src/services/githubImages.service.ts` lists the folder through the GitHub contents API (`VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`) so the admin can index files that were committed but never described.
 - Adding a photo = commit the file, then index it from `/admin/images` and assign it to a gallery.
+
+## Admin previews
+
+Discovery reads GitHub, but previews render the served path. The two can disagree while the file is only on another branch or not yet pulled, so admin previews are:
+
+- **local first** — `/galleries/<file>` from the running checkout or deployment;
+- **remote fallback** — on error, retried once through `raw.githubusercontent.com/<repo>/<branch>/public/galleries/<file>` by the shared `RepositoryImage` component;
+- **admin-only** — `ImageCatalogCard`, `GalleryImageList`, `GalleryList` and the `GalleryFields` cover preview use it. The public pages keep rendering the deployed path so a missing deployment stays visible.
+
+`CatalogEntry.remoteUrl` carries the repository `download_url`; catalog-only entries derive it with `repositoryImageFallback(path)`. Filenames are URL-encoded for the raw URL, while stored `path` values stay raw ([Decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
 
 ## Ordering
 

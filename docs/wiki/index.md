@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-18 — Missing image preview](/sources/2026-11-18-image-preview.md) - A photo uploaded on GitHub is listed by discovery but previews from the local path; fixed with a GitHub raw fallback.
 * [2026-11-17 — Image catalog, GitHub discovery and layout](/sources/2026-11-17-admin-galleries-v2.md) - Master `images` catalog, repository discovery, `/admin/images` filters, cover designation, featured galleries and layout config.
 * [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - "Missing or insufficient permissions" on gallery writes: payload/rules verified, cause is the admins/{uid} gate or undeployed rules; diagnostics added.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review, Firestore galleries, static repository images, admin CRUD/ordering, public read with fallback.
@@ -38,6 +39,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md) - Repository previews retry via raw.githubusercontent.com when the file is not in the checkout; public rendering unchanged.
 * [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - `images` catalog, gallery `imageIds`, GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured failure logs, actionable errors and an admins/{uid} preflight; rules stay strict.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Storage uploads replaced; galleries collection, embedded images, public read with fallback.

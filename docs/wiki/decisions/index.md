@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md) - Repository previews retry through raw.githubusercontent.com when the file is not in the checkout; public rendering unchanged.
 * [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - Images catalog with `galleryIds`, galleries reference `imageIds`; GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured logs, actionable errors, admins/{uid} preflight; no rule relaxation.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Replaces Storage uploads; galleries collection, embedded images, public read with static fallback.

@@ -12,6 +12,9 @@ sources:
   - id: decision-0018
     resource: /decisions/0018-image-catalog-and-layout.md
     title: Master image catalog, GitHub discovery and per-gallery layout controls
+  - id: decision-0019
+    resource: /decisions/0019-admin-image-preview-fallback.md
+    title: Admin previews fall back to the GitHub raw URL
 ---
 
 # Admin Dashboard
@@ -44,6 +47,7 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 - `useImageStore` reads the catalog; the page scans `public/galleries/` through the GitHub contents API on mount (`VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`, default `development`) and merges repository files with catalog documents by filename.
 - Filters: **Tutte**, **Nuove / non indicizzate**, **Senza titolo**, **Senza descrizione**, **Non assegnate**, each with a live count, plus a text search.
 - Unindexed repository files show a preview and an "Indicizza" action; "Indicizza tutte" creates the missing documents in one pass.
+- Previews try the served `/galleries/<file>` first and fall back to the GitHub raw URL, so a file that is on GitHub but not in the checkout still shows ([Decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
 - Indexed cards edit `title`, `description`, `alt` and `aspectRatio` inline and save per card.
 - The assignment select adds the image to an existing gallery in one batch (both indexes); "+ Nuova galleria" opens a modal that creates the gallery and assigns the photo immediately.
 - A GitHub rate limit (60 requests/hour unauthenticated) shows a warning with retry; the catalog stays usable.
@@ -67,6 +71,7 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 | `GalleryImageList` | Catalog assignment, cover star, ordering |
 | `GalleryEditor` | Detail-page draft, validation, save and feedback |
 | `ImageCatalogCard` | One catalog or repository entry: preview, metadata, assignment |
+| `RepositoryImage` | Admin image preview with a one-shot GitHub raw fallback |
 
 ## Store and services
 
@@ -90,7 +95,7 @@ Every failed Firestore call logs `[galleries]` or `[images]` with operation, pat
 
 - Rules are in the repository but not confirmed deployed; the preflight banner is the check ([Firebase Backend](/concepts/firebase-backend.md), issue #3).
 - Drag-and-drop, the GitHub call, inline editing and bulk indexing have only been type-checked and built; no browser or live-project run was possible in this session.
-- `public/galleries/` is empty, so the GitHub scan returns 404 and the catalog starts empty until photos are committed.
+- `public/galleries/` holds only the owner's first upload; the catalog stays effectively empty until the photos are committed and indexed.
 
 ## Related
 

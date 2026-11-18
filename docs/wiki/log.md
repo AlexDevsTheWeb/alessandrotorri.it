@@ -1,5 +1,13 @@
 # Knowledge Bundle Update Log
 
+## 2026-11-18
+* **Bug**: the owner uploaded `public/galleries/Screenshot 2026-11-17 alle 16.30.20.png` on `development`; `/admin/images` discovered it through the GitHub API but the thumbnail was blank. Preview used `/galleries/<file>` from the checkout, which did not contain the file, and the SPA fallback answered `200 text/html`. Root cause: discovery and preview read from different sources.
+* **Fix**: `RepositoryImage` renders the served path and retries once through the GitHub raw URL; `CatalogEntry.remoteUrl` carries `download_url` and `repositoryImageFallback(path)` derives it for catalog-only entries. Applied to `ImageCatalogCard`, `GalleryImageList`, `GalleryList` and the `GalleryFields` cover preview. Public rendering is unchanged.
+* **Decision**: [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md).
+* **Wiki**: added the [source summary](/sources/2026-11-18-image-preview.md) and decision 0019; updated [Photo Management](/concepts/photo-management.md), [Admin Dashboard](/concepts/admin-dashboard.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md) and the indexes.
+* **Verify**: `npm run lint` and `npm run build` pass; the raw GitHub URL returns `200 image/png` for the uploaded file. `development` was merged into `feat/image-catalog-and-layout` so the checkout matches the discovery branch. Browser verification of the fallback was not possible here (no headless browser).
+* **Next**: index and assign the uploaded photo; deploy the rules and smoke-test the admin (issue #3).
+
 ## 2026-11-17
 * **Image catalog**: image metadata moved out of the embedded `galleries.images` arrays into a Firestore `images` catalog (`filename`, `path`, `title`, `description`, `alt`, `aspectRatio`, `galleryIds`). Galleries now hold an ordered `imageIds` array; `galleryIds` and `imageIds` are written together in one batch. Image document ids derive from the sanitized filename, so re-indexing is idempotent.
 * **Admin**: new `/admin/images` page with the five filters (tutte, nuove/non indicizzate, senza titolo, senza descrizione, non assegnate), inline metadata edits, gallery assignment, "+ Nuova galleria" and bulk indexing. The gallery editor now assigns catalog images, reorders them, stars the cover, toggles featured and sets `layoutConfig`. `AdminNav` links the sections.
