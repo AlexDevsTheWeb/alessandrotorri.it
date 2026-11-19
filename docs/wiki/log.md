@@ -1,5 +1,14 @@
 # Knowledge Bundle Update Log
 
+## 2026-11-19
+* **Featured sizing**: with one featured gallery the cover is a full-width banner capped at 240/320/420 px (xs/sm/md) with a panoramic crop; with two or more, featured galleries render half-width as a pair using the gallery ratio. `GalleryFields` explains the behavior. No new field: the count decides.
+* **Header and footer**: the footer keeps only the copyright; Instagram and YouTube remain in the navbar/drawer. The logotype is Instrument Serif, uppercase, 1.1 rem/0.24em (0.9/0.16 on mobile).
+* **Admin**: removed the pen edit dialog and the `onEdit` path from `GalleryList`/`AdminDashboard`. `Nuova galleria` remains as a creation dialog and navigates to the detail page, now the only edit surface (fields, cover, images, ordering).
+* **Decision**: [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md).
+* **Wiki**: added the [source summary](/sources/2026-11-19-ui-and-admin-cleanup.md) and decision 0024; updated [Gallery System](/concepts/gallery-system.md), [Design System](/concepts/design-system.md), [Admin Dashboard](/concepts/admin-dashboard.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md) and the indexes.
+* **Verify**: `npm run lint` and `npm run build` pass. Headless Chrome: the footer has no social links, the logotype computes to Instrument Serif with 4.224 px tracking and uppercase, the live single featured banner is 1136×404, and a mock with two featured galleries renders 568×320 each beside 568×379 regular covers.
+* **Next**: add a second featured (or unfeature the current one) to exercise the pair layout; deploy the rules (issue #3).
+
 ## 2026-11-18
 * **Featured divider**: the shared grid now renders featured galleries first, then a full-width centered `Divider` labelled **LUOGHI** (1 px solid lines, uppercase 0.7 rem, 0.35em tracking), then the remaining galleries. The divider appears only when both groups exist. Applies to `/` and `/gallery` for parity.
 * **Decision**: [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md).

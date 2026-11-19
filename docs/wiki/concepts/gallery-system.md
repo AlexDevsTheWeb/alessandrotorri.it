@@ -24,6 +24,9 @@ sources:
   - id: decision-0022
     resource: /decisions/0022-cover-spacing-and-photo-ratios.md
     title: Pick the cover from the gallery, split photo and gallery spacing, and let photo ratios drive the feed
+  - id: decision-0024
+    resource: /decisions/0024-featured-layout-logotype-admin-cleanup.md
+    title: Compact featured layout, serif logotype and one gallery edit path
 ---
 
 # Gallery System
@@ -50,7 +53,7 @@ sources:
 
 - Both render `CollectionGrid` with the Firestore covers or, when empty, the static `COLLECTIONS`; a `PageLoader` renders until the first read resolves.
 - `Container maxWidth="lg"`.
-- Featured galleries (`isFeatured`) render full-width (both columns) at the top, ordered by `featuredOrder`; the rest stay in the two-column grid. A centered, solid `Divider` labelled **LUOGHI** separates the two groups when both are present ([Decision 0023](/decisions/0023-featured-gallery-divider.md)). The shared grid means `/gallery` follows the same order and divider.
+- Featured galleries (`isFeatured`) render at the top, ordered by `featuredOrder`. With exactly one featured gallery it becomes a full-width banner with a capped 240/320/420 px height (panoramic crop); with two or more they render half-width as a pair using the gallery ratio ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)). A centered, solid `Divider` labelled **LUOGHI** separates the featured group from the rest when both exist ([Decision 0023](/decisions/0023-featured-gallery-divider.md)). The shared grid means `/gallery` follows the same order and divider.
 - Covers use the gallery's `layoutConfig.aspectRatio` (default `3/2`); the static fallback keeps 4:3 ([decision 0018](/decisions/0018-image-catalog-and-layout.md), superseding the fixed 4:3 of [0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)). In `Naturale` the cover uses the resolved cover image's ratio. `layoutConfig.coverSpacing` adds 0/8/16/24 px of padding around the cover inside its grid cell ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - 1 column on mobile / 2 from `sm` up, 8px gap on mobile and 16px from `md`.
 - Title hidden by default; on hover or focus it fades in at the center over a dark gradient.
@@ -75,14 +78,14 @@ sources:
 ### CollectionGrid (`src/components/CollectionGrid.component.tsx`)
 
 - Renders a `CollectionCoverData[]` prop (default: the static `COLLECTIONS`) as a responsive `Grid` (`xs: 12`, `sm: 6`).
-- Featured collections take the full row (`sm: 12`); the page sorts them first by `featuredOrder`.
+- Featured collections are pinned first; one featured spans 12 columns as a banner, two or more use the half-width pair ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - A full-width centered `Divider` labelled **LUOGHI** separates featured from the rest when both groups exist; 1 px solid lines, uppercase caption-size label ([Decision 0023](/decisions/0023-featured-gallery-divider.md)).
 - Applies `coverSpacing` as padding around each cover inside its cell.
 - Used by both `/` and `/gallery`.
 
 ### CollectionCover (`src/components/CollectionCover.component.tsx`)
 
-- `ProgressiveImage` cover with the collection's `aspectRatio` (4:3 for the static fallback), a centered uppercase title, hidden until hover or focus.
+- `ProgressiveImage` cover with the collection's `aspectRatio` (4:3 for the static fallback), a centered uppercase title hidden until hover or focus. The banner variant has no ratio so it fills the capped height ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - On hover or focus: the title fades in and rises into place over a 0.6–0.85 black gradient.
 - Hover: `brightness(0.86)` on the image; no scale, no entrance animation, no border/outline.
 

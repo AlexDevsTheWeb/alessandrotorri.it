@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
 * [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
 * [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
 * [0021 — Hide empty galleries and add visibility flags](/decisions/0021-visibility-and-empty-galleries.md) - `isVisible` on galleries and images, public filtering of hidden/empty content, explicit ratio precedence, smaller lightbox caption.

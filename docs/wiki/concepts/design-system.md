@@ -57,6 +57,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Semi-transparent background (`alpha(bg, 0.7)`).
 - Fixed; hides on scroll down and reveals on scroll up.
 - Triptych: desktop `Gallerie / {collection}` breadcrumb on the left, `Alessandro Torri` center, Instagram + YouTube + theme toggle right.
+- Logotype: `Instrument Serif`, uppercase, 1.1 rem with `0.24em` tracking on desktop and 0.9 rem with `0.16em` on mobile, at `alpha(text.primary, 0.82)` ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - The breadcrumb is hidden on mobile; only the menu button and centered logo remain.
 - The collection page does not repeat the breadcrumb in the body ([decision 0010](/decisions/0010-navbar-breadcrumb.md)).
 - Uppercase links at `0.75rem / 0.2em`; normal text is `alpha(text.primary, 0.65)`, hover is full `text.primary`.
@@ -83,6 +84,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Feed spacing comes from `layoutConfig.padding`: `none` 0, `small` 8 px, `medium` 16 px, `large` 24 px.
 - The gallery cover grid adds a per-gallery `coverSpacing` (0/8/16/24 px) inside the card cell, independent of the feed spacing ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - The featured block and the remaining galleries are separated by a centered `LUOGHI` divider: full-width, 1 px solid lines on both sides, uppercase `0.7rem` label with `0.35em` letter spacing in `text.secondary`, vertical margins 2/3 ([Decision 0023](/decisions/0023-featured-gallery-divider.md)).
+- Featured sizing follows the count: one featured gallery is a full-width banner with a fixed 240/320/420 px height and a panoramic crop; two or more are half-width cards using the gallery ratio ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - Every image is `object-fit: cover; object-position: center` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 - Caption is hidden by default and revealed on hover or keyboard focus.
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
@@ -101,9 +103,9 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 
 ## Footer
 
-- Single compact row: copyright + social icons, no top border.
-- `caption` typography, smaller than before.
-- Social icons hidden on mobile and available in the drawer instead.
+- Single compact row: copyright only, centered, no top border.
+- `caption` typography.
+- The Instagram and YouTube icons live in the navbar and mobile drawer, not the footer ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - No "Back to Top" text in the footer.
 
 ## Back to top

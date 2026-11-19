@@ -24,6 +24,9 @@ sources:
   - id: decision-0022
     resource: /decisions/0022-cover-spacing-and-photo-ratios.md
     title: Pick the cover from the gallery, split photo and gallery spacing, and let photo ratios drive the feed
+  - id: decision-0024
+    resource: /decisions/0024-featured-layout-logotype-admin-cleanup.md
+    title: Compact featured layout, serif logotype and one gallery edit path
 ---
 
 # Admin Dashboard
@@ -33,9 +36,9 @@ sources:
 
 ## Routes
 
-- `/admin` — `AdminDashboard`: gallery list, create/edit dialogs, delete confirmation. The dashboard also loads the image catalog so the edit dialog can offer the cover select.
+- `/admin` — `AdminDashboard`: gallery list, create dialog, delete confirmation. Editing an existing gallery happens only on its detail page; the old pen dialog was removed ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - `/admin/images` — `AdminImagesPage`: the image catalog, GitHub discovery, filters, inline edits, gallery assignment and the quick gallery modal.
-- `/admin/gallery/:galleryId` — `AdminGalleryDetailPage`: gallery fields, featured switch, layout config, catalog image assignment and ordering.
+- `/admin/gallery/:galleryId` — `AdminGalleryDetailPage`: the single edit surface — gallery fields, cover select, featured/visibility, layout, photo and gallery spacing, catalog image assignment and ordering.
 
 `AdminNav` gives the two sections plus "Vedi sito" and "Esci" on every admin page.
 
@@ -46,9 +49,9 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 ## AdminDashboard page
 
 - `useGalleryStore` fetches all galleries once on mount, ordered by `displayOrder`.
-- `GalleryList` renders the sortable list: cover thumbnail, name, a "In evidenza" chip, a "Nascosta" chip for hidden galleries, slug, image count, order, "Gestisci", edit and delete actions.
+- `GalleryList` renders the sortable list: cover thumbnail, name, a "In evidenza" chip, a "Nascosta" chip for hidden galleries, slug, image count, order, "Gestisci" and delete. There is no edit dialog.
 - Drag-and-drop calls `reorderGalleries`, which writes `displayOrder = index` for every gallery in one batch; the numeric field stays editable in the dialog.
-- "Nuova galleria" opens a dialog with `GalleryFields`; the slug is derived from the name until the owner edits it, then validated for pattern and uniqueness.
+- "Nuova galleria" opens a dialog with `GalleryFields` to create the document and then navigates to the detail page, which is the only editor ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - Delete asks for confirmation, deletes the document and detaches it from the catalog images.
 
 ## AdminImagesPage
@@ -78,7 +81,7 @@ Two public-read collections: `images` (the master catalog) and `galleries` (orde
 | Component | Role |
 |-----------|------|
 | `AdminNav` | Section tabs and session actions |
-| `GalleryList` | Sortable gallery list with featured badge and actions |
+| `GalleryList` | Sortable gallery list with featured/hidden badges, "Gestisci" and delete |
 | `GalleryFields` | Gallery form, featured and layout controls, cover preview |
 | `GalleryImageList` | Catalog assignment, cover star, ordering |
 | `GalleryEditor` | Detail-page draft, validation, save and feedback |
