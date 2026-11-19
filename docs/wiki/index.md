@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-19 — Release v1.0.0](/sources/2026-11-19-v1.0.md) - Release and CI/CD spec; verified facts, contradictions and the implemented workflows.
 * [2026-11-19 — UI and admin cleanup](/sources/2026-11-19-ui-and-admin-cleanup.md) - Featured banner/pair sizing, footer socials removed, serif logotype, single gallery edit path.
 * [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
 * [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.
@@ -44,6 +45,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0025 — Release v1.0.0 and CI/CD strategy](/decisions/0025-release-v1-and-ci-cd.md) - Version 1.0.0, preview/production workflows, rules deploy with hosting, main/tag after merge, raw layer untouched.
 * [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
 * [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
 * [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
@@ -87,12 +89,14 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 * [Agent Rules](/rules/agent-rules.md) - How agents work in this repo.
 * [The Usual Loop](/rules/workflow.md) - The standard end-to-end procedure.
+* [Release and Deployment](/rules/release-deployment.md) - CI/CD workflows, Firebase secrets, release/tag procedure and rollback.
 * [Firestore Permissions](/rules/firestore-permissions.md) - Diagnose "Missing or insufficient permissions" on gallery writes.
 * [Code Style](/rules/code-style.md) - TypeScript, React, MUI conventions.
 * [Git Conventions](/rules/git-conventions.md) - Commits, branches, PRs.
 
 ## Reviews
 
+* [2026-11-19 — v1.0.0 release report](/reviews/2026-11-19-v1.0.0-release.md) - Delivered capabilities, release mechanics, verification, contradictions and post-merge checklist.
 * [Image catalog and layout implementation report — 2026-11-17](/reviews/2026-11-17-image-catalog-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Admin galleries implementation report — 2026-11-16](/reviews/2026-11-16-admin-galleries-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Open items and library review — 2026-11-07](/reviews/2026-11-07-open-items.md) - Disposition of every open item, library status, accepted risks.

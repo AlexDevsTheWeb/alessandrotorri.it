@@ -2,6 +2,7 @@
 
 Audits and health checks, newest first.
 
+* [2026-11-19 — v1.0.0 release report](/reviews/2026-11-19-v1.0.0-release.md) - Delivered capabilities, release mechanics, verification, contradictions and post-merge checklist.
 * [2026-11-17 — Image catalog and layout implementation report](/reviews/2026-11-17-image-catalog-implementation.md) - Catalog, GitHub discovery, featured galleries and layout: evidence, deviations, risks, follow-ups.
 * [2026-11-16 — Admin galleries implementation report](/reviews/2026-11-16-admin-galleries-implementation.md) - What shipped, verification evidence, deviations, risks and follow-ups.
 * [2026-11-07 — Open items and library review](/reviews/2026-11-07-open-items.md) - Disposition of every open item, library status, accepted risks.

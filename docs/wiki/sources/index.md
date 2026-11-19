@@ -2,6 +2,7 @@
 
 One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issue read online. Each summary records what the source says, what it changed, and which wiki pages it touched.
 
+* [2026-11-19 — Release v1.0.0](/sources/2026-11-19-v1.0.md) - Release and CI/CD spec: verified facts, contradictions, implemented workflows and pending first deploy.
 * [2026-11-19 — UI and admin cleanup](/sources/2026-11-19-ui-and-admin-cleanup.md) - Featured banner/pair sizing, footer socials removed, serif logotype, single gallery edit path.
 * [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
 * [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.

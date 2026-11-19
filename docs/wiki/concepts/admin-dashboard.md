@@ -108,8 +108,8 @@ Every failed Firestore call logs `[galleries]` or `[images]` with operation, pat
 
 ## Known issues
 
-- Rules are in the repository but not confirmed deployed; the preflight banner is the check ([Firebase Backend](/concepts/firebase-backend.md), issue #3).
-- Drag-and-drop, the GitHub call, inline editing and bulk indexing have only been type-checked and built; no browser or live-project run was possible in this session.
+- The admin writes succeed against the live project; `deploy.yml` deploys the repository rules on `v*` tags, so a release keeps them in sync.
+- Indexing, assignment, detach, visibility, cover, ratio and layout saves have been exercised live. Drag-and-drop, the GitHub scan under rate limits and a rules denial for a second account are still not verified.
 - `public/galleries/` holds only the owner's first upload; the catalog stays effectively empty until the photos are committed and indexed.
 
 ## Related

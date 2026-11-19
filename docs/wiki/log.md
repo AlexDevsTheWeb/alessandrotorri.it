@@ -1,13 +1,19 @@
 # Knowledge Bundle Update Log
 
 ## 2026-11-19
+* **Release v1.0.0 prepared**: `package.json`/lockfile at `1.0.0`; new `typecheck` script; `ci.yml` runs lint + typecheck + build; `preview.yml` deploys PR preview channels; `deploy.yml` deploys `firestore.rules` then Firebase Hosting `live` on `main`/`v*`; `firebase.json` gained Hosting (`dist`, SPA rewrite) and `.firebaserc` pins `alessandrotorri-it`.
+* **Spec deviations**: the requested `docs/raw/2026-11-18-release-v1.0.md` was not written (raw is immutable); the release summary lives in [reviews](/reviews/2026-11-19-v1.0.0-release.md). Issues #1/#2/#3/#14 were already closed and were not re-closed. The overview says "release prepared, first deploy pending" rather than "Stable Production" because no deploy has run. `main`, the `v1.0.0` tag and the first deploy are post-merge steps.
+* **Decision**: [0025 — Release v1.0.0 and CI/CD strategy](/decisions/0025-release-v1-and-ci-cd.md).
+* **Wiki**: added the [source summary](/sources/2026-11-19-v1.0.md), decision 0025, the [release and deployment playbook](/rules/release-deployment.md) and the [v1.0.0 release report](/reviews/2026-11-19-v1.0.0-release.md); updated [Rebuild Plan](/rebuild-plan.md) (Phase 6 done, Phase 8 added), [Overview](/overview.md), AGENTS, README and the indexes.
+* **Verify**: `npm run lint`, `npm run typecheck` and `npm run build` pass; the three workflow files parse as YAML. The Firebase deploy steps were not executed (no service account here) and the Hosting site existence was not verified.
+* **Next**: merge the release PR, add `FIREBASE_SERVICE_ACCOUNT`, create `main`, tag `v1.0.0`, run the first deploy and the deployed Lighthouse check (#22).
 * **Featured sizing**: with one featured gallery the cover is a full-width banner capped at 240/320/420 px (xs/sm/md) with a panoramic crop; with two or more, featured galleries render half-width as a pair using the gallery ratio. `GalleryFields` explains the behavior. No new field: the count decides.
 * **Header and footer**: the footer keeps only the copyright; Instagram and YouTube remain in the navbar/drawer. The logotype is Instrument Serif, uppercase, 1.1 rem/0.24em (0.9/0.16 on mobile).
 * **Admin**: removed the pen edit dialog and the `onEdit` path from `GalleryList`/`AdminDashboard`. `Nuova galleria` remains as a creation dialog and navigates to the detail page, now the only edit surface (fields, cover, images, ordering).
 * **Decision**: [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md).
 * **Wiki**: added the [source summary](/sources/2026-11-19-ui-and-admin-cleanup.md) and decision 0024; updated [Gallery System](/concepts/gallery-system.md), [Design System](/concepts/design-system.md), [Admin Dashboard](/concepts/admin-dashboard.md), [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md) and the indexes.
 * **Verify**: `npm run lint` and `npm run build` pass. Headless Chrome: the footer has no social links, the logotype computes to Instrument Serif with 4.224 px tracking and uppercase, the live single featured banner is 1136×404, and a mock with two featured galleries renders 568×320 each beside 568×379 regular covers.
-* **Next**: add a second featured (or unfeature the current one) to exercise the pair layout; deploy the rules (issue #3).
+* **Next**: add a second featured (or unfeature the current one) to exercise the pair layout; the release workflow now deploys the rules on tags.
 
 ## 2026-11-18
 * **Featured divider**: the shared grid now renders featured galleries first, then a full-width centered `Divider` labelled **LUOGHI** (1 px solid lines, uppercase 0.7 rem, 0.35em tracking), then the remaining galleries. The divider appears only when both groups exist. Applies to `/` and `/gallery` for parity.
