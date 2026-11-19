@@ -23,6 +23,10 @@ VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
+
+# Optional: repository discovery for /admin/images (defaults shown)
+# VITE_GITHUB_REPO=AlexDevsTheWeb/alessandrotorri.it
+# VITE_GITHUB_BRANCH=development
 ```
 
 `.env` is gitignored. Never commit credentials.
@@ -55,8 +59,8 @@ Every new raw source, GitHub issue, feature, or bug goes through the usual loop:
 ## Status
 
 - Knowledge foundation: done 2026-10-29 (OKF wiki, agent schema, skills, green baseline).
-- Public rebuild: phases 0–5 done; gallery admin done 2026-11-16. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
-- Open work: deploy the Firestore rules and seed galleries (#3), deployed Lighthouse (#14), remaining majors (#6 / #20 / #21 / #22).
+- Public rebuild: phases 0–5 done; gallery admin done 2026-11-16; image catalog, GitHub discovery and layout controls done 2026-11-17. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
+- Open work: deploy the Firestore rules and seed the catalog (#3), deployed Lighthouse (#14), remaining majors (#6 / #20 / #21 / #22).
 
 ## License
 

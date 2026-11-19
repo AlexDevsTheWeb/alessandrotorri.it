@@ -1,8 +1,8 @@
 ---
 type: Reference
 title: State Management
-description: Zustand stores for authentication, theme and gallery administration.
-tags: [state, zustand, auth, theme, galleries]
+description: Zustand stores for authentication, theme, gallery administration and the image catalog.
+tags: [state, zustand, auth, theme, galleries, images]
 status: stable
 generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-16T00:00:00Z }
 ---
@@ -47,19 +47,36 @@ generated: { by: opencode/deepseek-v4.1-flash, at: 2026-11-16T00:00:00Z }
 | Action | Description |
 |--------|-------------|
 | `fetchGalleries()` | Read all galleries, sorted |
+| `checkAdminAccess(uid)` | Preflight `admins/{uid}` and expose `adminStatus` |
 | `createGallery(draft?)` | Create a document, refetch, return the id |
-| `saveGallery(id, draft)` | Persist the whole gallery (fields + images), refetch |
-| `deleteGallery(id)` | Delete the document, drop it locally |
+| `saveGallery(id, draft)` | Persist the gallery plus the membership diff in one batch, refetch |
+| `deleteGallery(id)` | Delete the document, detach it from catalog images, drop it locally |
 | `reorderGalleries(ids)` | Optimistic order update, then batch `displayOrder = index` |
 
-All Firestore access goes through `src/services/galleries.service.ts`; the store never handles raw documents. The service is also the module the public hook loads lazily, which keeps Firestore out of the public entry bundle.
+## Image store (`src/store/imageStore.ts`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `images` | `CatalogImage[]` | Catalog sorted by filename |
+| `status` | `'idle' \| 'loading' \| 'ready' \| 'error'` | Fetch lifecycle |
+| `error` | `string \| null` | Last read/write error, shown as an alert |
+
+| Action | Description |
+|--------|-------------|
+| `fetchImages()` | Read the catalog |
+| `indexImage(file)` | Create the catalog document for a repository file, refetch |
+| `indexImages(files)` | Index a batch, one refetch at the end |
+| `saveImage(id, patch)` | Persist metadata, refetch |
+| `assignToGallery(imageId, galleryId)` | Add to both indexes in one batch, refetch |
+
+All Firestore access goes through `src/services/` (`galleries.service.ts`, `images.service.ts`, `githubImages.service.ts`); the stores never handle raw documents. The gallery and image services are also what the public hook loads lazily, which keeps Firestore out of the public entry bundle.
 
 ## Pattern
 
 - Zustand over Redux for minimal boilerplate.
 - No middleware and no persistence — the theme resets on reload.
 - Theme is consumed through MUI `ThemeProvider` in `src/App.tsx`.
-- Public pages do not use the gallery store: `usePublicGalleries` keeps local state and dynamically imports the service, so the public read path never blocks first paint ([Gallery System](/concepts/gallery-system.md)).
+- Public pages do not use the gallery store: `usePublicGalleries` keeps local state and dynamically imports the gallery and image services, so the public read path never blocks first paint ([Gallery System](/concepts/gallery-system.md)).
 
 ## Related
 

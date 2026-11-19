@@ -4,11 +4,12 @@ import {
   createEmptyDraft,
   createGallery as createGalleryDocument,
   deleteGallery as deleteGalleryDocument,
-  describeGalleryError,
   fetchGalleries,
   reorderGalleries as reorderGalleryDocuments,
   saveGallery as saveGalleryDocument,
 } from '../services/galleries.service';
+import { describeFirestoreError } from '../services/firestore.service';
+import { clearPublicGalleriesCache } from '../services/publicGalleries.service';
 import type {
   AdminAccessStatus,
   Gallery,
@@ -44,7 +45,7 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
       const galleries = await fetchGalleries();
       set({ galleries: [...galleries].sort(byDisplayOrder), status: 'ready' });
     } catch (error) {
-      set({ status: 'error', error: describeGalleryError(error) });
+      set({ status: 'error', error: describeFirestoreError(error) });
     }
   },
 
@@ -62,21 +63,24 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
     set({ error: null });
     try {
       const id = await createGalleryDocument(draft ?? createEmptyDraft(get().galleries.length));
+      clearPublicGalleriesCache();
       await get().fetchGalleries();
       return id;
     } catch (error) {
-      set({ error: describeGalleryError(error) });
+      set({ error: describeFirestoreError(error) });
       throw error;
     }
   },
 
   saveGallery: async (id, draft) => {
     set({ error: null });
+    const previous = get().galleries.find((gallery) => gallery.id === id);
     try {
-      await saveGalleryDocument(id, draft);
+      await saveGalleryDocument(id, draft, previous?.imageIds ?? []);
+      clearPublicGalleriesCache();
       await get().fetchGalleries();
     } catch (error) {
-      set({ error: describeGalleryError(error) });
+      set({ error: describeFirestoreError(error) });
       throw error;
     }
   },
@@ -85,9 +89,10 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
     set({ error: null });
     try {
       await deleteGalleryDocument(id);
+      clearPublicGalleriesCache();
       set((state) => ({ galleries: state.galleries.filter((gallery) => gallery.id !== id) }));
     } catch (error) {
-      set({ error: describeGalleryError(error) });
+      set({ error: describeFirestoreError(error) });
       throw error;
     }
   },
@@ -106,8 +111,9 @@ export const useGalleryStore = create<GalleryStore>((set, get) => ({
       await reorderGalleryDocuments(
         next.map(({ id, displayOrder }) => ({ id, displayOrder })),
       );
+      clearPublicGalleriesCache();
     } catch (error) {
-      set({ galleries: previous, error: describeGalleryError(error) });
+      set({ galleries: previous, error: describeFirestoreError(error) });
       throw error;
     }
   },

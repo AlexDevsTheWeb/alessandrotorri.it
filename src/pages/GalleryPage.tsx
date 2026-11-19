@@ -1,15 +1,20 @@
+import { Container, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import CollectionGrid from '../components/CollectionGrid.component';
+import PageLoader from '../components/PageLoader.component';
 import { COLLECTIONS } from '../data/collections.data';
-import { galleryToCover } from '../data/galleries.mapper';
+import { galleryToCover, sortFeaturedFirst } from '../data/galleries.mapper';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { usePublicGalleries } from '../hooks/usePublicGalleries';
 
 const GalleryPage: React.FC = () => {
-  const { galleries } = usePublicGalleries();
+  const { galleries, isReady, hasRemoteGalleries } = usePublicGalleries();
   const collections = useMemo(
-    () => (galleries.length > 0 ? galleries.map(galleryToCover) : COLLECTIONS),
-    [galleries],
+    () =>
+      sortFeaturedFirst(
+        hasRemoteGalleries ? galleries.map(galleryToCover) : COLLECTIONS,
+      ),
+    [galleries, hasRemoteGalleries],
   );
 
   usePageMeta({
@@ -17,6 +22,16 @@ const GalleryPage: React.FC = () => {
     description: 'Le nove collezioni di fotografia di paesaggio e lunga esposizione di Alessandro Torri.',
     path: '/gallery',
   });
+
+  if (!isReady) return <PageLoader />;
+
+  if (collections.length === 0) {
+    return (
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, textAlign: 'center' }}>
+        <Typography color="text.secondary">Nessuna galleria pubblicata.</Typography>
+      </Container>
+    );
+  }
 
   return <CollectionGrid collections={collections} />;
 };

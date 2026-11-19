@@ -21,6 +21,13 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-19 — UI and admin cleanup](/sources/2026-11-19-ui-and-admin-cleanup.md) - Featured banner/pair sizing, footer socials removed, serif logotype, single gallery edit path.
+* [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
+* [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.
+* [2026-11-18 — Visibility and ratio polish](/sources/2026-11-18-visibility-and-polish.md) - Empty galleries hidden, visible/not-visible flags for galleries and photos, ratio precedence clarified, smaller lightbox caption.
+* [2026-11-18 — Gallery removal and home flash](/sources/2026-11-18-gallery-removal-and-home-flash.md) - Assigned photos could not be removed from the image card; the home grid flashed the static placeholders before Firestore on every visit.
+* [2026-11-18 — Missing image preview](/sources/2026-11-18-image-preview.md) - A photo uploaded on GitHub is listed by discovery but previews from the local path; fixed with a GitHub raw fallback.
+* [2026-11-17 — Image catalog, GitHub discovery and layout](/sources/2026-11-17-admin-galleries-v2.md) - Master `images` catalog, repository discovery, `/admin/images` filters, cover designation, featured galleries and layout config.
 * [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - "Missing or insufficient permissions" on gallery writes: payload/rules verified, cause is the admins/{uid} gate or undeployed rules; diagnostics added.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review, Firestore galleries, static repository images, admin CRUD/ordering, public read with fallback.
 * [2026-10-29 — Rebuild charter](/sources/2026-10-29-rebuild.md) - The owner's goals, wiki/agent model, and execution order.
@@ -37,6 +44,13 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
+* [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
+* [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
+* [0021 — Hide empty galleries and add visibility flags](/decisions/0021-visibility-and-empty-galleries.md) - `isVisible` on galleries and images, empty/hidden galleries filtered from the public site, explicit ratio precedence, smaller lightbox caption.
+* [0020 — Detach images directly and cache public gallery reads](/decisions/0020-gallery-detach-and-public-cache.md) - Removable gallery chips with atomic detach and cover promotion; cached public reads with a loader instead of a placeholder flash.
+* [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md) - Repository previews retry via raw.githubusercontent.com when the file is not in the checkout; public rendering unchanged.
+* [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - `images` catalog, gallery `imageIds`, GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured failure logs, actionable errors and an admins/{uid} preflight; rules stay strict.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Storage uploads replaced; galleries collection, embedded images, public read with fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.
@@ -60,13 +74,13 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 * [Site Architecture](/concepts/site-architecture.md) - Routing, pages, layout shell.
 * [Tech Stack](/concepts/tech-stack.md) - Frameworks, libraries, toolchain.
 * [Firebase Backend](/concepts/firebase-backend.md) - Auth, Firestore galleries, rules (no Storage).
-* [Photo Management](/concepts/photo-management.md) - Gallery schema, static image assets, ordering.
+* [Photo Management](/concepts/photo-management.md) - Master image catalog, gallery membership, ordering, GitHub discovery.
 * [Photo Storage and Backend Options](/concepts/photo-storage-options.md) - Is Firebase the right fit, cost comparison, and alternatives (draft; image storage resolved).
-* [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, progressive images.
+* [Gallery System](/concepts/gallery-system.md) - Public gallery, feed, lightbox, featured covers, layout config, progressive images.
 * [Design System](/concepts/design-system.md) - MUI theme, typography, color, responsiveness.
 * [SEO and Metadata](/concepts/seo-metadata.md) - Titles, canonical, Open Graph, robots and sitemap.
 * [State Management](/concepts/state-management.md) - Zustand stores.
-* [Admin Dashboard](/concepts/admin-dashboard.md) - Gallery CRUD, ordering, image assignment and previews.
+* [Admin Dashboard](/concepts/admin-dashboard.md) - Gallery CRUD, image catalog, GitHub discovery, covers, featured and layout controls.
 * [Project Roadmap](/concepts/roadmap.md) - Original phased plan (deprecated).
 
 ## Rules
@@ -79,6 +93,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 
 ## Reviews
 
+* [Image catalog and layout implementation report — 2026-11-17](/reviews/2026-11-17-image-catalog-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Admin galleries implementation report — 2026-11-16](/reviews/2026-11-16-admin-galleries-implementation.md) - Delivered scope, verification evidence, deviations, risks and follow-ups.
 * [Open items and library review — 2026-11-07](/reviews/2026-11-07-open-items.md) - Disposition of every open item, library status, accepted risks.
 * [Docs and baseline audit — 2026-10-29](/reviews/2026-10-29-docs-audit.md) - Keep/update/archive verdicts and baseline fix.

@@ -2,6 +2,13 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
+* [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
+* [0022 — Cover picker, gallery spacing and photo ratios](/decisions/0022-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, separate cover spacing, photo ratio wins in the feed.
+* [0021 — Hide empty galleries and add visibility flags](/decisions/0021-visibility-and-empty-galleries.md) - `isVisible` on galleries and images, public filtering of hidden/empty content, explicit ratio precedence, smaller lightbox caption.
+* [0020 — Detach images directly and cache public gallery reads](/decisions/0020-gallery-detach-and-public-cache.md) - Removable gallery chips with atomic detach and cover promotion; cached public reads with a loader.
+* [0019 — Admin previews fall back to the GitHub raw URL](/decisions/0019-admin-image-preview-fallback.md) - Repository previews retry through raw.githubusercontent.com when the file is not in the checkout; public rendering unchanged.
+* [0018 — Master image catalog, GitHub discovery and per-gallery layout controls](/decisions/0018-image-catalog-and-layout.md) - Images catalog with `galleryIds`, galleries reference `imageIds`; GitHub discovery, covers, featured galleries, layout config.
 * [0017 — Diagnose Firestore permission failures in the client](/decisions/0017-firestore-permission-diagnostics.md) - Structured logs, actionable errors, admins/{uid} preflight; no rule relaxation.
 * [0016 — Manage galleries in Firestore with static repository images](/decisions/0016-gallery-management.md) - Replaces Storage uploads; galleries collection, embedded images, public read with static fallback.
 * [0015 — Adopt Vite 8, ESLint 10, uuid 14 and globals 17; defer TypeScript 7 and Firebase 13](/decisions/0015-dependency-majors-batch.md) - Majors evaluated one at a time; TypeScript 7 blocked by typescript-eslint.

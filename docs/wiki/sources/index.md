@@ -2,6 +2,13 @@
 
 One page per ingested source, whether a raw file in `docs/raw/` or a GitHub issue read online. Each summary records what the source says, what it changed, and which wiki pages it touched.
 
+* [2026-11-19 — UI and admin cleanup](/sources/2026-11-19-ui-and-admin-cleanup.md) - Featured banner/pair sizing, footer socials removed, serif logotype, single gallery edit path.
+* [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
+* [2026-11-18 — Cover, spacing and photo ratios](/sources/2026-11-18-cover-spacing-and-photo-ratios.md) - Cover chosen from the gallery's photos, a separate gallery spacing, and photo ratios respected in the feed.
+* [2026-11-18 — Visibility and ratio polish](/sources/2026-11-18-visibility-and-polish.md) - Empty galleries hidden, visible/not-visible flags for galleries and photos, ratio precedence clarified, smaller lightbox caption.
+* [2026-11-18 — Gallery removal and home flash](/sources/2026-11-18-gallery-removal-and-home-flash.md) - Assigned photos could not be removed from the image card; the home grid flashed the static placeholders before Firestore.
+* [2026-11-18 — Missing image preview](/sources/2026-11-18-image-preview.md) - A photo uploaded on GitHub is listed by discovery but previews from the local path; the checkout, not the upload, was the gap.
+* [2026-11-17 — Image catalog, GitHub discovery and layout](/sources/2026-11-17-admin-galleries-v2.md) - Master `images` catalog, repository discovery, `/admin/images` filters, cover designation, featured galleries and layout config.
 * [2026-11-16 — Firestore permission check](/sources/2026-11-16-firestore-check.md) - Gallery writes denied: payload and rules verified in the emulator; admins/{uid} and deployment are the real gates.
 * [2026-10-29 — Personal Website Rebuild Charter](/sources/2026-10-29-rebuild.md) - Owner charter that defines the rebuild goal, wiki/agent model, and execution order.
 * [2026-11-16 — Admin gallery management](/sources/2026-11-16-admin-galleries.md) - PR #23 review plus Firestore galleries, static repository images, admin CRUD/ordering, and public read with fallback.

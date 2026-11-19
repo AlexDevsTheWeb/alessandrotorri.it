@@ -7,16 +7,21 @@ import ProgressiveImage from './ProgressiveImage.component';
 interface CollectionCoverProps {
   collection: CollectionCoverData;
   priority?: boolean;
+  banner?: boolean;
 }
 
-const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority = false }) => (
-  <Box
+const CollectionCover: React.FC<CollectionCoverProps> = ({
+  collection,
+  priority = false,
+  banner = false,
+}) => (  <Box
     component={Link}
     to={`/gallery/${collection.slug}`}
     aria-label={collection.title}
     sx={{
       position: 'relative',
       display: 'block',
+      height: banner ? '100%' : undefined,
       overflow: 'hidden',
       color: 'text.primary',
       textDecoration: 'none',
@@ -37,12 +42,15 @@ const CollectionCover: React.FC<CollectionCoverProps> = ({ collection, priority 
       },
     }}
   >
-    <Box className="collection-cover-media" sx={{ transition: 'filter 0.3s ease' }}>
+    <Box
+      className="collection-cover-media"
+      sx={{ height: banner ? '100%' : undefined, transition: 'filter 0.3s ease' }}
+    >
       <ProgressiveImage
         src={collection.cover}
         placeholder={collection.placeholder}
         alt={collection.title}
-        ratio="4/3"
+        ratio={banner ? undefined : (collection.aspectRatio ?? '4/3')}
         priority={priority}
       />
     </Box>

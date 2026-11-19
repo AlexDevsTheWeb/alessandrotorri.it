@@ -16,6 +16,9 @@ sources:
 
 # 0016 — Manage galleries in Firestore with static repository images
 
+> [!NOTE] Partly superseded
+> The embedded `images` array described here was replaced on 2026-11-17 by the master `images` catalog and gallery `imageIds` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)). The static-asset strategy, the removal of Firebase Storage and the public fallback still stand.
+
 ## Context
 
 The administrator section was written against a flat Firestore `images` collection plus Firebase Storage uploads. The public site meanwhile reads a static Adobe CDN dataset, so the admin managed data nobody displayed. Storage also brings Blaze billing, an upload pipeline we do not need for ~100 photos, and an egress cost that [Photo Storage and Backend Options](/concepts/photo-storage-options.md) flagged as Firebase's weak point.

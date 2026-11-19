@@ -1,197 +1,147 @@
-# Implementation Plan — PR #23 review and dynamic gallery management
+# Implementation Plan — Image catalog, GitHub discovery, featured galleries and layout controls
 
-Source: [`docs/raw/2026-11-16-admin-galleries.md`](docs/raw/2026-11-16-admin-galleries.md)
-Branch: `feat/admin-galleries` (stacked on `docs/open-items-review`, PR #23)
-Date: 2026-11-16
+Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](docs/raw/2026-11-17-admin-galleries-v2.md)
+Branch: `feat/image-catalog-and-layout`
+Date: 2026-11-17
 
-## 1. Preliminary task — PR #23 assessment
+## 1. Analysis
 
-| Item | Finding |
-|------|---------|
-| PR | [#23](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/23) — `docs: open items review, library updates and backend options` |
-| State | Open, **draft**, `mergeStateStatus: CLEAN`, CI `verify` **passed** |
-| Base | `development` — the repository has **no `main` branch**; `development` is the default and the target of every previous PR |
-| Head | `docs/open-items-review`, 3 commits |
-| Diff | `zustand` 5.0.16 → 5.1.0 and `@types/node` 24 → 22 (package.json + lockfile), the 2026-11-07 open-items review, the photo-storage options concept, source summary for issue #14, and wiki index/log/plan updates |
-| Pending infra | None. It carries no Firestore rules, hosting or admin changes |
-| Recommendation | **Merge #23 into `development` first**, then rebase this branch onto `development`. It is a small docs + dependency slice, already green. Until it merges, this branch is stacked on it to avoid conflicts in the wiki files that both branches touch |
+The source expands the gallery admin delivered on 2026-11-16 into a photo-first workflow:
 
-Contradiction with the raw source: it asks to compare PR #23 against `main`. No `main` exists; `development` is the integration branch ([Git Conventions](/docs/wiki/rules/git-conventions.md), [Decision 0004](/docs/wiki/decisions/0004-wiki-layout.md)).
+1. a master `images` catalog in Firestore, indexed by filename;
+2. GitHub REST discovery of the files already committed to `public/galleries/`, so unindexed photos are visible in the admin;
+3. a dedicated `/admin/images` screen with completeness filters, inline edits and gallery assignment;
+4. cover designation from the gallery's own images;
+5. featured galleries pinned full-width at the top of the homepage;
+6. per-gallery layout config (aspect ratio, grid padding) and strict `object-fit: cover` rendering;
+7. Firestore rules for `images` and the new gallery fields.
 
-## 2. Scope
+### Contradictions and resolutions
 
-In scope:
+| Contradiction | Resolution |
+|---------------|------------|
+| [Decision 0016](/docs/wiki/decisions/0016-gallery-management.md) rejected a separate `images` collection and chose embedded images. | The new source asks for a reusable catalog with `galleryIds`. [Decision 0018](/docs/wiki/decisions/0018-image-catalog-and-layout.md) adopts the catalog and supersedes the embedded-image parts of 0016. Galleries keep an ordered `imageIds` array; image metadata lives once in `images`. |
+| [Decision 0012](/docs/wiki/decisions/0012-gallery-hover-titles-and-copy-guard.md) locked 4:3 covers. | Covers now use the gallery's `layoutConfig.aspectRatio` (default `3/2`, as the source specifies). The static fallback dataset keeps 4:3. |
+| The source repeats "React 19, Vite 7, MUI v7"; the repository runs Vite 8, MUI 9. | Follow the repository ([Tech Stack](/docs/wiki/concepts/tech-stack.md), decisions 0006 and 0015). |
+| The source says gallery documents carry `id`. | The codebase maps the Firestore document id explicitly and never stores it (decision 0016, [Photo Management](/docs/wiki/concepts/photo-management.md)). Kept as-is. Same for `images`. |
 
-1. Replace the Firebase Storage upload admin with gallery management backed by Firestore (`galleries` collection) and static repository assets under `public/galleries/`.
-2. Gallery CRUD: create, edit, delete, reorder (drag and drop plus explicit `displayOrder`).
-3. Image assignment inside a gallery: static path, title/caption, alt text, aspect ratio, live thumbnail, drag-and-drop ordering.
-4. Zustand store (`useGalleryStore`) for admin state and writes.
-5. Public read path: `/` and `/gallery` render Firestore galleries, falling back to the existing static CDN dataset when Firestore is empty or unreachable; `/gallery/:slug` renders the gallery images with the same fallback.
-6. Firestore security rules: public read of `galleries`, admin-only writes via the existing `admins/{uid}` allowlist.
-7. Removal of the legacy `images`/Storage admin code and rules.
-8. Wiki update, decision record and draft PR.
+### Requirements and acceptance criteria
 
-Out of scope:
+- `images/{imageId}` documents: `filename`, `path`, `title`, `description`, `alt`, `aspectRatio`, `galleryIds`, timestamps. Document id derived from the sanitized filename so GitHub sync is idempotent.
+- `galleries` documents: the previous fields plus `isFeatured`, `featuredOrder`, `coverImageId`, `imageIds`, `layoutConfig { aspectRatio, padding }`.
+- `/admin/images` (protected): filters *Tutte*, *Nuove / non indicizzate*, *Senza titolo*, *Senza descrizione*, *Non assegnate*; inline title/description/alt editing; gallery assignment; "+ Nuova galleria" quick modal.
+- GitHub discovery of `GET /repos/AlexDevsTheWeb/alessandrotorri.it/contents/public/galleries`, cross-referenced with the catalog.
+- Gallery editor: assign catalog images, reorder, remove, set the cover, toggle featured, set the layout config.
+- Homepage: featured galleries first, full width; the rest in the standard two-column grid.
+- `/gallery/:slug`: the layout config drives the feed ratio and spacing; every image uses `object-fit: cover; object-position: center`.
+- `firestore.rules`: public read and admin-only validated writes for `images`; the new gallery fields validated.
+- Lint and build green; wiki, decision and log updated; draft PR against `development`.
 
-- Uploading binaries from the browser. Images are committed to `public/galleries/` and deployed by the static host; the admin references their web paths.
-- Migrating the existing 89 CDN photos into `public/galleries/`.
-- `@hello-pangea/dnd` alternatives, new dependencies, Tailwind/CSS modules.
-- Deploying the rules (owner action, tracked in issue #3).
+Out of scope: browser uploads (files stay in `public/galleries/`), migrating the CDN photos, authenticated GitHub calls, new dependencies.
 
-## 3. Architecture
-
-### 3.1 Storage strategy
-
-Images live in `public/galleries/`, are served from the site origin (`/galleries/<file>.webp`) and deployed with the existing hosting pipeline. Firestore stores only metadata and the web path. This removes Firebase Storage from the runtime path and its egress/space limits, which is the cost goal of the raw source.
-
-### 3.2 Firestore schema
-
-Collection `galleries`, one document per gallery:
+## 2. Data model
 
 ```ts
+// images/{imageId}
+interface CatalogImage {
+  id: string;                 // sanitized filename, not stored in the document
+  filename: string;           // italia-dolomiti-01.webp
+  path: string;               // /galleries/italia-dolomiti-01.webp
+  title: string;
+  description: string;
+  alt: string;
+  aspectRatio: ImageAspectRatio; // 16:9 | 3:2 | 4:3 | 1:1 | auto
+  galleryIds: string[];
+  createdAt: Timestamp | null;
+  updatedAt: Timestamp | null;
+}
+
+// galleries/{galleryId}
 interface Gallery {
   id: string;
   name: string;
   slug: string;
   description: string;
   displayOrder: number;
+  isFeatured: boolean;
+  featuredOrder: number;
+  coverImageId: string;
   coverImageUrl: string;
-  images: GalleryImage[];
+  imageIds: string[];
+  layoutConfig: { aspectRatio: ImageAspectRatio; padding: 'none' | 'small' | 'medium' | 'large' };
   createdAt: Timestamp | null;
   updatedAt: Timestamp | null;
 }
+```
 
-interface GalleryImage {
-  id: string;
-  url: string;
-  title: string;
-  alt: string;
-  ratio: string;
-  order: number;
+Notes:
+
+- `galleryIds` and `imageIds` are maintained together in one Firestore batch on every membership change, so the two indexes agree.
+- `coverImageUrl` is denormalized from the catalog so the public grid can paint without resolving the catalog; `coverImageId` stays authoritative in the admin.
+- Legacy gallery documents with an embedded `images` array are still read (public mapper falls back) but the admin saves only the new shape. Galleries are not seeded yet, so no production data migrates.
+- Read stats: one `getDocs` per collection; the catalog is ~100 documents.
+
+## 3. GitHub discovery
+
+- `src/services/githubImages.service.ts` calls the contents endpoint with `VITE_GITHUB_REPO` (default `AlexDevsTheWeb/alessandrotorri.it`) and `VITE_GITHUB_BRANCH` (default `development`).
+- Unauthenticated request, public repository. No token in the bundle.
+- Supported extensions: `.webp`, `.jpg`, `.jpeg`, `.png`, `.avif`.
+- A 403/429 is surfaced as a rate-limit message with a retry action; the rest of the admin keeps working.
+- Unindexed files are rendered as stubs with an "Indicizza" action that creates the catalog document.
+
+## 4. Routes and components
+
+| Route | Component | Change |
+|-------|-----------|--------|
+| `/admin` | `AdminDashboard` | shared admin nav, featured badge in the list |
+| `/admin/gallery/:galleryId` | `AdminGalleryDetailPage` | loads the catalog for assignment |
+| `/admin/images` | `AdminImagesPage` (new) | catalog, GitHub sync, filters, assignment |
+
+New components: `AdminNav`, `ImageCatalogCard` (the filter toolbar is inline in `AdminImagesPage`). Rewritten: `GalleryImageList` (catalog assignment, cover picker), `GalleryFields` (featured + layout). Updated: `CollectionGrid` (featured, per-cover ratio), `CollectionCover` (ratio), `CollectionPage` (ratio + spacing), `ProgressiveImage` (object-position).
+
+State: `useImageStore` (catalog CRUD, indexing, assignment) next to `useGalleryStore`; `usePublicGalleries` joins galleries and catalog for the public pages.
+
+## 5. Rules
+
+```
+match /images/{imageId} {
+  allow read: if true;
+  allow create, update: if isAdmin() && isValidImage();
+  allow delete: if isAdmin();
 }
-```
 
-Design notes:
-
-- `slug` is added to the raw source's field list because the public route is `/gallery/:slug`; it is the stable URL segment and must be unique.
-- `images` is an embedded array so a gallery and its ordering are one atomic document. Firestore caps a document at 1 MiB; the rules cap the array at 500 entries, which is far above the real gallery size.
-- `ratio` is added so the public Masonry feed can reserve space before the image loads (avoids CLS). Default `3/2`.
-- `order` mirrors the array index and is normalized on every save; the array order is authoritative.
-
-### 3.3 Security rules
-
-```
 match /galleries/{galleryId} {
   allow read: if true;
-  allow write: if isAdmin() && isValidGallery();
+  allow create, update: if isAdmin() && isValidGallery();
+  allow delete: if isAdmin();
 }
 ```
 
-`isValidGallery()` checks field types, slug shape and the image-list cap. The legacy `images` match block is removed, so the catch-all denies it. `storage.rules` and the Storage client are removed because nothing uploads to the bucket anymore.
+`isValidImage()` and `isValidGallery()` validate types, the required timestamp and the allowed enum values for `aspectRatio` and `padding`.
 
-### 3.4 State management
-
-- `src/store/galleryStore.ts` — Zustand store: `galleries`, `isLoading`, `error`, `fetchGalleries`, `createGallery`, `saveGallery`, `deleteGallery`, `reorderGalleries`.
-- `src/services/galleries.service.ts` — the only module that touches Firestore for galleries; pure `normalizeGallery` / draft helpers live next to it.
-- `src/hooks/usePublicGalleries.ts` — public read hook. It **dynamically imports** the service after mount, so Firestore stays out of the public critical-path bundle and the current `firebase-data` split is preserved. It never blocks first paint: the static dataset renders immediately and Firestore overrides it once loaded when it has galleries.
-
-## 4. Component hierarchy and file plan
-
-### New files
-
-| File | Role |
-|------|------|
-| `src/types/gallery.types.ts` | `Gallery`, `GalleryImage`, `GalleryOrder`, `GalleryDraft`, `GalleryImageDraft` |
-| `src/services/galleries.service.ts` | Firestore reads/writes, normalization, slug helpers |
-| `src/store/galleryStore.ts` | Zustand gallery store |
-| `src/hooks/usePublicGalleries.ts` | Public read hook with static fallback semantics |
-| `src/data/galleries.mapper.ts` | `Gallery` → `CollectionCover` and → `CollectionPhoto` mapping for the public pages |
-| `src/components/GalleryFields.component.tsx` | Shared form fields (name, slug, description, cover path + preview, display order) |
-| `src/components/GalleryList.component.tsx` | Sortable gallery list with edit/delete/open actions |
-| `src/components/GalleryImageList.component.tsx` | Sortable image rows with live preview, URL/title/alt/ratio inputs, add row |
-| `src/components/GalleryEditor.component.tsx` | Detail-page editor: fields + images + dirty tracking + save |
-| `src/pages/AdminGalleryDetailPage.tsx` | `/admin/gallery/:galleryId` page shell |
-| `docs/wiki/sources/2026-11-16-admin-galleries.md` | Source summary |
-| `docs/wiki/decisions/0016-gallery-management.md` | Decision record |
-| `IMPLEMENTATION_PLAN.md` | This document |
-
-### Modified files
-
-| File | Change |
-|------|--------|
-| `src/pages/AdminDashboard.tsx` | Gallery list, create dialog, delete confirmation, logout; Italian copy |
-| `src/App.tsx` | `/admin/gallery/:galleryId` under `ProtectedRoute`; drop the collection route |
-| `docs/wiki/concepts/admin-dashboard.md` | Rewritten for the gallery model (the existing page was updated instead of adding a near-duplicate) |
-| `src/components/CollectionGrid.component.tsx` | Accepts a `collections` prop, defaults to the static dataset |
-| `src/pages/GalleryPage.tsx`, `src/pages/HomePage.tsx` | Merge Firestore covers over the static covers |
-| `src/pages/CollectionPage.tsx` | Firestore gallery by slug, static fallback, alt text from the image entry |
-| `src/components/PhotoLightbox.component.tsx` | `alt` falls back to the caption |
-| `src/data/collections.data.ts` | `placeholder` optional, `alt` optional on `CollectionPhoto` |
-| `firestore.rules` | `galleries` block, validation, legacy `images` block removed |
-| `firebase.json` | Storage rules entry removed |
-| `src/firebaseData.ts` | `storage` export removed |
-| `docs/wiki/*`, `AGENTS.md` | Status, concepts, decision, source, log, indexes |
-
-### Deleted files
-
-`src/components/ImageUpload.tsx`, `src/components/CollectionList.tsx`, `src/pages/CollectionDetailPage.tsx`, `src/types/image.types.ts`, `storage.rules`.
-
-## 5. Flows
-
-### Create a gallery
-
-Dashboard → "Nuova galleria" opens a dialog with `GalleryFields`. The slug is derived from the name until the owner edits it. Validation: name, slug (`^[a-z0-9]+(?:-[a-z0-9]+)*$`) and uniqueness against the loaded galleries. Save writes the document with `createdAt`/`updatedAt` server timestamps and `displayOrder` (default: list length), then refetches.
-
-### Reorder galleries
-
-Dashboard drag-and-drop reorders the local list, then writes `displayOrder = index` for every gallery in a single batch. The explicit `displayOrder` field stays editable in the dialog.
-
-### Edit images
-
-Detail page → `GalleryEditor` holds a local draft. Each image row shows a thumbnail that updates as the URL changes. Drag-and-drop reorders the array and renumbers `order`. Add/remove mutate the draft. "Salva" persists the whole document in one write, so partial image edits never race. A dirty indicator disables Save when nothing changed.
-
-### Public rendering
-
-- Grid: static covers paint immediately; when Firestore returns at least one gallery it replaces the list (sorted by `displayOrder`).
-- Collection: gallery found by slug; unknown slug with Firestore data present → "Collezione non trovata" (Firestore is authoritative). If Firestore is empty or fails → the static dataset is used.
-- Feed: `GalleryImage` → `CollectionPhoto` (`src = url`, `caption = title || alt`, `alt = alt || title`, `ratio`).
-
-## 6. Risks and mitigations
+## 6. Risks
 
 | Risk | Mitigation |
 |------|------------|
-| Firestore document size (1 MiB) | 500-image rule cap; galleries are small; documented |
-| Public bundle growth from Firestore | Public hook dynamically imports the service; admin code stays in lazy admin chunks |
-| Empty images in `public/galleries/` | Public feed renders the theme placeholder box; no broken layout |
-| Duplicate slugs | Create/edit validation against the loaded list plus the documented convention |
-| Legacy `images` docs | No longer read or written; the catch-all denies access. Data deletion is the owner's call, documented in the decision |
-| Rules not deployed | Owner deploy step in the PR checklist (issue #3) |
-| Static CDN fallback hides a Firestore outage | Intentional: the public site must never go blank; the admin still writes to Firestore when authenticated |
+| Two indexes (`galleryIds`, `imageIds`) drift | membership changes always run in one `writeBatch` |
+| GitHub rate limit (60 req/h unauthenticated) | single request per admin visit, explicit error and retry, no polling |
+| Legacy `images` documents from the retired collection | reads ignore documents without `filename`/`path`; the owner can delete leftovers |
+| Legacy embedded gallery images | read-only fallback in the public mapper; no seeded galleries exist |
+| Rules not deployed | the existing `admins/{uid}` preflight stays; deployment remains issue #3 |
+| Public bundle growth | the catalog read runs after mount through the existing lazy service chunk |
 
 ## 7. Verification
 
 ```bash
 npm run lint
 npm run build
-# manual: npm run dev → / , /gallery , /gallery/<slug> , /admin , /admin/gallery/<id>
+# manual: npm run dev → /, /gallery, /gallery/<slug>, /admin, /admin/images, /admin/gallery/<id>
 ```
 
-Checks: static pages still render with no Firestore data; signed-out `/admin` redirects; gallery CRUD, reorder, image preview and save work against a live project; 390 px layout for the admin rows.
+Live Firestore writes, rules deployment and the GitHub call need credentials/network and are listed for the owner.
 
 ## 8. Execution outcome
 
-Delivered on `feat/admin-galleries`:
+Delivered on `feat/image-catalog-and-layout`, draft PR [#26](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/26): the `images` catalog and membership batching, `/admin/images` with GitHub discovery and filters, cover/featured/layout controls in the gallery editor, featured full-width covers, per-gallery feed ratio and spacing, `object-fit: cover` rendering, the rules update and the full wiki slice.
 
-- **PR #23** was reviewed only. It remains a draft against `development`; this branch is stacked on it.
-- **Admin**: gallery CRUD, ordering (drag and drop plus a numeric field), image rows with live previews and per-image title/alt/ratio, drag-and-drop image ordering, single-write save with dirty tracking, validation for name/slug/uniqueness/empty URLs, Italian copy.
-- **Model**: Firestore `galleries` with embedded `images`; `Gallery`, `GalleryImage`, `GalleryOrder`, `GalleryDraft` types; `galleries.service.ts` gateway; `useGalleryStore`.
-- **Public**: `usePublicGalleries` loads the service lazily after mount; `/` and `/gallery` render static covers first and swap to Firestore galleries when present; `/gallery/:slug` prefers the Firestore gallery and falls back to the static dataset; alt text comes from the image entry.
-- **Removed**: `ImageUpload`, `CollectionList`, `CollectionDetailPage`, `IImage`, `storage.rules`, the Storage client export, the storage block in `firebase.json`, and the unused `react-firebase-hooks` dependency.
-- **Rules**: `galleries` public read, validated admin writes, admins allowlist unchanged; legacy `images` denied.
-- **Wiki**: source summary, decision 0016, rewritten admin/photo/Firebase/gallery/state/architecture pages, tech stack, agent rules, overview, rebuild plan, AGENTS, README, indexes and log.
-
-Verification: `npm run lint` clean; `npm run build` green. The gallery service is emitted as a separate 2.41 kB chunk. Not verified in this session: live Firestore reads/writes, rules deployment, and browser drag-and-drop; they need `.env` credentials and a deployed ruleset (PR checklist, issue #3).
-
-Risk accepted: public visitors download the Firestore chunk (about 113 kB gzip) after first paint to read galleries. The static fallback keeps LCP and content intact; if deployed Lighthouse regresses, the follow-up is a REST read or prerendered gallery data.
-
-See the PR and [the wiki source summary](/docs/wiki/sources/2026-11-16-admin-galleries.md).
+`npm run lint` and `npm run build` pass. Headless Chrome on `npm run preview` renders the 9 fallback covers on `/` and `/gallery` and the 24-photo feed on `/gallery/01-favorite`. Live Firestore, rules deployment, the GitHub call against committed files and the admin browser flows are not verified; see the [implementation report](docs/wiki/reviews/2026-11-17-image-catalog-implementation.md).

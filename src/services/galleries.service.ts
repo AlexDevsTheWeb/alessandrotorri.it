@@ -1,5 +1,6 @@
 import {
-  addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -7,64 +8,36 @@ import {
   getDocs,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
-  updateDoc,
+  where,
   writeBatch,
   type DocumentData,
   type Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebaseData';
-import type { Gallery, GalleryDraft, GalleryImage, GalleryOrder } from '../types/gallery.types';
+import type {
+  Gallery,
+  GalleryDraft,
+  GalleryImage,
+  GalleryLayoutConfig,
+  GalleryOrder,
+  GalleryPadding,
+  ImageAspectRatio,
+} from '../types/gallery.types';
+import { logFirestoreFailure } from './firestore.service';
 
 const GALLERIES = 'galleries';
+const IMAGES = 'images';
 const ADMINS = 'admins';
 
-interface FirestoreFailure {
-  code: string;
-  message: string;
-}
+export const ASPECT_RATIOS: ImageAspectRatio[] = ['16:9', '3:2', '4:3', '1:1', 'auto'];
+export const GALLERY_PADDINGS: GalleryPadding[] = ['none', 'small', 'medium', 'large'];
 
-const describeFirestoreFailure = (error: unknown): FirestoreFailure => {
-  const candidate = error as { code?: unknown; message?: unknown };
-  return {
-    code: typeof candidate?.code === 'string' ? candidate.code : 'unknown',
-    message:
-      typeof candidate?.message === 'string'
-        ? candidate.message
-        : error instanceof Error
-          ? error.message
-          : String(error),
-  };
-};
-
-const logFirestoreFailure = (
-  operation: string,
-  path: string,
-  payload: unknown,
-  error: unknown,
-): void => {
-  const failure = describeFirestoreFailure(error);
-  console.error(`[galleries] ${operation} failed (${failure.code})`, {
-    path,
-    payload,
-    code: failure.code,
-    message: failure.message,
-    error,
-  });
-};
-
-export const describeGalleryError = (error: unknown): string => {
-  const { code, message } = describeFirestoreFailure(error);
-  if (code === 'permission-denied') {
-    return 'Permesso negato da Firestore. Verifica che le regole siano pubblicate (firebase deploy --only firestore:rules) e che il tuo UID sia in admins/{uid}. Dettagli nella console del browser.';
-  }
-  if (code === 'unavailable') {
-    return 'Firestore non raggiungibile. Controlla la connessione e riprova.';
-  }
-  if (code === 'failed-precondition') {
-    return 'Operazione rifiutata: controlla gli indici Firestore richiesti.';
-  }
-  return message;
+export const DEFAULT_LAYOUT_CONFIG: GalleryLayoutConfig = {
+  aspectRatio: '3:2',
+  padding: 'medium',
+  coverSpacing: 'none',
 };
 
 const asString = (value: unknown, fallback = ''): string =>
@@ -75,6 +48,27 @@ const asNumber = (value: unknown, fallback = 0): number =>
 
 const asTimestamp = (value: unknown): Timestamp | null =>
   value !== null && typeof value === 'object' && 'toDate' in value ? (value as Timestamp) : null;
+
+const asAspectRatio = (value: unknown): ImageAspectRatio => {
+  const candidate = asString(value).replace('/', ':');
+  return ASPECT_RATIOS.includes(candidate as ImageAspectRatio)
+    ? (candidate as ImageAspectRatio)
+    : DEFAULT_LAYOUT_CONFIG.aspectRatio;
+};
+
+const asPadding = (value: unknown): GalleryPadding =>
+  GALLERY_PADDINGS.includes(value as GalleryPadding)
+    ? (value as GalleryPadding)
+    : DEFAULT_LAYOUT_CONFIG.padding;
+
+const normalizeLayoutConfig = (value: unknown): GalleryLayoutConfig => {
+  const source = value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : {};
+  return {
+    aspectRatio: asAspectRatio(source.aspectRatio),
+    padding: asPadding(source.padding),
+    coverSpacing: asPadding(source.coverSpacing ?? 'none'),
+  };
+};
 
 const normalizeImage = (value: unknown, index: number): GalleryImage => {
   const source = value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : {};
@@ -90,7 +84,12 @@ const normalizeImage = (value: unknown, index: number): GalleryImage => {
 };
 
 export const normalizeGallery = (id: string, data: DocumentData): Gallery => {
-  const images = Array.isArray(data.images) ? data.images : [];
+  const legacyImages = Array.isArray(data.images)
+    ? [...data.images]
+        .map(normalizeImage)
+        .sort((a, b) => a.order - b.order)
+        .map((image, index) => ({ ...image, order: index }))
+    : [];
 
   return {
     id,
@@ -98,31 +97,33 @@ export const normalizeGallery = (id: string, data: DocumentData): Gallery => {
     slug: asString(data.slug),
     description: asString(data.description),
     displayOrder: asNumber(data.displayOrder),
+    isVisible: data.isVisible !== false,
+    isFeatured: data.isFeatured === true,
+    featuredOrder: asNumber(data.featuredOrder),
+    coverImageId: asString(data.coverImageId),
     coverImageUrl: asString(data.coverImageUrl),
-    images: [...images]
-      .map(normalizeImage)
-      .sort((a, b) => a.order - b.order)
-      .map((image, index) => ({ ...image, order: index })),
+    imageIds: Array.isArray(data.imageIds)
+      ? data.imageIds.filter((value): value is string => typeof value === 'string')
+      : [],
+    layoutConfig: normalizeLayoutConfig(data.layoutConfig),
+    legacyImages,
     createdAt: asTimestamp(data.createdAt),
     updatedAt: asTimestamp(data.updatedAt),
   };
 };
-
-export const slugify = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 
 export const toGalleryDraft = (gallery: Gallery): GalleryDraft => ({
   name: gallery.name,
   slug: gallery.slug,
   description: gallery.description,
   displayOrder: gallery.displayOrder,
+  isVisible: gallery.isVisible,
+  isFeatured: gallery.isFeatured,
+  featuredOrder: gallery.featuredOrder,
+  coverImageId: gallery.coverImageId,
   coverImageUrl: gallery.coverImageUrl,
-  images: gallery.images.map((image, index) => ({ ...image, order: index })),
+  imageIds: [...gallery.imageIds],
+  layoutConfig: { ...gallery.layoutConfig },
 });
 
 export const createEmptyDraft = (displayOrder = 0): GalleryDraft => ({
@@ -130,8 +131,13 @@ export const createEmptyDraft = (displayOrder = 0): GalleryDraft => ({
   slug: '',
   description: '',
   displayOrder,
+  isVisible: true,
+  isFeatured: false,
+  featuredOrder: 0,
+  coverImageId: '',
   coverImageUrl: '',
-  images: [],
+  imageIds: [],
+  layoutConfig: { ...DEFAULT_LAYOUT_CONFIG },
 });
 
 const buildGalleryPayload = (draft: GalleryDraft) => ({
@@ -139,23 +145,34 @@ const buildGalleryPayload = (draft: GalleryDraft) => ({
   slug: draft.slug.trim(),
   description: draft.description.trim(),
   displayOrder: Number.isFinite(draft.displayOrder) ? draft.displayOrder : 0,
+  isVisible: draft.isVisible,
+  isFeatured: draft.isFeatured,
+  featuredOrder: Number.isFinite(draft.featuredOrder) ? draft.featuredOrder : 0,
+  coverImageId: draft.coverImageId.trim(),
   coverImageUrl: draft.coverImageUrl.trim(),
-  images: draft.images.map((image, index) => ({
-    id: image.id,
-    url: image.url.trim(),
-    title: image.title.trim(),
-    alt: image.alt.trim(),
-    ratio: image.ratio.trim() || '3/2',
-    order: index,
-  })),
+  imageIds: Array.from(new Set(draft.imageIds.filter((id) => id.trim().length > 0))),
+  layoutConfig: {
+    aspectRatio: draft.layoutConfig.aspectRatio,
+    padding: draft.layoutConfig.padding,
+    coverSpacing: draft.layoutConfig.coverSpacing,
+  },
 });
+
+const touchImagesInBatch = (imageIds: string[], galleryId: string, batch: ReturnType<typeof writeBatch>) => {
+  imageIds.forEach((imageId) => {
+    batch.update(doc(db, IMAGES, imageId), {
+      galleryIds: arrayUnion(galleryId),
+      updatedAt: serverTimestamp(),
+    });
+  });
+};
 
 export const fetchGalleries = async (): Promise<Gallery[]> => {
   try {
     const snapshot = await getDocs(query(collection(db, GALLERIES), orderBy('displayOrder')));
     return snapshot.docs.map((document) => normalizeGallery(document.id, document.data()));
   } catch (error) {
-    logFirestoreFailure('fetch', GALLERIES, null, error);
+    logFirestoreFailure('galleries', 'fetch', GALLERIES, null, error);
     throw error;
   }
 };
@@ -165,23 +182,29 @@ export const checkAdminAccess = async (uid: string): Promise<boolean> => {
     const snapshot = await getDoc(doc(db, ADMINS, uid));
     return snapshot.exists();
   } catch (error) {
-    logFirestoreFailure('check-admin', `${ADMINS}/${uid}`, null, error);
+    logFirestoreFailure('galleries', 'check-admin', `${ADMINS}/${uid}`, null, error);
     throw error;
   }
 };
 
 export const createGallery = async (draft: GalleryDraft): Promise<string> => {
   const payload = buildGalleryPayload(draft);
+  const reference = doc(collection(db, GALLERIES));
+  const batch = writeBatch(db);
+
+  batch.set(reference, {
+    ...payload,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  touchImagesInBatch(payload.imageIds, reference.id, batch);
 
   try {
-    const reference = await addDoc(collection(db, GALLERIES), {
-      ...payload,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+    await batch.commit();
     return reference.id;
   } catch (error) {
     logFirestoreFailure(
+      'galleries',
       'create',
       GALLERIES,
       { ...payload, createdAt: '<serverTimestamp>', updatedAt: '<serverTimestamp>' },
@@ -191,16 +214,33 @@ export const createGallery = async (draft: GalleryDraft): Promise<string> => {
   }
 };
 
-export const saveGallery = async (id: string, draft: GalleryDraft): Promise<void> => {
+export const saveGallery = async (
+  id: string,
+  draft: GalleryDraft,
+  previousImageIds: string[] = [],
+): Promise<void> => {
   const payload = buildGalleryPayload(draft);
+  const added = payload.imageIds.filter((imageId) => !previousImageIds.includes(imageId));
+  const removed = previousImageIds.filter((imageId) => !payload.imageIds.includes(imageId));
+  const batch = writeBatch(db);
 
-  try {
-    await updateDoc(doc(db, GALLERIES, id), {
-      ...payload,
+  batch.update(doc(db, GALLERIES, id), {
+    ...payload,
+    updatedAt: serverTimestamp(),
+  });
+  touchImagesInBatch(added, id, batch);
+  removed.forEach((imageId) => {
+    batch.update(doc(db, IMAGES, imageId), {
+      galleryIds: arrayRemove(id),
       updatedAt: serverTimestamp(),
     });
+  });
+
+  try {
+    await batch.commit();
   } catch (error) {
     logFirestoreFailure(
+      'galleries',
       'update',
       `${GALLERIES}/${id}`,
       { ...payload, updatedAt: '<serverTimestamp>' },
@@ -210,13 +250,32 @@ export const saveGallery = async (id: string, draft: GalleryDraft): Promise<void
   }
 };
 
+const detachGalleryFromImages = async (id: string): Promise<void> => {
+  try {
+    const snapshot = await getDocs(
+      query(collection(db, IMAGES), where('galleryIds', 'array-contains', id)),
+    );
+    if (snapshot.empty) return;
+
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((document) => {
+      batch.update(document.ref, { galleryIds: arrayRemove(id), updatedAt: serverTimestamp() });
+    });
+    await batch.commit();
+  } catch (error) {
+    logFirestoreFailure('galleries', 'detach-images', `${GALLERIES}/${id}`, null, error);
+  }
+};
+
 export const deleteGallery = async (id: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, GALLERIES, id));
   } catch (error) {
-    logFirestoreFailure('delete', `${GALLERIES}/${id}`, null, error);
+    logFirestoreFailure('galleries', 'delete', `${GALLERIES}/${id}`, null, error);
     throw error;
   }
+
+  await detachGalleryFromImages(id);
 };
 
 export const reorderGalleries = async (orders: GalleryOrder[]): Promise<void> => {
@@ -229,11 +288,74 @@ export const reorderGalleries = async (orders: GalleryOrder[]): Promise<void> =>
     await batch.commit();
   } catch (error) {
     logFirestoreFailure(
+      'galleries',
       'reorder',
       GALLERIES,
       { orders, updatedAt: '<serverTimestamp>' },
       error,
     );
+    throw error;
+  }
+};
+
+export const assignImageToGallery = async (imageId: string, galleryId: string): Promise<void> => {
+  const batch = writeBatch(db);
+  batch.update(doc(db, IMAGES, imageId), {
+    galleryIds: arrayUnion(galleryId),
+    updatedAt: serverTimestamp(),
+  });
+  batch.update(doc(db, GALLERIES, galleryId), {
+    imageIds: arrayUnion(imageId),
+    updatedAt: serverTimestamp(),
+  });
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    logFirestoreFailure('galleries', 'assign-image', `${GALLERIES}/${galleryId}`, { imageId }, error);
+    throw error;
+  }
+};
+
+export const detachImageFromGallery = async (
+  imageId: string,
+  galleryId: string,
+): Promise<void> => {
+  try {
+    await runTransaction(db, async (transaction) => {
+      const imageReference = doc(db, IMAGES, imageId);
+      const galleryReference = doc(db, GALLERIES, galleryId);
+      const imageSnapshot = await transaction.get(imageReference);
+      const gallerySnapshot = await transaction.get(galleryReference);
+
+      if (!gallerySnapshot.exists()) throw new Error('Galleria non trovata.');
+      if (!imageSnapshot.exists()) throw new Error('Immagine non trovata.');
+
+      const gallery = normalizeGallery(galleryId, gallerySnapshot.data());
+      const imagePath = asString(imageSnapshot.data().path);
+      const remainingIds = gallery.imageIds.filter((id) => id !== imageId);
+      const wasCover = gallery.coverImageId === imageId || gallery.coverImageUrl === imagePath;
+      const coverImageId = wasCover ? (remainingIds[0] ?? '') : gallery.coverImageId;
+      let coverImageUrl = wasCover ? '' : gallery.coverImageUrl;
+
+      if (wasCover && coverImageId) {
+        const coverSnapshot = await transaction.get(doc(db, IMAGES, coverImageId));
+        coverImageUrl = coverSnapshot.exists() ? asString(coverSnapshot.data().path) : '';
+      }
+
+      transaction.update(imageReference, {
+        galleryIds: arrayRemove(galleryId),
+        updatedAt: serverTimestamp(),
+      });
+      transaction.update(galleryReference, {
+        imageIds: remainingIds,
+        coverImageId,
+        coverImageUrl,
+        updatedAt: serverTimestamp(),
+      });
+    });
+  } catch (error) {
+    logFirestoreFailure('galleries', 'detach-image', `${GALLERIES}/${galleryId}`, { imageId }, error);
     throw error;
   }
 };
@@ -254,9 +376,9 @@ export const validateGalleryDraft = (
   );
   if (duplicate) return 'Esiste già una galleria con questo slug.';
   if (!Number.isFinite(draft.displayOrder)) return "L'ordine deve essere un numero.";
-  if (draft.images.some((image) => !image.url.trim())) {
-    return "Ogni immagine deve avere un percorso o un URL.";
+  if (!Number.isFinite(draft.featuredOrder)) return "L'ordine in evidenza deve essere un numero.";
+  if (draft.coverImageId && !draft.imageIds.includes(draft.coverImageId)) {
+    return 'La copertina scelta non è tra le immagini della galleria.';
   }
   return null;
 };
-

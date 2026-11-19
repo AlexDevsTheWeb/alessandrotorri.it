@@ -12,6 +12,9 @@ sources:
   - id: decision-0016
     resource: /decisions/0016-gallery-management.md
     title: Manage galleries in Firestore with static repository images
+  - id: decision-0018
+    resource: /decisions/0018-image-catalog-and-layout.md
+    title: Master image catalog, GitHub discovery and per-gallery layout controls
 ---
 
 # Firebase Backend
@@ -31,10 +34,10 @@ sources:
 
 ## Firestore
 
-- **Collection:** `galleries`, one document per gallery with embedded images ([Photo Management](/concepts/photo-management.md)).
-- **Queries:** `orderBy('displayOrder')` for the grid; the feed reads the document array.
-- **Access:** public read; writes require a document `admins/{uid}`.
-- **Document id:** the Firestore key, mapped explicitly by `normalizeGallery`; it is not stored in the document.
+- **Collections:** `images` (master catalog: one document per file) and `galleries` (metadata, ordered `imageIds`, cover and layout) — see [Photo Management](/concepts/photo-management.md).
+- **Queries:** `orderBy('displayOrder')` for galleries, `orderBy('filename')` for the catalog; the public hook joins them after mount.
+- **Access:** public read on both; writes require a document `admins/{uid}`.
+- **Document ids:** mapped explicitly by `normalizeGallery` / `normalizeCatalogImage`; they are not stored in the documents. Image ids are derived from the sanitized filename so GitHub indexing is idempotent.
 
 ## Storage
 
@@ -48,10 +51,11 @@ Firebase still owns auth and metadata; it no longer owns the photo bytes. Whethe
 
 1. In the Firebase console, create `admins/{uid}` with the Auth UID of the owner account.
 2. Deploy the rules: `firebase deploy --only firestore:rules --project alessandrotorri-it`.
-3. Seed at least one gallery (or accept the static fallback on the public site).
-4. Smoke-test as the owner (create, reorder, save) and as a second Google account (expect denial).
+3. Commit the photos to `public/galleries/`; then index them from `/admin/images` (the GitHub scan lists the committed files).
+4. Create or seed at least one gallery and assign catalog images (or accept the static fallback on the public site).
+5. Smoke-test as the owner (create, index, assign, set cover, reorder, save) and as a second Google account (expect denial).
 
-If a write still returns `Missing or insufficient permissions`, follow the [Firestore permissions playbook](/rules/firestore-permissions.md). The admin page now preflights `admins/{uid}` and names the missing step ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
+If a write still returns `Missing or insufficient permissions`, follow the [Firestore permissions playbook](/rules/firestore-permissions.md). The admin pages preflight `admins/{uid}` and name the missing step ([Decision 0017](/decisions/0017-firestore-permission-diagnostics.md)).
 
 ## Dependency note
 
@@ -60,10 +64,12 @@ If a write still returns `Missing or insufficient permissions`, follow the [Fire
 ## Security rules
 
 - `firestore.rules` is referenced by `firebase.json` and is the only ruleset left.
-- `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric order, list of at most 500 images, timestamp `updatedAt`); delete requires `isAdmin()`.
+- `images`: public read; create/update require `isAdmin()` and a valid shape (`filename`, `path`, title/description/alt strings, a valid `aspectRatio`, an optional boolean `isVisible`, a `galleryIds` list of at most 100, timestamp `updatedAt`); delete requires `isAdmin()`.
+- `galleries`: public read; create/update require `isAdmin()` **and** a valid shape (string fields, slug pattern, numeric orders, booleans including an optional `isVisible`, `imageIds` list of at most 500, `layoutConfig` with the allowed `aspectRatio`, `padding` and optional `coverSpacing` values, timestamp `updatedAt`); delete requires `isAdmin()`.
+- `isVisible` is optional in the rules (`get('isVisible', true) is bool`) so documents created before [Decision 0021](/decisions/0021-visibility-and-empty-galleries.md) stay writable; the client treats a missing field as visible.
 - `admins/{uid}` is readable only by that user and never writable from clients.
-- The catch-all denies everything else, including the retired `images` collection.
-- The gallery payload and these checks were validated in the Firestore emulator on 2026-11-16 (deny without `admins/{uid}`, allow with it). Deployment to the live project is still pending.
+- The catch-all denies everything else. Leftover documents from the retired 2026-03 `images` model are technically readable but ignored by the client because they lack `filename`/`path`.
+- The gallery payload was validated in the Firestore emulator on 2026-11-16; the new `images` rules and the extended gallery validation have not been replayed there yet. Deployment to the live project is still pending.
 
 ## Related
 

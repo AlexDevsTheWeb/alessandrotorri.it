@@ -1,14 +1,17 @@
 import { Alert, Box, Button, Divider, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { describeGalleryError, toGalleryDraft, validateGalleryDraft } from '../services/galleries.service';
+import { toGalleryDraft, validateGalleryDraft } from '../services/galleries.service';
+import { describeFirestoreError } from '../services/firestore.service';
 import type { Gallery, GalleryDraft } from '../types/gallery.types';
+import type { CatalogImage } from '../types/image.types';
 import GalleryFields from './GalleryFields.component';
 import GalleryImageList from './GalleryImageList.component';
 
 interface GalleryEditorProps {
   gallery: Gallery;
   galleries: Gallery[];
+  catalog: CatalogImage[];
   onSave: (draft: GalleryDraft) => Promise<void>;
 }
 
@@ -17,18 +20,12 @@ const normalizeDraft = (draft: GalleryDraft): GalleryDraft => ({
   name: draft.name.trim(),
   slug: draft.slug.trim(),
   description: draft.description.trim(),
+  coverImageId: draft.coverImageId.trim(),
   coverImageUrl: draft.coverImageUrl.trim(),
-  images: draft.images.map((image, index) => ({
-    ...image,
-    url: image.url.trim(),
-    title: image.title.trim(),
-    alt: image.alt.trim(),
-    ratio: image.ratio.trim() || '3/2',
-    order: index,
-  })),
+  imageIds: Array.from(new Set(draft.imageIds.filter((id) => id.trim().length > 0))),
 });
 
-const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, onSave }) => {
+const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, catalog, onSave }) => {
   const [draft, setDraft] = useState<GalleryDraft>(() => toGalleryDraft(gallery));
   const [baseline, setBaseline] = useState<GalleryDraft>(() => toGalleryDraft(gallery));
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +33,7 @@ const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, onSav
   const [isSaving, setIsSaving] = useState(false);
 
   const isDirty = JSON.stringify(draft) !== JSON.stringify(baseline);
+  const usesLegacyImages = gallery.legacyImages.length > 0 && gallery.imageIds.length === 0;
 
   const handleChange = (patch: Partial<GalleryDraft>) => {
     setDraft((previous) => ({ ...previous, ...patch }));
@@ -59,7 +57,7 @@ const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, onSav
       setBaseline(next);
       setSaved(true);
     } catch (saveError) {
-      setError(describeGalleryError(saveError));
+      setError(describeFirestoreError(saveError));
     } finally {
       setIsSaving(false);
     }
@@ -89,13 +87,22 @@ const GalleryEditor: React.FC<GalleryEditorProps> = ({ gallery, galleries, onSav
         </Button>
       </Stack>
 
-      <GalleryFields value={draft} onChange={handleChange} disabled={isSaving} />
+      {usesLegacyImages && (
+        <Alert severity="warning">
+          Questa galleria usa il formato precedente con immagini incorporate. Finché non assegni le
+          immagini dal catalogo, il sito continua a leggerle da lì. Aggiungile dalla sezione Immagini
+          e riassegnale qui per passare al nuovo modello.
+        </Alert>
+      )}
+
+      <GalleryFields value={draft} catalog={catalog} onChange={handleChange} disabled={isSaving} />
 
       <Divider />
 
       <GalleryImageList
-        images={draft.images}
-        onChange={(images) => handleChange({ images })}
+        value={draft}
+        catalog={catalog}
+        onChange={handleChange}
         disabled={isSaving}
       />
 

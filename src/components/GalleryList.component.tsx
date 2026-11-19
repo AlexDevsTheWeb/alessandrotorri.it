@@ -1,16 +1,16 @@
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { repositoryImageFallback } from '../services/githubImages.service';
 import type { Gallery } from '../types/gallery.types';
+import RepositoryImage from './RepositoryImage.component';
 
 interface GalleryListProps {
   galleries: Gallery[];
   onReorder: (ids: string[]) => void;
-  onEdit: (gallery: Gallery) => void;
   onDelete: (gallery: Gallery) => void;
   disabled?: boolean;
 }
@@ -18,7 +18,6 @@ interface GalleryListProps {
 const GalleryList: React.FC<GalleryListProps> = ({
   galleries,
   onReorder,
-  onEdit,
   onDelete,
   disabled = false,
 }) => {
@@ -44,7 +43,7 @@ const GalleryList: React.FC<GalleryListProps> = ({
         {(provided) => (
           <Stack spacing={1.5} ref={provided.innerRef} {...provided.droppableProps}>
             {galleries.map((gallery, index) => {
-              const cover = gallery.coverImageUrl || gallery.images[0]?.url || '';
+              const cover = gallery.coverImageUrl;
               return (
                 <Draggable
                   key={gallery.id}
@@ -77,9 +76,9 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         }}
                       >
                         {cover ? (
-                          <Box
-                            component="img"
+                          <RepositoryImage
                             src={cover}
+                            fallbackSrc={repositoryImageFallback(cover)}
                             alt=""
                             sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
@@ -90,13 +89,21 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         )}
                       </Box>
                       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" noWrap>
-                          {gallery.name}
-                        </Typography>
+                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                          <Typography variant="subtitle1" noWrap>
+                            {gallery.name}
+                          </Typography>
+                          {gallery.isFeatured && (
+                            <Chip size="small" label="In evidenza" color="primary" variant="outlined" />
+                          )}
+                        </Stack>
                         <Typography variant="body2" color="text.secondary" noWrap>
-                          /gallery/{gallery.slug} · {gallery.images.length} immagini · ordine{' '}
+                          /gallery/{gallery.slug} · {gallery.imageIds.length} immagini · ordine{' '}
                           {gallery.displayOrder}
                         </Typography>
+                        {!gallery.isVisible && (
+                          <Chip size="small" color="warning" label="Nascosta" sx={{ mt: 0.5 }} />
+                        )}
                       </Box>
                       <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                         <Button
@@ -107,13 +114,6 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         >
                           Gestisci
                         </Button>
-                        <IconButton
-                          aria-label={`Modifica ${gallery.name}`}
-                          onClick={() => onEdit(gallery)}
-                          disabled={disabled}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
                         <IconButton
                           aria-label={`Elimina ${gallery.name}`}
                           onClick={() => onDelete(gallery)}

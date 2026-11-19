@@ -1,27 +1,35 @@
 import { useEffect, useState } from 'react';
-import type { Gallery } from '../types/gallery.types';
+import {
+  getCachedPublicGalleries,
+  loadPublicGalleries,
+} from '../services/publicGalleries.service';
+import type { PublicGallery } from '../types/gallery.types';
 
 interface PublicGalleries {
-  galleries: Gallery[];
+  galleries: PublicGallery[];
   isReady: boolean;
+  hasRemoteGalleries: boolean;
 }
 
 export const usePublicGalleries = (): PublicGalleries => {
-  const [galleries, setGalleries] = useState<Gallery[]>([]);
-  const [isReady, setIsReady] = useState(false);
+  const cached = getCachedPublicGalleries();
+  const [galleries, setGalleries] = useState<PublicGallery[]>(() => cached?.galleries ?? []);
+  const [hasRemoteGalleries, setHasRemoteGalleries] = useState(
+    () => cached?.hasRemoteGalleries ?? false,
+  );
+  const [isReady, setIsReady] = useState(() => cached !== null);
 
   useEffect(() => {
     let active = true;
 
-    import('../services/galleries.service')
-      .then(({ fetchGalleries }) => fetchGalleries())
-      .then((items) => {
-        if (active) setGalleries(items);
+    loadPublicGalleries()
+      .then((snapshot) => {
+        if (!active) return;
+        setGalleries(snapshot.galleries);
+        setHasRemoteGalleries(snapshot.hasRemoteGalleries);
+        setIsReady(true);
       })
       .catch(() => {
-        if (active) setGalleries([]);
-      })
-      .finally(() => {
         if (active) setIsReady(true);
       });
 
@@ -30,5 +38,5 @@ export const usePublicGalleries = (): PublicGalleries => {
     };
   }, []);
 
-  return { galleries, isReady };
+  return { galleries, isReady, hasRemoteGalleries };
 };

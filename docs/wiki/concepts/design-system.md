@@ -57,6 +57,7 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Semi-transparent background (`alpha(bg, 0.7)`).
 - Fixed; hides on scroll down and reveals on scroll up.
 - Triptych: desktop `Gallerie / {collection}` breadcrumb on the left, `Alessandro Torri` center, Instagram + YouTube + theme toggle right.
+- Logotype: `Instrument Serif`, uppercase, 1.1 rem with `0.24em` tracking on desktop and 0.9 rem with `0.16em` on mobile, at `alpha(text.primary, 0.82)` ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - The breadcrumb is hidden on mobile; only the menu button and centered logo remain.
 - The collection page does not repeat the breadcrumb in the body ([decision 0010](/decisions/0010-navbar-breadcrumb.md)).
 - Uppercase links at `0.75rem / 0.2em`; normal text is `alpha(text.primary, 0.65)`, hover is full `text.primary`.
@@ -66,16 +67,25 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 
 ## Covers
 
-- 4:3, `overflow: hidden`.
+- The static fallback uses 4:3; Firestore galleries use `layoutConfig.aspectRatio` (default `3/2`, owner-selectable `16:9`, `3:2`, `4:3`, `1:1`).
+- `overflow: hidden`, `object-fit: cover`, `object-position: center`.
 - Collection title is centered in the image and hidden until hover or keyboard focus; it fades in over a 0.6–0.85 black gradient ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
 - No entrance animation and no hover scale.
 - Hover only dims the image slightly (`brightness(0.86)`); no border, no outline.
 - Card links have `outline: none`, including focus, and a pointer cursor.
 
+> [!WARNING] Cover ratio superseded
+> [Decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md) fixed covers at 4:3. The 2026-11-17 specification makes the ratio per gallery with a `3/2` default ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)). The static CDN fallback still renders 4:3; the hover title, pointer and copy-guard rules stand.
+
 ## Collection feed
 
 - Masonry layout: 1 column on mobile, 2 from `sm`, 3 from `md`; `maxWidth="lg"`.
-- Each image keeps its intrinsic aspect ratio.
+- Images use their own `aspectRatio` when set, otherwise the gallery's `layoutConfig.aspectRatio` (default `3/2`); `auto` falls back to 3:2 ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
+- Feed spacing comes from `layoutConfig.padding`: `none` 0, `small` 8 px, `medium` 16 px, `large` 24 px.
+- The gallery cover grid adds a per-gallery `coverSpacing` (0/8/16/24 px) inside the card cell, independent of the feed spacing ([Decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
+- The featured block and the remaining galleries are separated by a centered `LUOGHI` divider: full-width, 1 px solid lines on both sides, uppercase `0.7rem` label with `0.35em` letter spacing in `text.secondary`, vertical margins 2/3 ([Decision 0023](/decisions/0023-featured-gallery-divider.md)).
+- Featured sizing follows the count: one featured gallery is a full-width banner with a fixed 240/320/420 px height and a panoramic crop; two or more are half-width cards using the gallery ratio ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
+- Every image is `object-fit: cover; object-position: center` ([Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 - Caption is hidden by default and revealed on hover or keyboard focus.
 - Reveal: a ~50% black gradient fades in and the caption slides up from below to the center.
 - Caption is white, centered, with a soft text shadow.
@@ -88,13 +98,14 @@ Loaded via Google Fonts in `index.html`. Replaced Inter + Playfair Display on 20
 - Arrows on the sides (desktop) or below (mobile).
 - Esc/arrows keyboard support.
 - Caption only; the EXIF placeholder was removed ([decision 0012](/decisions/0012-gallery-hover-titles-and-copy-guard.md)).
+- Caption typography is `body2` (0.875 rem) at 75% white since 2026-11-18, much smaller than the old `h6` ([Decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
 - Feed and lightbox photos are not draggable and their context menu is cancelled.
 
 ## Footer
 
-- Single compact row: copyright + social icons, no top border.
-- `caption` typography, smaller than before.
-- Social icons hidden on mobile and available in the drawer instead.
+- Single compact row: copyright only, centered, no top border.
+- `caption` typography.
+- The Instagram and YouTube icons live in the navbar and mobile drawer, not the footer ([Decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - No "Back to Top" text in the footer.
 
 ## Back to top

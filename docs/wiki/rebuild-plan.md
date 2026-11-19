@@ -18,6 +18,9 @@ sources:
   - id: decision-0003
     resource: /decisions/0003-exact-look-and-feel.md
     title: Exact look & feel, modern implementation
+  - id: decision-0018
+    resource: /decisions/0018-image-catalog-and-layout.md
+    title: Master image catalog, GitHub discovery and per-gallery layout controls
 ---
 
 # Rebuild Plan — Modern Reinterpretation of alessandrotorri.it
@@ -33,7 +36,7 @@ Recreate https://alessandrotorri.it/ (owner's live Adobe Portfolio site) with th
 Decisions locked 2026-09-08, amended 2026-10-29:
 
 1. **Scope:** current repository, visual parity with the live site, modern implementation. Not a fresh repo; not a redesign. See [Decision 0003](/decisions/0003-exact-look-and-feel.md).
-2. **Images:** static repository assets under `public/galleries/`; Firestore `galleries` stores metadata. The Adobe CDN dataset stays as the public fallback until the owner seeds galleries ([Decision 0016](/decisions/0016-gallery-management.md)).
+2. **Images:** static repository assets under `public/galleries/`; Firestore `images` stores metadata and `galleries` stores membership, cover and layout. The Adobe CDN dataset stays as the public fallback until the owner seeds galleries ([Decision 0016](/decisions/0016-gallery-management.md), [Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 3. **Admin:** the gallery admin is built; deploy the rules and smoke-test it (issue #3).
 4. **Stack:** no new deps without approval. MUI only, `sx` prop, Zustand, React Router. See [Tech Stack](/concepts/tech-stack.md) and [Agent Rules](/rules/agent-rules.md).
 5. **Process:** every change runs [The Usual Loop](/rules/workflow.md) and updates this wiki in the same PR.
@@ -101,6 +104,7 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse moved to issue #22 (closed #14, 2026-11-07) |
 | 6 | Admin reconnect | in-progress | gallery admin, Firestore `galleries`, static images and public read with fallback done 2026-11-16 ([decision 0016](/decisions/0016-gallery-management.md)); deploy rules, seed galleries, retire the CDN fallback |
+| 7 | Image catalog & layout | done (2026-11-17) | master `images` catalog, GitHub discovery, `/admin/images` filters, cover designation, featured galleries, `layoutConfig` ([decision 0018](/decisions/0018-image-catalog-and-layout.md)); admin preview fallback added 2026-11-18 ([decision 0019](/decisions/0019-admin-image-preview-fallback.md)); live project not exercised |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
@@ -164,14 +168,37 @@ Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox
 
 ### Phase 6 — Admin reconnect — in progress
 
-Done 2026-11-16: `ProtectedRoute` on the admin routes; Firestore `galleries` with embedded images; full gallery CRUD, ordering, image assignment with previews, alt text and ratios; Zustand `useGalleryStore`; public pages read Firestore with the static dataset as fallback; admin-only rules ([decision 0016](/decisions/0016-gallery-management.md), [decision 0014](/decisions/0014-admin-route-protection.md)).
+Done 2026-11-16: `ProtectedRoute` on the admin routes; Firestore `galleries` with embedded images; full gallery CRUD, ordering, image assignment with previews, alt text and ratios; Zustand `useGalleryStore`; public pages read Firestore with the static dataset as fallback; admin-only rules ([decision 0016](/decisions/0016-gallery-management.md), [decision 0014](/decisions/0014-admin-route-protection.md)). The embedded-image model was superseded by the master catalog on 2026-11-17 ([decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 
 - [x] Client-side Firestore diagnostics and the `admins/{uid}` preflight banner ([decision 0017](/decisions/0017-firestore-permission-diagnostics.md), [playbook](/rules/firestore-permissions.md)).
 - [ ] Deploy `firestore.rules` and smoke-test create/edit/reorder/delete as the owner, plus denial for a second account (issue #3).
-- [ ] Seed the first galleries and images in `public/galleries/`.
+- [ ] Commit photos to `public/galleries/`, index them from `/admin/images`, assign galleries and designate covers.
 - [ ] Retire the Adobe CDN fallback once the Firestore galleries cover the nine collections.
-- [ ] Remove the retired `images` documents from the console (optional; the rules deny them).
+- [ ] Remove the retired 2026-03 `images` documents from the console (optional; the client ignores them).
 - [ ] Optional: responsive variants for repository images; revisit with [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
+
+### Phase 7 — Image catalog & layout — done 2026-11-17
+
+Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin-galleries-v2.md), [decision 0018](/decisions/0018-image-catalog-and-layout.md).
+
+- [x] `images` catalog with `filename`, `path`, `title`, `description`, `alt`, `aspectRatio`, `galleryIds`; ids derived from the filename.
+- [x] Galleries reference ordered `imageIds`; `galleryIds` and `imageIds` change together in one batch.
+- [x] GitHub discovery of `public/galleries/` (`VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`), rate-limit handling and retry.
+- [x] `/admin/images` with the five filters, inline metadata edits, assignment, "+ Nuova galleria" and bulk indexing.
+- [x] Cover designation with `coverImageId` + denormalized `coverImageUrl`; automatic promotion on removal.
+- [x] `isFeatured` / `featuredOrder`, full-width featured covers at the top of the shared grid.
+- [x] `layoutConfig` (aspect ratio, padding) applied to the cover and feed; `object-fit: cover; object-position: center`.
+- [x] Rules for `images` and the extended gallery validation.
+- [x] Admin previews fall back to the GitHub raw URL when a discovered file is not in the checkout (2026-11-18, [decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
+- [x] Assigned images can be detached from `/admin/images` with an atomic write and cover promotion (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- [x] Public galleries are cached between navigations; pages show a loader instead of the static placeholders before the first read (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
+- [x] Galleries and catalog images have an `isVisible` flag; hidden galleries and galleries with no visible photos are filtered out of the public site (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
+- [x] Aspect-ratio precedence documented and made visible in the admin previews; `Naturale` covers use the image ratio. Lightbox caption reduced to `body2` (2026-11-18, [decision 0021](/decisions/0021-visibility-and-empty-galleries.md)).
+- [x] Gallery cover chosen from the gallery's own photos via a select; `coverSpacing` separates gallery spacing from photo spacing; an explicit photo ratio wins in the feed (2026-11-18, [decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
+- [x] Featured galleries separated from the rest by a centered solid `LUOGHI` divider in the shared grid (2026-11-18, [decision 0023](/decisions/0023-featured-gallery-divider.md)).
+- [x] Featured sizing by count (single banner / pair), footer social links removed, serif uppercase logotype, and a single gallery edit path (2026-11-19, [decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
+- [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
+- [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
 
 ## 5. Verify Commands (run before every stop)
 
@@ -200,22 +227,31 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `docs/wiki/sources/`, `docs/wiki/decisions/`, `docs/wiki/reviews/` | Source summaries, decisions, audits |
 | `src/data/collections.data.ts` | CDN covers + captions (public fallback) |
 | `src/data/collections.photos.ts` | 89 static photos with captions and ratios (public fallback) |
-| `src/data/galleries.mapper.ts` | Firestore gallery → cover/photo mapping |
-| `src/services/galleries.service.ts` | Firestore gateway for galleries |
+| `src/data/galleries.mapper.ts` | Joins galleries with the catalog; cover/photo mapping, ratio and featured sort |
+| `src/services/galleries.service.ts` | Firestore gateway for galleries, membership diffs and assignment |
+| `src/services/images.service.ts` | Firestore gateway for the image catalog |
+| `src/services/githubImages.service.ts` | Read-only GitHub discovery of `public/galleries/` |
 | `src/store/galleryStore.ts` | Zustand gallery store (admin) |
-| `src/hooks/usePublicGalleries.ts` | Lazy public read with fallback |
-| `src/types/gallery.types.ts` | Gallery and image types |
+| `src/store/imageStore.ts` | Zustand image catalog store (admin) |
+| `src/hooks/usePublicGalleries.ts` | Cached public read + catalog join with fallback |
+| `src/services/publicGalleries.service.ts` | Public gallery cache, deduplicated load and invalidation |
+| `src/types/gallery.types.ts` | Gallery, layout and resolved-image types |
+| `src/types/image.types.ts` | Catalog image, repository file and filter types |
 | `src/pages/AdminDashboard.tsx` | Gallery list, create/edit/delete, ordering |
+| `src/pages/AdminImagesPage.tsx` | Catalog, GitHub scan, filters, assignment, quick gallery |
 | `src/pages/AdminGalleryDetailPage.tsx` | Gallery editor shell |
+| `src/components/AdminNav.component.tsx` | Admin section navigation |
+| `src/components/ImageCatalogCard.component.tsx` | Catalog entry: preview, metadata, assignment |
+| `src/components/RepositoryImage.component.tsx` | Admin preview with a GitHub raw fallback |
 | `src/components/GalleryEditor.component.tsx` | Draft editing, validation and save |
-| `src/components/GalleryFields.component.tsx` | Shared gallery fields + cover preview |
-| `src/components/GalleryImageList.component.tsx` | Image rows, previews and ordering |
+| `src/components/GalleryFields.component.tsx` | Gallery fields, visibility, cover select, photo/gallery spacing, cover preview |
+| `src/components/GalleryImageList.component.tsx` | Catalog assignment, cover star and ordering |
 | `src/components/GalleryList.component.tsx` | Sortable gallery list |
 | `src/pages/HomePage.tsx` | renders the cover grid |
 | `src/pages/GalleryPage.tsx` | renders the cover grid |
 | `src/pages/CollectionPage.tsx` | Masonry feed + lightbox |
 | `src/components/CollectionCover.component.tsx` | cover card |
-| `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery` |
+| `src/components/CollectionGrid.component.tsx` | shared 9-cover grid for `/` and `/gallery`, applies `coverSpacing` |
 | `src/components/PhotoLightbox.component.tsx` | fullscreen photo lightbox |
 | `src/components/ProgressiveImage.component.tsx` | progressive image loader |
 | `src/components/ErrorBoundary.component.tsx` | route error fallback |
@@ -223,7 +259,7 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | `src/hooks/usePageMeta.ts` | per-route title/canonical/OG/Twitter |
 | `src/App.tsx` | lazy routes; admin routes under `ProtectedRoute` |
 | `src/components/ProtectedRoute.tsx` | admin guard (waits for `isAuthReady`) |
-| `firestore.rules`, `firebase.json` | admin-only writes via `admins/{uid}`; public gallery read |
+| `firestore.rules`, `firebase.json` | admin-only writes via `admins/{uid}`; public read of `galleries` and `images` |
 | `public/galleries/` | static image assets referenced by Firestore galleries |
 | `src/firebase.ts` | Firebase auth only |
 | `src/firebaseData.ts` | lazy Firestore/Storage |
