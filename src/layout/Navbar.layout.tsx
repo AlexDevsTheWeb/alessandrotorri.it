@@ -76,10 +76,13 @@ const NavLink = styled(Button)<NavLinkProps>(({ theme }) => ({
 }));
 
 const LogoLink = styled(Button)<NavLinkProps>(({ theme }) => ({
-  color: alpha(theme.palette.text.primary, 0.72),
-  fontSize: '0.85rem',
-  letterSpacing: '0.3em',
-  fontWeight: 600,
+  color: alpha(theme.palette.text.primary, 0.82),
+  fontFamily: '"Instrument Serif", "Times New Roman", serif',
+  textTransform: 'uppercase',
+  fontSize: '1.1rem',
+  letterSpacing: '0.24em',
+  fontWeight: 400,
+  lineHeight: 1.1,
   padding: '6px 16px',
   transition: 'color 0.3s ease',
   backgroundColor: 'transparent !important',
@@ -95,8 +98,8 @@ const LogoLink = styled(Button)<NavLinkProps>(({ theme }) => ({
   },
 
   [theme.breakpoints.down('sm')]: {
-    fontSize: '0.7rem',
-    letterSpacing: '0.14em',
+    fontSize: '0.9rem',
+    letterSpacing: '0.16em',
     padding: '6px 8px',
   },
 

@@ -1,7 +1,6 @@
 import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import EditIcon from '@mui/icons-material/EditOutlined';
 import { Box, Button, Card, Chip, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -12,7 +11,6 @@ import RepositoryImage from './RepositoryImage.component';
 interface GalleryListProps {
   galleries: Gallery[];
   onReorder: (ids: string[]) => void;
-  onEdit: (gallery: Gallery) => void;
   onDelete: (gallery: Gallery) => void;
   disabled?: boolean;
 }
@@ -20,7 +18,6 @@ interface GalleryListProps {
 const GalleryList: React.FC<GalleryListProps> = ({
   galleries,
   onReorder,
-  onEdit,
   onDelete,
   disabled = false,
 }) => {
@@ -117,13 +114,6 @@ const GalleryList: React.FC<GalleryListProps> = ({
                         >
                           Gestisci
                         </Button>
-                        <IconButton
-                          aria-label={`Modifica ${gallery.name}`}
-                          onClick={() => onEdit(gallery)}
-                          disabled={disabled}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
                         <IconButton
                           aria-label={`Elimina ${gallery.name}`}
                           onClick={() => onDelete(gallery)}

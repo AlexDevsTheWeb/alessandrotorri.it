@@ -133,8 +133,8 @@ const GalleryFields: React.FC<GalleryFieldsProps> = ({
             label="In evidenza in homepage"
           />
           <Typography variant="caption" color="text.secondary">
-            In evidenza occupa entrambe le colonne in cima. Una galleria nascosta o senza foto
-            visibili non compare nel sito.
+            Una sola galleria in evidenza diventa un banner a tutta larghezza; due o più si
+            affiancano a coppie. Una galleria nascosta o senza foto visibili non compare nel sito.
           </Typography>
         </Stack>
       </Grid>

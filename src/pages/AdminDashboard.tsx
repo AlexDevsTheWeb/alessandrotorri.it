@@ -20,7 +20,6 @@ import GalleryFields from '../components/GalleryFields.component';
 import GalleryList from '../components/GalleryList.component';
 import {
   createEmptyDraft,
-  toGalleryDraft,
   validateGalleryDraft,
 } from '../services/galleries.service';
 import { describeFirestoreError } from '../services/firestore.service';
@@ -29,8 +28,6 @@ import { useAuthStore } from '../store/authStore';
 import { useGalleryStore } from '../store/galleryStore';
 import { useImageStore } from '../store/imageStore';
 import type { Gallery, GalleryDraft } from '../types/gallery.types';
-
-type DialogMode = 'create' | 'edit';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -43,17 +40,14 @@ const AdminDashboard: React.FC = () => {
     fetchGalleries,
     checkAdminAccess,
     createGallery,
-    saveGallery,
     deleteGallery,
     reorderGalleries,
   } = useGalleryStore();
 
-  const [mode, setMode] = useState<DialogMode>('create');
   const catalog = useImageStore((state) => state.images);
   const fetchImages = useImageStore((state) => state.fetchImages);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [draft, setDraft] = useState<GalleryDraft>(() => createEmptyDraft());
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [slugLocked, setSlugLocked] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -72,19 +66,8 @@ const AdminDashboard: React.FC = () => {
   }, [checkAdminAccess, user?.uid]);
 
   const openCreate = () => {
-    setMode('create');
-    setEditingId(null);
     setDraft(createEmptyDraft(galleries.length));
     setSlugLocked(false);
-    setDialogError(null);
-    setIsDialogOpen(true);
-  };
-
-  const openEdit = (gallery: Gallery) => {
-    setMode('edit');
-    setEditingId(gallery.id);
-    setDraft(toGalleryDraft(gallery));
-    setSlugLocked(true);
     setDialogError(null);
     setIsDialogOpen(true);
   };
@@ -108,7 +91,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    const validation = validateGalleryDraft(draft, galleries, editingId ?? undefined);
+    const validation = validateGalleryDraft(draft, galleries);
     if (validation) {
       setDialogError(validation);
       return;
@@ -116,14 +99,9 @@ const AdminDashboard: React.FC = () => {
 
     setIsSaving(true);
     try {
-      if (mode === 'create') {
-        const id = await createGallery(draft);
-        setIsDialogOpen(false);
-        navigate(`/admin/gallery/${id}`);
-      } else if (editingId) {
-        await saveGallery(editingId, draft);
-        setIsDialogOpen(false);
-      }
+      const id = await createGallery(draft);
+      setIsDialogOpen(false);
+      navigate(`/admin/gallery/${id}`);
     } catch (submitError) {
       setDialogError(describeFirestoreError(submitError));
     } finally {
@@ -195,7 +173,6 @@ const AdminDashboard: React.FC = () => {
         <GalleryList
           galleries={galleries}
           onReorder={handleReorder}
-          onEdit={openEdit}
           onDelete={setPendingDelete}
           disabled={status === 'loading'}
         />
@@ -209,7 +186,7 @@ const AdminDashboard: React.FC = () => {
       </Box>
 
       <Dialog open={isDialogOpen} onClose={closeDialog} fullWidth maxWidth="md">
-        <DialogTitle>{mode === 'create' ? 'Nuova galleria' : 'Modifica galleria'}</DialogTitle>
+        <DialogTitle>Nuova galleria</DialogTitle>
         <DialogContent dividers>
           <GalleryFields value={draft} catalog={catalog} onChange={handleDraftChange} disabled={isSaving} />
           {dialogError && (

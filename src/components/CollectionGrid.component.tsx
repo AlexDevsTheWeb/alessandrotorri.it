@@ -11,6 +11,8 @@ const COVER_SPACING: Record<GalleryPadding, number> = {
   large: 24,
 };
 
+const BANNER_HEIGHT = { xs: 240, sm: 320, md: 420 };
+
 interface CollectionGridProps {
   collections?: CollectionCoverData[];
 }
@@ -19,13 +21,23 @@ const CollectionGrid: React.FC<CollectionGridProps> = ({ collections = COLLECTIO
   const featured = collections.filter((collection) => collection.isFeatured);
   const rest = collections.filter((collection) => !collection.isFeatured);
   const showDivider = featured.length > 0 && rest.length > 0;
+  const singleFeatured = featured.length === 1;
 
-  const renderCollection = (collection: CollectionCoverData, index: number) => {
+  const renderCollection = (
+    collection: CollectionCoverData,
+    index: number,
+    isBanner = false,
+  ) => {
     const spacing = COVER_SPACING[collection.coverSpacing ?? 'none'];
     return (
-      <Grid key={collection.slug} size={{ xs: 12, sm: collection.isFeatured ? 12 : 6 }}>
-        <Box sx={{ p: `${spacing}px` }}>
-          <CollectionCover collection={collection} priority={index === 0} />
+      <Grid key={collection.slug} size={{ xs: 12, sm: isBanner ? 12 : 6 }}>
+        <Box
+          sx={{
+            p: `${spacing}px`,
+            height: isBanner ? BANNER_HEIGHT : undefined,
+          }}
+        >
+          <CollectionCover collection={collection} priority={index === 0} banner={isBanner} />
         </Box>
       </Grid>
     );
@@ -34,7 +46,9 @@ const CollectionGrid: React.FC<CollectionGridProps> = ({ collections = COLLECTIO
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
       <Grid container spacing={{ xs: 1, md: 2 }}>
-        {featured.map((collection, index) => renderCollection(collection, index))}
+        {featured.map((collection, index) =>
+          renderCollection(collection, index, singleFeatured),
+        )}
         {showDivider && (
           <Grid size={12}>
             <Divider
