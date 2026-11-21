@@ -55,13 +55,15 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 > [Project Roadmap](/concepts/roadmap.md) describes the original long-exposure plan and is now `deprecated`. For all current work, [Rebuild Plan](/rebuild-plan.md) is authoritative. The [blueprint](/sources/2026-03-03-blueprint.md) is archived history only.
 
 > [!QUESTION] Open questions
-> * Which service account will be the long-term deployment identity? `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` works where `FIREBASE_SERVICE_ACCOUNT` returns 403; the generic alias should be fixed or deleted.
+> * Which service account will be the long-term deployment identity? `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` is confirmed working and `FIREBASE_SERVICE_ACCOUNT` returns 403; the generic alias should be fixed or deleted.
 > * Is the deployed Firestore ruleset the repository revision? The admin writes succeed and `deploy.yml` deploys the rules on `v*` tags; the first successful automated run will confirm it.
-> * Does the Firebase project still need a Hosting site created (`firebase hosting:sites:create alessandrotorri-it`), or did `firebase init` provision it? "Site not found" is unresolved until a deploy reaches the hosting step.
 > * Should Firestore stay as the metadata store now that images are static repository assets? See [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
 > * When does the owner seed the remaining galleries and run the first production deploy?
 > * Home `/` = same cover grid as `/gallery`, or redirect? (Rebuild Plan phase 3 decided: same grid.)
 > * Which dependency majors are worth adopting? (Issues #20 and #21; requires a decision record per major.)
+
+> [!NOTE] Verified 2026-11-21 — Hosting and credentials
+> The PR #28 preview channel `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` deployed with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` and served the application (`200`, correct title, assets, `/gallery` rewrite). The Hosting site exists; "Site not found" came from the missing live release, not from a missing site.
 
 ## Cluster map
 

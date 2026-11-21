@@ -76,7 +76,9 @@ ruby -ryaml -e 'Dir[".github/workflows/*.yml"].each { |f| YAML.load_file(f) }'
 ```
 
 - Workflow YAML and `firebase.json`/`.firebaserc` parse.
-- Not executed: the deploy itself (no credential in this environment), the Hosting site existence.
+- Local build with a `public/index.html` placeholder: the application entry still wins (rules out the reported "wrong index" theory).
+- PR #28 `Preview` run: the `preview-28` channel deployed with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` and served the app (`200`, correct title, assets, `/gallery` rewrite), so the credential and the Hosting site are valid.
+- Not executed: the production `Deploy` (it requires the merge to `main`).
 
 ## 5. Post-merge checklist
 

@@ -51,6 +51,12 @@ The stated diagnosis is that `firebase init` left duplicate workflows, that Host
 - `preview.yml`: same credential resolution and project id; the skip message names both secrets.
 - `ci.yml`: pull requests limited to `development`/`main`.
 
+## Verification
+
+- `npm run lint` and `npm run build` pass; all three workflows parse as YAML and `firebase.json`/`.firebaserc` parse as JSON.
+- PR #28's `Preview` workflow deployed `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`: the channel returns `200` with the application title, serves the hashed assets and answers the `/gallery` deep link through the SPA rewrite. This proves the credential works and the Hosting site exists, so "Site not found" comes from the absent live release.
+- Not executed: `Deploy` itself (it needs the merge to `main`).
+
 ## Contradictions with the repository rules
 
 > [!WARNING] `IMPLEMENTATION_PLAN.md` at the repository root
