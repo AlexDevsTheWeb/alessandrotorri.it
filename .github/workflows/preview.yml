@@ -10,7 +10,11 @@ concurrency:
 
 permissions:
   contents: read
+  checks: write
   pull-requests: write
+
+env:
+  FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID || 'alessandrotorri-it' }}
 
 jobs:
   verify:
@@ -35,7 +39,7 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     env:
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT || secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -47,10 +51,10 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: ${{ vars.FIREBASE_PROJECT_ID || 'alessandrotorri-it' }}
+          firebaseServiceAccount: ${{ env.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ env.FIREBASE_PROJECT_ID }}
           channelId: preview-${{ github.event.pull_request.number }}
           expires: 7d
       - name: Deployment secret missing
         if: env.FIREBASE_SERVICE_ACCOUNT == ''
-        run: echo "FIREBASE_SERVICE_ACCOUNT is not set; skipping the preview deployment."
+        run: echo "No Firebase credentials (FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT or FIREBASE_SERVICE_ACCOUNT); skipping the preview deployment."

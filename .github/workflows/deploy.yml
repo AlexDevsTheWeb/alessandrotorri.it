@@ -12,10 +12,16 @@ concurrency:
 
 permissions:
   contents: read
+  checks: write
+
+env:
+  FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID || 'alessandrotorri-it' }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT || secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,26 +32,24 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
-      - name: Check Firebase credentials
+      - name: Validate the Firebase service account
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/.firebase-service-account.json
         run: |
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "FIREBASE_SERVICE_ACCOUNT repository secret is missing." >&2
+            echo "::error::No Firebase credentials found. Set FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT (preferred) or FIREBASE_SERVICE_ACCOUNT."
             exit 1
           fi
-      - name: Write service account
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$GITHUB_WORKSPACE/.firebase-service-account.json"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$GOOGLE_APPLICATION_CREDENTIALS"
+          node -e 'const c=require(process.env.GOOGLE_APPLICATION_CREDENTIALS);if(!c.client_email||!c.private_key){console.error("::error::The Firebase service account JSON is missing client_email or private_key.");process.exit(1)};console.log(`Service account: ${c.client_email}`);if(c.project_id&&c.project_id!==process.env.FIREBASE_PROJECT_ID){console.log(`::warning::The service account belongs to ${c.project_id}, not ${process.env.FIREBASE_PROJECT_ID}. Verify its IAM roles on the target project.`)}'
       - name: Deploy Firestore rules
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/.firebase-service-account.json
-        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project "${{ vars.FIREBASE_PROJECT_ID || 'alessandrotorri-it' }}" --non-interactive
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Deploy hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: ${{ vars.FIREBASE_PROJECT_ID || 'alessandrotorri-it' }}
+          firebaseServiceAccount: ${{ env.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ env.FIREBASE_PROJECT_ID }}
           channelId: live
