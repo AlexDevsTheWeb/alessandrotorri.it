@@ -35,7 +35,7 @@ Separately, `firebase init` on `main` committed `.github/workflows/firebase-host
 4. **Three workflows, no generated ones.** `ci.yml` (pushes to `development`/`main`, pull requests to `development`/`main`), `preview.yml` (PRs to `development`/`main`) and `deploy.yml` (`main`, `v*` tags, manual). Any `firebase-hosting-*.yml` file is deleted when it appears.
 5. **Rules before Hosting.** Unchanged from [Decision 0025](/decisions/0025-release-v1-and-ci-cd.md): a rules failure stops the release instead of shipping a client that the deployed rules reject.
 6. **Plan of record stays in the wiki.** The root `IMPLEMENTATION_PLAN.md` already existed from the v1.0.0 loop and was rewritten for this fix, but the analysis, decision and playbook live in the bundle ([Decision 0004](/decisions/0004-wiki-layout.md)).
-7. **`main` cleanup is a separate commit.** `df2aea2` on `main` (generated workflow, `public/index.html`, `skills-lock.json`, `.gitignore` touch) is not reachable from `development`, so it cannot be deleted by a PR into `development`. It is removed on `main` directly, and `public/index.html` must never be committed again: Vite copies `public/` into `dist/`, and a placeholder entry page has no place in the build input.
+7. **`main` is reset, not patched.** `df2aea2` on `main` (generated workflow, `public/index.html`, `skills-lock.json`, `.gitignore` touch) is not reachable from `development`, so a PR into `development` cannot delete it. Because it was the only commit by which `main` was ahead and it carried nothing else, `main` was force-updated to the `v1.0.0` commit (`59f87e3`) on 2026-11-21. `public/index.html` must never be committed again: Vite copies `public/` into `dist/`, and a placeholder entry page has no place in the build input.
 
 ## Consequences
 
@@ -51,7 +51,7 @@ Negative:
 - The precedence is implicit: fixing `FIREBASE_SERVICE_ACCOUNT` alone keeps the project-specific secret in use until it is removed.
 - `checks: write` was added to `deploy.yml` for the Hosting action; the token stays read-only for repository contents.
 - GitHub masks secret values in logs, so `client_email` is the only identity evidence in a failing run.
-- The `main` cleanup is manual and not enforced by CI.
+- The `main` reset was a one-off history rewrite; nothing in CI prevents a future `firebase init` artifact from being committed again.
 
 ## Alternatives rejected
 

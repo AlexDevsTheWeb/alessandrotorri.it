@@ -83,7 +83,7 @@ ruby -ryaml -e 'Dir[".github/workflows/*.yml"].each { |f| YAML.load_file(f) }'
 ## 5. Post-merge checklist
 
 1. Merge this PR into `development`.
-2. On `main`, remove `firebase-hosting-pull-request.yml`, `public/index.html` and `skills-lock.json` (from `df2aea2`); keep `firebase.json` with its `dist` target.
+2. `main` was reset to the `v1.0.0` commit on 2026-11-21; the `firebase init` artifacts are gone. Fast-forward `main` to `development` once the PR merges.
 3. Re-run `deploy.yml` (`workflow_dispatch`) or push a new tag; confirm the rules deploy succeeds with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`.
 4. If Hosting reports `Site not found`, create the default site: `firebase hosting:sites:create alessandrotorri-it`.
 5. Smoke-test `/`, `/gallery`, `/gallery/<slug>`, `/login`, `/admin`, `/admin/images` on desktop and 390 px.

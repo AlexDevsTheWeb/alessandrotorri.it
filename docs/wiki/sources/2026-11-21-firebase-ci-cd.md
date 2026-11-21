@@ -66,7 +66,7 @@ The stated diagnosis is that `firebase init` left duplicate workflows, that Host
 > The source asks to commit the cleanup "to `development`". `AGENTS.md` §7 requires a branch and a pull request against `development`; the work is on `fix/firebase-ci-cd`.
 
 > [!WARNING] Diagnosis vs evidence
-> "Duplicates conflict and Hosting points at `public`" does not match the repository: `development` has one workflow per purpose and `firebase.json` was already correct. The failing artifact is the service account used by the rules step. The cleanup of `main` (the generated workflow, the placeholder page and `skills-lock.json`) is still required, but as a separate commit on `main`, not through this PR.
+> "Duplicates conflict and Hosting points at `public`" does not match the repository: `development` has one workflow per purpose and `firebase.json` was already correct. The failing artifact is the service account used by the rules step. The cleanup of `main` (the generated workflow, the placeholder page and `skills-lock.json`) was handled by resetting `main` to the `v1.0.0` commit, since that junk commit was the only thing `main` had beyond `development`.
 
 ## Wiki pages touched
 
