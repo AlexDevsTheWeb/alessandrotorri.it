@@ -61,6 +61,12 @@ Negative:
 - **Point Hosting at `public` as the source prompt assumed.** Rejected: `dist` is the Vite output and the shipped site; `public/` only holds static assets copied into it.
 - **Write `IMPLEMENTATION_PLAN.md` at the root.** Rejected: violates the bundle layout.
 
+## Outcome (2026-11-21)
+
+The merged fix authenticated correctly but the rules step then failed with `403 The caller does not have permission` on `firebaserules.googleapis.com`. The generated CI account had Hosting, Auth, Functions, Run and Service Usage roles but not `roles/firebaserules.admin`; `firebase init` does not grant it. The role was added, the failed run re-run, and `Deploy` `44953688196` succeeded (rules, then hosting). `https://alessandrotorri-it.web.app` serves the app; the custom domain is still Adobe Portfolio.
+
+The lesson for this decision: credential validation catches the wrong secret, but not a missing role on the right secret. The playbook now names every role the account needs.
+
 ## Links
 
 - [Source summary](/sources/2026-11-21-firebase-ci-cd.md)
