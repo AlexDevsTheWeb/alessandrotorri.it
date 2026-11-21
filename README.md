@@ -36,11 +36,12 @@ VITE_FIREBASE_APP_ID=
 | Command | Purpose |
 |---------|---------|
 | `npm run dev` | Vite dev server |
-| `npm run build` | Type-check (`tsc -b`) and production build |
+| `npm run typecheck` | Type-check (`tsc -b`) |
+| `npm run build` | Type-check and production build |
 | `npm run lint` | ESLint |
 | `npm run preview` | Preview the production build |
 
-CI runs lint and build on every push and pull request.
+CI runs lint, typecheck and build on every push and pull request. `deploy.yml` publishes to Firebase Hosting and deploys the Firestore rules on `main` / `v*` tags; `preview.yml` publishes a temporary preview channel for pull requests. Both need the `FIREBASE_SERVICE_ACCOUNT` repository secret. See [Release and deployment](docs/wiki/rules/release-deployment.md).
 
 ## Documentation
 
@@ -58,9 +59,9 @@ Every new raw source, GitHub issue, feature, or bug goes through the usual loop:
 
 ## Status
 
-- Knowledge foundation: done 2026-10-29 (OKF wiki, agent schema, skills, green baseline).
-- Public rebuild: phases 0–5 done; gallery admin done 2026-11-16; image catalog, GitHub discovery and layout controls done 2026-11-17. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
-- Open work: deploy the Firestore rules and seed the catalog (#3), deployed Lighthouse (#14), remaining majors (#6 / #20 / #21 / #22).
+- **v1.0.0 — release prepared 2026-11-19.** Version bumped to `1.0.0`; CI runs lint, typecheck and build; `deploy.yml` handles Firebase Hosting + Firestore rules on `main` and tags; `preview.yml` deploys PR preview channels. First production deployment, `main` branch and the `v1.0.0` tag are pending the release checklist.
+- Public rebuild: phases 0–5 done; gallery admin done 2026-11-16; image catalog, GitHub discovery, layout controls, visibility and cover/spacing settings done 2026-11-17/18. See the [Rebuild Plan](docs/wiki/rebuild-plan.md).
+- Open work: configure the deployment secret and run the first deploy; seed the remaining gallery photos; deployed Lighthouse (#22); remaining majors (#20 / #21).
 
 ## License
 

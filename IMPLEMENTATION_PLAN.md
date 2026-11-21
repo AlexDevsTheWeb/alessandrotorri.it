@@ -1,147 +1,102 @@
-# Implementation Plan — Image catalog, GitHub discovery, featured galleries and layout controls
+# Implementation Plan — Release v1.0.0 and CI/CD automation
 
-Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](docs/raw/2026-11-17-admin-galleries-v2.md)
-Branch: `feat/image-catalog-and-layout`
-Date: 2026-11-17
+Source: [`docs/raw/2026-11-19-v1.0.md`](docs/raw/2026-11-19-v1.0.md)
+Branch: `chore/release-v1.0.0`
+Date: 2026-11-19
+Status: implemented; first deploy pending the post-merge checklist.
 
 ## 1. Analysis
 
-The source expands the gallery admin delivered on 2026-11-16 into a photo-first workflow:
+PR #26 (image catalog, GitHub discovery, layout, visibility, covers and spacing) is merged into `development` (`2a8a19e`). The source asks for the v1.0.0 release, GitHub Actions CI/CD, wiki status updates and issue closure.
 
-1. a master `images` catalog in Firestore, indexed by filename;
-2. GitHub REST discovery of the files already committed to `public/galleries/`, so unindexed photos are visible in the admin;
-3. a dedicated `/admin/images` screen with completeness filters, inline edits and gallery assignment;
-4. cover designation from the gallery's own images;
-5. featured galleries pinned full-width at the top of the homepage;
-6. per-gallery layout config (aspect ratio, grid padding) and strict `object-fit: cover` rendering;
-7. Firestore rules for `images` and the new gallery fields.
+Verified facts:
+
+- `main` does not exist; `development` is the only integration branch.
+- Only `.github/workflows/ci.yml` exists (Node 22, `npm ci`, lint, build).
+- `package.json` was `0.0.0`; `firebase.json` had no Hosting block and there was no `.firebaserc`.
+- Issues #1/#2/#3/#14 are already closed; #22 remains open.
+- The admin has been exercised live, so the deployed Firestore rules accept the current writes.
+- The public rebuild has not been deployed; the live domain still serves Adobe Portfolio.
 
 ### Contradictions and resolutions
 
 | Contradiction | Resolution |
 |---------------|------------|
-| [Decision 0016](/docs/wiki/decisions/0016-gallery-management.md) rejected a separate `images` collection and chose embedded images. | The new source asks for a reusable catalog with `galleryIds`. [Decision 0018](/docs/wiki/decisions/0018-image-catalog-and-layout.md) adopts the catalog and supersedes the embedded-image parts of 0016. Galleries keep an ordered `imageIds` array; image metadata lives once in `images`. |
-| [Decision 0012](/docs/wiki/decisions/0012-gallery-hover-titles-and-copy-guard.md) locked 4:3 covers. | Covers now use the gallery's `layoutConfig.aspectRatio` (default `3/2`, as the source specifies). The static fallback dataset keeps 4:3. |
-| The source repeats "React 19, Vite 7, MUI v7"; the repository runs Vite 8, MUI 9. | Follow the repository ([Tech Stack](/docs/wiki/concepts/tech-stack.md), decisions 0006 and 0015). |
-| The source says gallery documents carry `id`. | The codebase maps the Firestore document id explicitly and never stores it (decision 0016, [Photo Management](/docs/wiki/concepts/photo-management.md)). Kept as-is. Same for `images`. |
+| The source asks for `docs/raw/2026-11-18-release-v1.0.md`. | `docs/raw/` is immutable (AGENTS §3/§5). The release summary is [`docs/wiki/reviews/2026-11-19-v1.0.0-release.md`](docs/wiki/reviews/2026-11-19-v1.0.0-release.md). |
+| The source asks to mark "Phase 7 (Release v1.0)" complete. | Phase 7 is the image catalog. A new Phase 8 covers the release in the [Rebuild Plan](docs/wiki/rebuild-plan.md). |
+| The source asks for "v1.0.0 Stable Production". | No deploy has run. The wiki says "release prepared, first deploy pending" until `deploy.yml` succeeds. |
+| The source asks to close #1/#2/#3/#14. | They are already closed; no false re-closure. #22 stays open until a deployed Lighthouse run. |
+| `main` and the `v1.0.0` tag should be created. | They must follow the release PR merge; creating them now would tag an incomplete release. The exact commands are in the release report. |
 
 ### Requirements and acceptance criteria
 
-- `images/{imageId}` documents: `filename`, `path`, `title`, `description`, `alt`, `aspectRatio`, `galleryIds`, timestamps. Document id derived from the sanitized filename so GitHub sync is idempotent.
-- `galleries` documents: the previous fields plus `isFeatured`, `featuredOrder`, `coverImageId`, `imageIds`, `layoutConfig { aspectRatio, padding }`.
-- `/admin/images` (protected): filters *Tutte*, *Nuove / non indicizzate*, *Senza titolo*, *Senza descrizione*, *Non assegnate*; inline title/description/alt editing; gallery assignment; "+ Nuova galleria" quick modal.
-- GitHub discovery of `GET /repos/AlexDevsTheWeb/alessandrotorri.it/contents/public/galleries`, cross-referenced with the catalog.
-- Gallery editor: assign catalog images, reorder, remove, set the cover, toggle featured, set the layout config.
-- Homepage: featured galleries first, full width; the rest in the standard two-column grid.
-- `/gallery/:slug`: the layout config drives the feed ratio and spacing; every image uses `object-fit: cover; object-position: center`.
-- `firestore.rules`: public read and admin-only validated writes for `images`; the new gallery fields validated.
-- Lint and build green; wiki, decision and log updated; draft PR against `development`.
+- `package.json` and the lockfile at `1.0.0`; `npm run typecheck` available.
+- `ci.yml`: lint, typecheck and build on `development`/`main` pushes and PRs.
+- `preview.yml`: PR preview channels, skipped when the Firebase secret is absent.
+- `deploy.yml`: Firestore rules then Hosting `live` on `main`/`v*` tags.
+- `firebase.json` Hosting (`dist`, SPA rewrite) and `.firebaserc` (`alessandrotorri-it`).
+- Wiki: source summary, decision 0025, release report and deployment playbook; rebuild plan and overview updated; indexes and log refreshed.
+- `npm run lint`, `npm run typecheck` and `npm run build` green; workflow YAML valid.
+- Draft PR against `development`.
 
-Out of scope: browser uploads (files stay in `public/galleries/`), migrating the CDN photos, authenticated GitHub calls, new dependencies.
+Out of scope: running the Firebase deploy, creating `main`/the tag, closing already-closed issues, seeding photos, Lighthouse.
 
-## 2. Data model
+## 2. Release flow
 
-```ts
-// images/{imageId}
-interface CatalogImage {
-  id: string;                 // sanitized filename, not stored in the document
-  filename: string;           // italia-dolomiti-01.webp
-  path: string;               // /galleries/italia-dolomiti-01.webp
-  title: string;
-  description: string;
-  alt: string;
-  aspectRatio: ImageAspectRatio; // 16:9 | 3:2 | 4:3 | 1:1 | auto
-  galleryIds: string[];
-  createdAt: Timestamp | null;
-  updatedAt: Timestamp | null;
-}
-
-// galleries/{galleryId}
-interface Gallery {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  displayOrder: number;
-  isFeatured: boolean;
-  featuredOrder: number;
-  coverImageId: string;
-  coverImageUrl: string;
-  imageIds: string[];
-  layoutConfig: { aspectRatio: ImageAspectRatio; padding: 'none' | 'small' | 'medium' | 'large' };
-  createdAt: Timestamp | null;
-  updatedAt: Timestamp | null;
-}
+```text
+feature PR → development → release PR (this branch) → merge
+                                                     ↓
+                                       create main from development
+                                                     ↓
+                                          tag v1.0.0 → deploy.yml
+                                                     ↓
+                                   firestore.rules → Firebase Hosting live
 ```
 
-Notes:
+`preview.yml` deploys `preview-<PR number>` for pull requests. Preview never deploys rules.
 
-- `galleryIds` and `imageIds` are maintained together in one Firestore batch on every membership change, so the two indexes agree.
-- `coverImageUrl` is denormalized from the catalog so the public grid can paint without resolving the catalog; `coverImageId` stays authoritative in the admin.
-- Legacy gallery documents with an embedded `images` array are still read (public mapper falls back) but the admin saves only the new shape. Galleries are not seeded yet, so no production data migrates.
-- Read stats: one `getDocs` per collection; the catalog is ~100 documents.
+## 3. File changes
 
-## 3. GitHub discovery
+| File | Change |
+|------|--------|
+| `package.json`, `package-lock.json` | Version `1.0.0`; `typecheck` script |
+| `.github/workflows/ci.yml` | Typecheck step; `main` push trigger |
+| `.github/workflows/preview.yml` | PR verification + preview channel |
+| `.github/workflows/deploy.yml` | Rules + Hosting live on `main`/tags |
+| `firebase.json` | Hosting block, SPA rewrite |
+| `.firebaserc` | Default project `alessandrotorri-it` |
+| `README.md`, `AGENTS.md` | Release status, scripts and next steps |
+| `docs/wiki/sources/2026-11-19-v1.0.md` | Source summary |
+| `docs/wiki/decisions/0025-release-v1-and-ci-cd.md` | Release/CI decision |
+| `docs/wiki/rules/release-deployment.md` | Secrets, release, rollback playbook |
+| `docs/wiki/reviews/2026-11-19-v1.0.0-release.md` | Release report + checklist |
+| `docs/wiki/rebuild-plan.md`, `overview.md`, indexes, `log.md` | Status and links |
 
-- `src/services/githubImages.service.ts` calls the contents endpoint with `VITE_GITHUB_REPO` (default `AlexDevsTheWeb/alessandrotorri.it`) and `VITE_GITHUB_BRANCH` (default `development`).
-- Unauthenticated request, public repository. No token in the bundle.
-- Supported extensions: `.webp`, `.jpg`, `.jpeg`, `.png`, `.avif`.
-- A 403/429 is surfaced as a rate-limit message with a retry action; the rest of the admin keeps working.
-- Unindexed files are rendered as stubs with an "Indicizza" action that creates the catalog document.
-
-## 4. Routes and components
-
-| Route | Component | Change |
-|-------|-----------|--------|
-| `/admin` | `AdminDashboard` | shared admin nav, featured badge in the list |
-| `/admin/gallery/:galleryId` | `AdminGalleryDetailPage` | loads the catalog for assignment |
-| `/admin/images` | `AdminImagesPage` (new) | catalog, GitHub sync, filters, assignment |
-
-New components: `AdminNav`, `ImageCatalogCard` (the filter toolbar is inline in `AdminImagesPage`). Rewritten: `GalleryImageList` (catalog assignment, cover picker), `GalleryFields` (featured + layout). Updated: `CollectionGrid` (featured, per-cover ratio), `CollectionCover` (ratio), `CollectionPage` (ratio + spacing), `ProgressiveImage` (object-position).
-
-State: `useImageStore` (catalog CRUD, indexing, assignment) next to `useGalleryStore`; `usePublicGalleries` joins galleries and catalog for the public pages.
-
-## 5. Rules
-
-```
-match /images/{imageId} {
-  allow read: if true;
-  allow create, update: if isAdmin() && isValidImage();
-  allow delete: if isAdmin();
-}
-
-match /galleries/{galleryId} {
-  allow read: if true;
-  allow create, update: if isAdmin() && isValidGallery();
-  allow delete: if isAdmin();
-}
-```
-
-`isValidImage()` and `isValidGallery()` validate types, the required timestamp and the allowed enum values for `aspectRatio` and `padding`.
-
-## 6. Risks
-
-| Risk | Mitigation |
-|------|------------|
-| Two indexes (`galleryIds`, `imageIds`) drift | membership changes always run in one `writeBatch` |
-| GitHub rate limit (60 req/h unauthenticated) | single request per admin visit, explicit error and retry, no polling |
-| Legacy `images` documents from the retired collection | reads ignore documents without `filename`/`path`; the owner can delete leftovers |
-| Legacy embedded gallery images | read-only fallback in the public mapper; no seeded galleries exist |
-| Rules not deployed | the existing `admins/{uid}` preflight stays; deployment remains issue #3 |
-| Public bundle growth | the catalog read runs after mount through the existing lazy service chunk |
-
-## 7. Verification
+## 4. Verification
 
 ```bash
 npm run lint
+npm run typecheck
 npm run build
-# manual: npm run dev → /, /gallery, /gallery/<slug>, /admin, /admin/images, /admin/gallery/<id>
 ```
 
-Live Firestore writes, rules deployment and the GitHub call need credentials/network and are listed for the owner.
+- Workflow YAML parsed with Ruby `YAML.load_file`.
+- Not executed: Firebase deploy steps, Hosting site existence, service-account roles, post-deploy admin smoke test.
 
-## 8. Execution outcome
+## 5. Post-merge checklist
 
-Delivered on `feat/image-catalog-and-layout`, draft PR [#26](https://github.com/AlexDevsTheWeb/alessandrotorri.it/pull/26): the `images` catalog and membership batching, `/admin/images` with GitHub discovery and filters, cover/featured/layout controls in the gallery editor, featured full-width covers, per-gallery feed ratio and spacing, `object-fit: cover` rendering, the rules update and the full wiki slice.
+1. Merge the release PR into `development`.
+2. Add `FIREBASE_SERVICE_ACCOUNT` (Hosting Admin + Rules Admin + Service Account User); optionally set `FIREBASE_PROJECT_ID`.
+3. Create `main` from `development` and push it.
+4. Tag `v1.0.0` and push the tag; confirm `Deploy` is green.
+5. Smoke-test the Hosting URL: `/`, `/gallery`, `/gallery/<slug>`, `/login`, `/admin`, `/admin/images`.
+6. Confirm an admin write still succeeds after the rules deploy.
+7. Create the GitHub Release with the release report as the body.
+8. Continue seeding photos; run the deployed Lighthouse check (#22).
 
-`npm run lint` and `npm run build` pass. Headless Chrome on `npm run preview` renders the 9 fallback covers on `/` and `/gallery` and the 24-photo feed on `/gallery/01-favorite`. Live Firestore, rules deployment, the GitHub call against committed files and the admin browser flows are not verified; see the [implementation report](docs/wiki/reviews/2026-11-17-image-catalog-implementation.md).
+## 6. Risks
+
+- The Hosting site may not exist for `alessandrotorri-it`; the deploy fails until it does or `FIREBASE_PROJECT_ID` points at the real site.
+- The service account roles are documented, not verified from this environment.
+- `main` and the tag are manual; automation cannot create the release boundary by itself.
+- The SPA rewrite serves `index.html` for unknown paths; missing static assets are not a Hosting 404.

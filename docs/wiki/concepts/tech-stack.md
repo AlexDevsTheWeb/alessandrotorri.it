@@ -88,7 +88,7 @@ Firebase Studio / IDX was removed on 2026-10-29 (`.idx/` and the old `GEMINI.md`
 - In-range updates are applied in a dedicated loop; majors need a decision record and an individual branch.
 - `npm outdated` is the starting point, not an instruction to upgrade everything.
 - Never use `npm audit fix --force` when it downgrades a core package; document the advisory and track it instead.
-- Current bundle note: no chunk exceeds 500 kB. Initial public load uses `index` (~20 kB), `react` (~276 kB), `mui` (~268 kB) and `firebase-core` (~158 kB); `firebase-data` (~426 kB) and the admin pages load only on admin routes. Deployed performance verification is [issue #14](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/14).
+- Current bundle note: no chunk exceeds 500 kB. Initial public load uses `index` (~20 kB), `react` (~276 kB), `mui` (~268 kB) and `firebase-core` (~158 kB); `firebase-data` (~426 kB) and the admin pages load only on admin routes. Deployed performance verification is [issue #22](https://github.com/AlexDevsTheWeb/alessandrotorri.it/issues/22).
 
 ## Related
 

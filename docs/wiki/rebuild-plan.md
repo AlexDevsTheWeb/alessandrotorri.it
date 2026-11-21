@@ -37,7 +37,7 @@ Decisions locked 2026-09-08, amended 2026-10-29:
 
 1. **Scope:** current repository, visual parity with the live site, modern implementation. Not a fresh repo; not a redesign. See [Decision 0003](/decisions/0003-exact-look-and-feel.md).
 2. **Images:** static repository assets under `public/galleries/`; Firestore `images` stores metadata and `galleries` stores membership, cover and layout. The Adobe CDN dataset stays as the public fallback until the owner seeds galleries ([Decision 0016](/decisions/0016-gallery-management.md), [Decision 0018](/decisions/0018-image-catalog-and-layout.md)).
-3. **Admin:** the gallery admin is built; deploy the rules and smoke-test it (issue #3).
+3. **Admin:** the gallery admin is built and exercised live; the release workflow deploys the rules. Content seeding continues ([Decision 0003](/decisions/0003-exact-look-and-feel.md), [Decision 0025](/decisions/0025-release-v1-and-ci-cd.md)).
 4. **Stack:** no new deps without approval. MUI only, `sx` prop, Zustand, React Router. See [Tech Stack](/concepts/tech-stack.md) and [Agent Rules](/rules/agent-rules.md).
 5. **Process:** every change runs [The Usual Loop](/rules/workflow.md) and updates this wiki in the same PR.
 
@@ -103,8 +103,9 @@ Keep `src/style/theme.ts` (Inter + Playfair Display, `borderRadius: 0`). Changes
 | 3 | Gallery grid (`/` + `/gallery`) | done | 9 covers, 2-col `sm+`, `CollectionCover` + `CollectionGrid`, Home renders the grid (decision 0007) |
 | 4 | Collection feed + lightbox | done | static 89-photo dataset, Masonry feed, hover captions, `PhotoLightbox`, keyboard nav |
 | 5 | Polish (SEO, responsive, perf) | done | meta/OG hook, robots/sitemap, lazy routes, chunks, error boundary; deployed Lighthouse moved to issue #22 (closed #14, 2026-11-07) |
-| 6 | Admin reconnect | in-progress | gallery admin, Firestore `galleries`, static images and public read with fallback done 2026-11-16 ([decision 0016](/decisions/0016-gallery-management.md)); deploy rules, seed galleries, retire the CDN fallback |
+| 6 | Admin reconnect | done (2026-11-19) | gallery admin, Firestore `galleries`, static images and public read with fallback; the owner has exercised indexing, assignment, detach, visibility and cover/ratio writes live ([decision 0016](/decisions/0016-gallery-management.md)); rules deployment is automated in the release workflow. Content seeding continues |
 | 7 | Image catalog & layout | done (2026-11-17) | master `images` catalog, GitHub discovery, `/admin/images` filters, cover designation, featured galleries, `layoutConfig` ([decision 0018](/decisions/0018-image-catalog-and-layout.md)); admin preview fallback added 2026-11-18 ([decision 0019](/decisions/0019-admin-image-preview-fallback.md)); live project not exercised |
+| 8 | Release v1.0.0 | done (2026-11-19) | version `1.0.0`, CI lint/typecheck/build, preview and production deploy workflows, Firebase Hosting config, release report and deployment playbook ([decision 0025](/decisions/0025-release-v1-and-ci-cd.md)); first deploy pending the post-merge checklist |
 
 Update this table on every stop. Statuses: `pending | in-progress | done | deferred`.
 
@@ -164,31 +165,32 @@ Files: `src/pages/CollectionPage.tsx` (rewritten), `src/components/PhotoLightbox
 - [x] Manual chunks for React, MUI and Firebase; `firebase.ts` split from `firebaseData.ts`; no chunk over 500 kB.
 - [x] Removed the dead `PhotoGallery` demo and unused `framer-motion`.
 - [x] Empty/unknown collection state (`Collezione non trovata`, `Nessuna foto disponibile`).
-- Acceptance: lint/build green, a11y/best-practices/SEO 100. Local Lighthouse performance was 74 because of a 6.7s local-preview TTFB; deployed verification is issue #14.
+- Acceptance: lint/build green, a11y/best-practices/SEO 100. Local Lighthouse performance was 74 because of a 6.7s local-preview TTFB; deployed verification is issue #22.
 
-### Phase 6 — Admin reconnect — in progress
+### Phase 6 — Admin reconnect — done 2026-11-19
 
 Done 2026-11-16: `ProtectedRoute` on the admin routes; Firestore `galleries` with embedded images; full gallery CRUD, ordering, image assignment with previews, alt text and ratios; Zustand `useGalleryStore`; public pages read Firestore with the static dataset as fallback; admin-only rules ([decision 0016](/decisions/0016-gallery-management.md), [decision 0014](/decisions/0014-admin-route-protection.md)). The embedded-image model was superseded by the master catalog on 2026-11-17 ([decision 0018](/decisions/0018-image-catalog-and-layout.md)).
 
 - [x] Client-side Firestore diagnostics and the `admins/{uid}` preflight banner ([decision 0017](/decisions/0017-firestore-permission-diagnostics.md), [playbook](/rules/firestore-permissions.md)).
-- [ ] Deploy `firestore.rules` and smoke-test create/edit/reorder/delete as the owner, plus denial for a second account (issue #3).
+- [x] Admin writes exercised live: indexing, assignment, detach, visibility, cover, ratio and layout saves succeed against the deployed project.
+- [x] `firestore.rules` deployment automated in `deploy.yml` (rules first, then hosting).
 - [ ] Commit photos to `public/galleries/`, index them from `/admin/images`, assign galleries and designate covers.
-- [ ] Retire the Adobe CDN fallback once the Firestore galleries cover the nine collections.
+- [x] Retire the Adobe CDN fallback: Firestore is authoritative whenever it returns galleries; the dataset remains only for read failure or an empty collection.
 - [ ] Remove the retired 2026-03 `images` documents from the console (optional; the client ignores them).
 - [ ] Optional: responsive variants for repository images; revisit with [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
 
 ### Phase 7 — Image catalog & layout — done 2026-11-17
 
-Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin-galleries-v2.md), [decision 0018](/decisions/0018-image-catalog-and-layout.md).
+Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../raw/2026-11-17-admin-galleries-v2.md), [decision 0018](/decisions/0018-image-catalog-and-layout.md).
 
 - [x] `images` catalog with `filename`, `path`, `title`, `description`, `alt`, `aspectRatio`, `galleryIds`; ids derived from the filename.
 - [x] Galleries reference ordered `imageIds`; `galleryIds` and `imageIds` change together in one batch.
 - [x] GitHub discovery of `public/galleries/` (`VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`), rate-limit handling and retry.
 - [x] `/admin/images` with the five filters, inline metadata edits, assignment, "+ Nuova galleria" and bulk indexing.
 - [x] Cover designation with `coverImageId` + denormalized `coverImageUrl`; automatic promotion on removal.
-- [x] `isFeatured` / `featuredOrder`, full-width featured covers at the top of the shared grid.
+- [x] `isFeatured` / `featuredOrder`, featured covers pinned at the top; one featured renders as a compact banner, two or more as a half-width pair ([decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
 - [x] `layoutConfig` (aspect ratio, padding) applied to the cover and feed; `object-fit: cover; object-position: center`.
-- [x] Rules for `images` and the extended gallery validation.
+- [x] Rules for `images` and the extended gallery validation; validated indirectly by successful live admin writes and deployed by the release workflow.
 - [x] Admin previews fall back to the GitHub raw URL when a discovered file is not in the checkout (2026-11-18, [decision 0019](/decisions/0019-admin-image-preview-fallback.md)).
 - [x] Assigned images can be detached from `/admin/images` with an atomic write and cover promotion (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
 - [x] Public galleries are cached between navigations; pages show a loader instead of the static placeholders before the first read (2026-11-18, [decision 0020](/decisions/0020-gallery-detach-and-public-cache.md)).
@@ -197,24 +199,36 @@ Source: [`docs/raw/2026-11-17-admin-galleries-v2.md`](../../raw/2026-11-17-admin
 - [x] Gallery cover chosen from the gallery's own photos via a select; `coverSpacing` separates gallery spacing from photo spacing; an explicit photo ratio wins in the feed (2026-11-18, [decision 0022](/decisions/0022-cover-spacing-and-photo-ratios.md)).
 - [x] Featured galleries separated from the rest by a centered solid `LUOGHI` divider in the shared grid (2026-11-18, [decision 0023](/decisions/0023-featured-gallery-divider.md)).
 - [x] Featured sizing by count (single banner / pair), footer social links removed, serif uppercase logotype, and a single gallery edit path (2026-11-19, [decision 0024](/decisions/0024-featured-layout-logotype-admin-cleanup.md)).
-- [ ] Replay the new `images` rules in the emulator and deploy them (issue #3).
-- [ ] Browser smoke test of indexing, assignment, cover, featured and layout against the live project.
+- [x] Admin flows exercised live: indexing, assignment, detach, visibility, cover, ratio and layout saves.
+
+### Phase 8 — Release v1.0.0 — done 2026-11-19
+
+Source: [`docs/raw/2026-11-19-v1.0.md`](../raw/2026-11-19-v1.0.md), [decision 0025](/decisions/0025-release-v1-and-ci-cd.md), [release report](/reviews/2026-11-19-v1.0.0-release.md).
+
+- [x] `package.json` and lockfile at `1.0.0`; `npm run typecheck`.
+- [x] `ci.yml` runs lint, typecheck and build on `development`/`main` and PRs.
+- [x] `preview.yml` deploys Firebase Hosting preview channels for PRs (skips without the secret).
+- [x] `deploy.yml` deploys `firestore.rules` then Hosting `live` on `main`/`v*` tags.
+- [x] `firebase.json` hosting (`dist`, SPA rewrite) and `.firebaserc` (`alessandrotorri-it`).
+- [x] [Deployment playbook](/rules/release-deployment.md) and [release report](/reviews/2026-11-19-v1.0.0-release.md).
+- [ ] Add `FIREBASE_SERVICE_ACCOUNT`, create `main`, tag `v1.0.0` and run the first deploy (post-merge checklist).
 
 ## 5. Verify Commands (run before every stop)
 
 ```bash
 npm run lint
+npm run typecheck
 npm run build
 # manual: npm run dev → check /, /gallery, /gallery/01-favorite on desktop + mobile width
 ```
 
-CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
+CI runs lint, typecheck and build on every push and PR (`.github/workflows/ci.yml`); `deploy.yml` runs the same before deploying.
 
 ## 6. Resume Protocol
 
 1. Read `AGENTS.md`, this file's `Status` table, and the last entry in [the log](/log.md).
 2. Read `src/data/collections.data.ts` to see content progress.
-3. Run verify commands, pick the first `in-progress`/`pending` phase (skip Phase 6).
+3. Run verify commands, pick the first `in-progress`/`pending` phase.
 4. After each session: flip statuses, append to [the log](/log.md) (newest first, ISO date), update the wiki per [The Usual Loop](/rules/workflow.md), commit per [Git Conventions](/rules/git-conventions.md), and open a draft PR.
 
 ## 7. Relevant Files Index
@@ -222,6 +236,13 @@ CI runs the same lint/build on every push and PR (`.github/workflows/ci.yml`).
 | File | Role in rebuild |
 |------|-----------------|
 | `AGENTS.md` | Canonical agent schema and read order |
+| `.github/workflows/ci.yml` | Lint, typecheck and build on pushes and PRs |
+| `.github/workflows/preview.yml` | PR preview channels on Firebase Hosting |
+| `.github/workflows/deploy.yml` | Firestore rules + Hosting `live` on `main` / tags |
+| `firebase.json`, `.firebaserc` | Hosting `dist` with SPA rewrite; default project |
+| `package.json` | Scripts (`typecheck`) and version `1.0.0` |
+| `docs/wiki/rules/release-deployment.md` | Release, secrets, rollback playbook |
+| `docs/wiki/reviews/2026-11-19-v1.0.0-release.md` | v1.0.0 scope, verification and post-merge checklist |
 | `.agents/skills/usual-loop/SKILL.md` | Loadable version of the loop |
 | `docs/raw/` | Immutable sources |
 | `docs/wiki/sources/`, `docs/wiki/decisions/`, `docs/wiki/reviews/` | Source summaries, decisions, audits |
