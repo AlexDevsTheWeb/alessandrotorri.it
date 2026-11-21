@@ -22,9 +22,19 @@ sources:
 ## Prerequisites
 
 - Firebase project `alessandrotorri-it` with an existing Hosting site (the project id is the default site). Override with the repository variable `FIREBASE_PROJECT_ID` if the site differs.
-- A service account key with **Firebase Hosting Admin**, **Firebase Rules Admin** and **Service Account User** on the project, stored as a GitHub Actions secret. Either name works:
+- A service account key authorized on `alessandrotorri-it`, stored as a GitHub Actions secret. Either name works:
   - `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` — preferred, the key `firebase init` generates for this project;
   - `FIREBASE_SERVICE_ACCOUNT` — fallback, kept for compatibility.
+
+  The account behind it needs `roles/firebasehosting.admin`, `roles/firebaserules.admin`, `roles/serviceusage.serviceUsageConsumer` and `roles/iam.serviceAccountUser` on the project. `firebase init` creates the `hosting`, `auth` and `serviceusage` roles but **not** the rules one; add it once with:
+
+  ```bash
+  gcloud projects add-iam-policy-binding alessandrotorri-it \
+    --member="serviceAccount:<ci-sa>@alessandrotorri-it.iam.gserviceaccount.com" \
+    --role="roles/firebaserules.admin"
+  ```
+
+  The CI account in use is `github-action-1146516726@alessandrotorri-it.iam.gserviceaccount.com` (granted 2026-11-21).
 - `.firebaserc` points `default` at the project; `firebase.json` maps `hosting.public` to `dist`, rewrites unknown paths to `/index.html` and points `firestore.rules` at the repository rules file.
 - Never commit the service account or any Firebase credential. `.env` stays gitignored. `public/index.html` must never be committed either: Vite owns `index.html` at the repository root and copies `public/` into `dist/`.
 
@@ -78,6 +88,7 @@ No other workflow files are allowed. A generated `firebase-hosting-merge.yml` or
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | `403 Permission denied to get service [firestore.googleapis.com]` | The service account JSON is not from this project or lacks roles on it | Use a key from project `alessandrotorri-it` with Hosting/Rules Admin, or grant the roles to that account |
+| `403 The caller does not have permission` on `firebaserules.googleapis.com` | The account can deploy Hosting but not rules | Grant `roles/firebaserules.admin` to the CI service account |
 | `Site not found` on `<project>.web.app` | Hosting never received a release (the rules step failed first) or the site does not exist | Fix the deploy run; create the default site with `firebase hosting:sites:create alessandrotorri-it` if it is missing |
 | `No Firebase credentials found` | Neither secret is set | Add `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` |
 | Deploy is green but the site is stale | A tag or `main` push was reused without a new build | Re-run `deploy.yml` from the Actions tab (`workflow_dispatch`) |

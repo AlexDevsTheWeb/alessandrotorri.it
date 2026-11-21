@@ -3,7 +3,7 @@
 Source: [`docs/raw/2026-11-21-firebase-fix-prompt.md`](docs/raw/2026-11-21-firebase-fix-prompt.md)
 Branch: `fix/firebase-ci-cd`
 Date: 2026-11-21
-Status: implemented; the first successful deploy is pending the checklist below.
+Status: implemented and verified; the first live deploy succeeded on 2026-11-21.
 
 > This file is the task-level plan the source asks for. The plan of record remains the wiki: [`docs/wiki/sources/2026-11-21-firebase-ci-cd.md`](docs/wiki/sources/2026-11-21-firebase-ci-cd.md) and [Decision 0026](docs/wiki/decisions/0026-firebase-credentials-and-workflow-consolidation.md).
 
@@ -41,7 +41,7 @@ Verified facts:
 - Wiki: source summary, decision 0026, playbook, overview, rebuild plan, release report, indexes and log.
 - `npm run lint`, `npm run build`, workflow YAML valid.
 
-Out of scope: executing the deploy, creating or deleting Firebase resources, editing `docs/raw/`, editing history on `main`.
+Out of scope: creating or deleting Firebase resources, editing `docs/raw/`, and the custom-domain DNS cutover. (Executing the deploy and granting the missing IAM role happened afterwards with explicit approval.)
 
 ## 2. Deploy flow
 
@@ -78,20 +78,20 @@ ruby -ryaml -e 'Dir[".github/workflows/*.yml"].each { |f| YAML.load_file(f) }'
 - Workflow YAML and `firebase.json`/`.firebaserc` parse.
 - Local build with a `public/index.html` placeholder: the application entry still wins (rules out the reported "wrong index" theory).
 - PR #28 `Preview` run: the `preview-28` channel deployed with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` and served the app (`200`, correct title, assets, `/gallery` rewrite), so the credential and the Hosting site are valid.
-- Not executed: the production `Deploy` (it requires the merge to `main`).
+- `Deploy` run `44953688196` on `main` (after the IAM grant): rules then hosting, green. `https://alessandrotorri-it.web.app`, `firebaseapp.com`, `/gallery` and `/favicon.svg` return `200` with the real title.
+- Not executed: an admin write against the freshly deployed rules, and the custom-domain cutover.
 
 ## 5. Post-merge checklist
 
-1. Merge this PR into `development`.
-2. `main` was reset to the `v1.0.0` commit on 2026-11-21; the `firebase init` artifacts are gone. Fast-forward `main` to `development` once the PR merges.
-3. Re-run `deploy.yml` (`workflow_dispatch`) or push a new tag; confirm the rules deploy succeeds with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`.
-4. If Hosting reports `Site not found`, create the default site: `firebase hosting:sites:create alessandrotorri-it`.
-5. Smoke-test `/`, `/gallery`, `/gallery/<slug>`, `/login`, `/admin`, `/admin/images` on desktop and 390 px.
-6. Fix or delete `FIREBASE_SERVICE_ACCOUNT` so the precedence is no longer ambiguous.
+1. [x] Merge this PR into `development`.
+2. [x] `main` was reset to the `v1.0.0` commit on 2026-11-21; the artifacts are gone. `main` fast-forwarded to `development` on 2026-11-21.
+3. [x] Grant `roles/firebaserules.admin` to `github-action-1146516726@alessandrotorri-it.iam.gserviceaccount.com` (the missing role that produced the second failure), then re-run `deploy.yml`.
+4. [x] Confirm the rules deploy succeeded with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`; the default Hosting site exists (`alessandrotorri-it`).
+5. [ ] Smoke-test `/`, `/gallery`, `/gallery/<slug>`, `/login`, `/admin`, `/admin/images` on desktop and 390 px.
+6. [ ] Fix or delete `FIREBASE_SERVICE_ACCOUNT` so the precedence is no longer ambiguous.
 
 ## 6. Risks
 
 - The credential precedence is implicit while both secrets exist.
-- The `main` cleanup is manual and not enforced by CI.
-- The Hosting site may still need to be provisioned in the Firebase project.
-- A rules failure still blocks hosting by design; the message now names the credential problem instead of only the 403.
+- IAM is not code: a recreated CI service account needs the rules role again.
+- A rules failure still blocks hosting by design; the message now names the credential problem instead of only a 403.

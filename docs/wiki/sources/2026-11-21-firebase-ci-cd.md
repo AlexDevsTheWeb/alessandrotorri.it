@@ -51,11 +51,24 @@ The stated diagnosis is that `firebase init` left duplicate workflows, that Host
 - `preview.yml`: same credential resolution and project id; the skip message names both secrets.
 - `ci.yml`: pull requests limited to `development`/`main`.
 
+## Second failure — the rules role (2026-11-21)
+
+After #28 merged and `main` received the fix, `Deploy` run `44953688196` got further: the credential authenticated, `firestore.googleapis.com` was enabled, and the rules compile check failed with
+
+```text
+HTTP Error: 403, The caller does not have permission
+```
+
+on `firebaserules.googleapis.com/v1/projects/alessandrotorri-it:test`. The IAM policy of the project showed `github-action-1146516726@alessandrotorri-it.iam.gserviceaccount.com` with `firebasehosting.admin`, `firebaseauth.admin`, `cloudfunctions.developer`, `run.viewer` and the `serviceusage` roles — but no `roles/firebaserules.admin`. `firebase init` does not grant it.
+
+`roles/firebaserules.admin` was granted to that account on 2026-11-21, the failed run was re-run, and it **succeeded** end to end: rules, then Hosting `live`.
+
 ## Verification
 
 - `npm run lint` and `npm run build` pass; all three workflows parse as YAML and `firebase.json`/`.firebaserc` parse as JSON.
-- PR #28's `Preview` workflow deployed `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`: the channel returns `200` with the application title, serves the hashed assets and answers the `/gallery` deep link through the SPA rewrite. This proves the credential works and the Hosting site exists, so "Site not found" comes from the absent live release.
-- Not executed: `Deploy` itself (it needs the merge to `main`).
+- PR #28's `Preview` workflow deployed `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`: the channel returns `200` with the application title, serves the hashed assets and answers the `/gallery` deep link through the SPA rewrite.
+- `Deploy` run `44953688196` on `main` is green after the IAM grant. `https://alessandrotorri-it.web.app`, `https://alessandrotorri-it.firebaseapp.com`, `/gallery` and `/favicon.svg` return `200` with the real page title.
+- Not executed: an admin write against the freshly deployed rules, and the custom-domain cutover (`www.alessandrotorri.it` still serves Adobe Portfolio).
 
 ## Contradictions with the repository rules
 
