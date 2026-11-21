@@ -57,8 +57,8 @@ push to main / tag v*  →  Deploy
 
 | File | Change |
 |------|--------|
-| `.github/workflows/deploy.yml` | Credential resolution + validation, explicit project id, rules then hosting |
-| `.github/workflows/preview.yml` | Same credential resolution, clearer skip message |
+| `.github/workflows/deploy.yml` | Credential resolution + validation, explicit project id, `VITE_*` build environment + preflight, rules then hosting |
+| `.github/workflows/preview.yml` | Same credential resolution and build environment, clearer skip message |
 | `.github/workflows/ci.yml` | Pull requests limited to `development`/`main` |
 | `AGENTS.md` | Current state, secret names, remaining `main` cleanup |
 | `README.md` | Secret names in the CI section |
@@ -93,5 +93,6 @@ ruby -ryaml -e 'Dir[".github/workflows/*.yml"].each { |f| YAML.load_file(f) }'
 ## 6. Risks
 
 - The credential precedence is implicit while both secrets exist.
+- The `VITE_*` values are public once inlined; a leak there is not a secret leak but still deserves care.
 - IAM is not code: a recreated CI service account needs the rules role again.
 - A rules failure still blocks hosting by design; the message now names the credential problem instead of only a 403.

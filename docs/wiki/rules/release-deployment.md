@@ -36,15 +36,16 @@ sources:
 
   The CI account in use is `github-action-1146516726@alessandrotorri-it.iam.gserviceaccount.com` (granted 2026-11-21).
 - `.firebaserc` points `default` at the project; `firebase.json` maps `hosting.public` to `dist`, rewrites unknown paths to `/index.html` and points `firestore.rules` at the repository rules file.
+- The six Vite build variables as repository secrets (or variables): `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`. Vite inlines `import.meta.env.VITE_*` **at build time**, and `.env` is gitignored, so a runner without them produces a bundle whose Firebase config is `undefined`. `deploy.yml` and `preview.yml` read `secrets.X || vars.X` and fail before building when one is missing.
 - Never commit the service account or any Firebase credential. `.env` stays gitignored. `public/index.html` must never be committed either: Vite owns `index.html` at the repository root and copies `public/` into `dist/`.
 
 ## Workflows
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| `ci.yml` | push to `development`/`main`; PRs targeting `development`/`main` | `npm ci`, lint, typecheck, build |
-| `preview.yml` | PRs targeting `development`/`main` | verify, build, deploy `preview-<number>` for 7 days; skips the deploy when no credential is set |
-| `deploy.yml` | push to `main`, `v*` tags, manual | verify, validate the credential, deploy `firestore.rules`, then Hosting `live` |
+| `ci.yml` | push to `development`/`main`; PRs targeting `development`/`main` | `npm ci`, lint, typecheck, build (compile check, no deploy) |
+| `preview.yml` | PRs targeting `development`/`main` | validate the build variables, verify, build, deploy `preview-<number>` for 7 days; skips the deploy when no credential is set |
+| `deploy.yml` | push to `main`, `v*` tags, manual | validate the build variables, verify, validate the credential, deploy `firestore.rules`, then Hosting `live` |
 
 Credential resolution in both deploy workflows:
 
@@ -91,6 +92,8 @@ No other workflow files are allowed. A generated `firebase-hosting-merge.yml` or
 | `403 The caller does not have permission` on `firebaserules.googleapis.com` | The account can deploy Hosting but not rules | Grant `roles/firebaserules.admin` to the CI service account |
 | `Site not found` on `<project>.web.app` | Hosting never received a release (the rules step failed first) or the site does not exist | Fix the deploy run; create the default site with `firebase hosting:sites:create alessandrotorri-it` if it is missing |
 | `No Firebase credentials found` | Neither secret is set | Add `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` |
+| `Missing build variables: VITE_FIREBASE_…` | The build variables are absent from the repository | Add them as secrets or variables; a blank page with an empty `#root` is the symptom of a bundle built without them |
+| Blank page, `#root` empty, config absent from the JS | The bundle was built without `VITE_*` values | Set the six variables, rebuild and redeploy |
 | Deploy is green but the site is stale | A tag or `main` push was reused without a new build | Re-run `deploy.yml` from the Actions tab (`workflow_dispatch`) |
 
 ## Rollback
@@ -102,6 +105,7 @@ No other workflow files are allowed. A generated `firebase-hosting-merge.yml` or
 ## Notes
 
 - `npm run build` runs `tsc -b`; CI also runs `npm run typecheck` so the typecheck contract is explicit.
+- Build variables are **public by design**: whatever is inlined in the bundle is visible to every visitor. Store them as secrets only to keep them out of logs; `vars` works the same. Do not put anything genuinely secret there.
 - The SPA rewrite serves `index.html` for unknown paths. A missing static asset is not a 404 from Hosting; the admin preview fallback handles that case in the browser.
 - The deployment secret is the only manual prerequisite. Without it, `deploy.yml` fails with a clear message and `preview.yml` only verifies.
 - `main` is the release branch; `development` remains the integration branch. Feature work still targets `development`.

@@ -63,11 +63,21 @@ on `firebaserules.googleapis.com/v1/projects/alessandrotorri-it:test`. The IAM p
 
 `roles/firebaserules.admin` was granted to that account on 2026-11-21, the failed run was re-run, and it **succeeded** end to end: rules, then Hosting `live`.
 
+## Third failure — the build environment (2026-11-21)
+
+The deploy after the IAM grant was green and `https://alessandrotorri-it.web.app` answered `200`, but the page was blank: `<div id="root">` stayed empty. The deployed bundle contained no Firebase configuration at all (`apiKey`/`projectId` were absent from `assets/index-*.js`).
+
+Cause: `src/firebase.ts` reads `import.meta.env.VITE_FIREBASE_*`, which Vite **inlines at build time**. The workflows ran `npm run build` with no `VITE_*` environment (`.env` is gitignored and never present on the runner), so every value was `undefined`, `initializeApp` threw on import and React never mounted. The CI build and preview deploys were equally config-less; the local `.env` hid it.
+
+Fix: `deploy.yml` and `preview.yml` expose the six `VITE_FIREBASE_*` values to the build as `secrets.X || vars.X`, and a **Validate the build environment** step fails the job with the list of missing names instead of shipping another blank bundle. Verified locally with `.env` removed: `VITE_FIREBASE_API_KEY=probe npm run build` embeds the probe value, which confirms Vite reads the process environment.
+
 ## Verification
 
 - `npm run lint` and `npm run build` pass; all three workflows parse as YAML and `firebase.json`/`.firebaserc` parse as JSON.
 - PR #28's `Preview` workflow deployed `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT`: the channel returns `200` with the application title, serves the hashed assets and answers the `/gallery` deep link through the SPA rewrite.
-- `Deploy` run `44953688196` on `main` is green after the IAM grant. `https://alessandrotorri-it.web.app`, `https://alessandrotorri-it.firebaseapp.com`, `/gallery` and `/favicon.svg` return `200` with the real page title.
+- `Deploy` run `44953688196` on `main` is green after the IAM grant. `https://alessandrotorri-it.web.app`, `https://alessandrotorri-it.firebaseapp.com`, `/gallery` and `/favicon.svg` return `200` with the real page title — but the first bundle was blank because the build had no `VITE_*` values.
+- Local proof of the Vite behaviour: with `.env` moved away, `VITE_FIREBASE_API_KEY=probe-api-key VITE_FIREBASE_PROJECT_ID=probe-project npm run build` embeds both probe strings in `dist/assets/index-*.js`.
+- The preflight loop was run against an empty and a partially populated environment; it reports `A B` and `A` respectively.
 - Not executed: an admin write against the freshly deployed rules, and the custom-domain cutover (`www.alessandrotorri.it` still serves Adobe Portfolio).
 
 ## Contradictions with the repository rules
@@ -84,6 +94,6 @@ on `firebaserules.googleapis.com/v1/projects/alessandrotorri-it:test`. The IAM p
 ## Wiki pages touched
 
 - [Decision 0026 — Accept either Firebase secret and keep three workflows](/decisions/0026-firebase-credentials-and-workflow-consolidation.md)
-- [Release and Deployment](/rules/release-deployment.md) — secret names, precedence, validation and the 403 troubleshooting entry
+- [Release and Deployment](/rules/release-deployment.md) — secret names, precedence, build variables, validation and the troubleshooting entries
 - [Overview](/overview.md), [Rebuild Plan](/rebuild-plan.md), [v1.0.0 release report](/reviews/2026-11-19-v1.0.0-release.md)
 - `AGENTS.md` §9 — current state and the remaining `main` cleanup
