@@ -23,7 +23,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 
 ## Where things stand
 
-* **v1.0.0 — release prepared 2026-11-19.** Version `1.0.0`; CI runs lint, typecheck and build; `preview.yml` deploys PR preview channels and `deploy.yml` deploys Firestore rules + Firebase Hosting on `main` / `v*` tags. `main`, the tag and the first deploy are pending the [post-merge checklist](/reviews/2026-11-19-v1.0.0-release.md).
+* **v1.0.0 — release prepared 2026-11-19, deploy repaired 2026-11-21.** Version `1.0.0`; CI runs lint, typecheck and build; `preview.yml` deploys PR preview channels and `deploy.yml` deploys Firestore rules + Firebase Hosting on `main` / `v*` tags. `main` and the `v1.0.0` tag exist, but every `Deploy` run failed at the rules step with a `403` from `firestore.googleapis.com` because the workflow used a service account without permission on the project; the hosting step never ran, so the site answers "Site not found". The workflows now accept either secret name, validate the credential and stay three files ([Decision 0026](/decisions/0026-firebase-credentials-and-workflow-consolidation.md), [playbook](/rules/release-deployment.md)). A successful deploy is still pending.
 * **Knowledge foundation — done 2026-10-29.** `docs/wiki/` is an OKF v0.2 bundle; `docs/raw/` is immutable; `AGENTS.md` is the canonical schema for every agent; the usual loop is documented and loadable as a skill.
 * **Baseline — green.** `npm run lint`, `npm run typecheck` and `npm run build` pass. CI runs all three on push/PR.
 * **Public rebuild — phases 0–5 done.** Data layer, shell, cover grid, Masonry feed + lightbox, layout refinements, SEO/metadata, lazy routes and code splitting are in place. The administrator section manages galleries and the image catalog ([Decision 0016](/decisions/0016-gallery-management.md), [Decision 0018](/decisions/0018-image-catalog-and-layout.md)); remaining work is content seeding, the first production deploy and the deployed Lighthouse check. See [Rebuild Plan](/rebuild-plan.md), [Decision 0008](/decisions/0008-visual-refinements.md) and [Decision 0011](/decisions/0011-seo-and-route-loading.md).
@@ -40,7 +40,7 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 * **Images — repository assets, not Firebase Storage.** `/galleries/<file>` paths are deployed with the site; the Adobe CDN dataset is kept only as a failure/empty fallback. Firestore is authoritative whenever it returns galleries.
 
 > [!WARNING] Release status — raw spec vs reality
-> The 2026-11-19 source asks the overview to say `v1.0.0 Stable Production` and to write a release summary into `docs/raw/`. Neither is accurate: the first Firebase Hosting deploy has not run and the live domain still serves the Adobe Portfolio site; `docs/raw/` is immutable. The wiki says "release prepared, first deploy pending" until `deploy.yml` succeeds, and the summary lives in [the release report](/reviews/2026-11-19-v1.0.0-release.md) ([Decision 0025](/decisions/0025-release-v1-and-ci-cd.md)).
+> The 2026-11-19 source asks the overview to say `v1.0.0 Stable Production` and to write a release summary into `docs/raw/`. Neither is accurate: every Firebase Hosting deploy has failed so far (a credential 403 on the rules step) and the live domain still serves the Adobe Portfolio site; `docs/raw/` is immutable. The wiki says "release prepared, deploy repaired, first successful deploy pending" until `deploy.yml` succeeds, and the summary lives in [the release report](/reviews/2026-11-19-v1.0.0-release.md) ([Decision 0025](/decisions/0025-release-v1-and-ci-cd.md), [Decision 0026](/decisions/0026-firebase-credentials-and-workflow-consolidation.md)).
 
 > [!WARNING] Contradiction — exact clone vs modern reinterpretation
 > The Rebuild Plan originally said "modern reinterpretation (not pixel-clone)". The 2026-10-29 charter says "re-create the exact look & feel". [Decision 0003](/decisions/0003-exact-look-and-feel.md) resolves it: **visual parity, modern implementation**. Do not redesign the layout while calling it a rebuild.
@@ -55,11 +55,15 @@ Photography portfolio for Alessandro Torri (landscape / long-exposure). React 19
 > [Project Roadmap](/concepts/roadmap.md) describes the original long-exposure plan and is now `deprecated`. For all current work, [Rebuild Plan](/rebuild-plan.md) is authoritative. The [blueprint](/sources/2026-03-03-blueprint.md) is archived history only.
 
 > [!QUESTION] Open questions
-> * Is the deployed Firestore ruleset the repository revision? The admin writes succeed and `deploy.yml` now deploys the rules on `v*` tags; the first automated run will confirm it.
+> * Which service account will be the long-term deployment identity? `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` is confirmed working and `FIREBASE_SERVICE_ACCOUNT` returns 403; the generic alias should be fixed or deleted.
+> * Is the deployed Firestore ruleset the repository revision? The admin writes succeed and `deploy.yml` deploys the rules on `v*` tags; the first successful automated run will confirm it.
 > * Should Firestore stay as the metadata store now that images are static repository assets? See [Photo Storage and Backend Options](/concepts/photo-storage-options.md).
 > * When does the owner seed the remaining galleries and run the first production deploy?
 > * Home `/` = same cover grid as `/gallery`, or redirect? (Rebuild Plan phase 3 decided: same grid.)
 > * Which dependency majors are worth adopting? (Issues #20 and #21; requires a decision record per major.)
+
+> [!NOTE] Verified 2026-11-21 — Hosting and credentials
+> The PR #28 preview channel `https://alessandrotorri-it--preview-28-9v0hpxcr.web.app` deployed with `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` and served the application (`200`, correct title, assets, `/gallery` rewrite). The Hosting site exists; "Site not found" came from the missing live release, not from a missing site.
 
 ## Cluster map
 

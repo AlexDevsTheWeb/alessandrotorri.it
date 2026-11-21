@@ -2,6 +2,7 @@
 
 Architecture and process decisions for this project, newest first. Each decision records context, the choice, and consequences. Decisions are immutable records; supersede rather than rewrite.
 
+* [0026 — Accept either Firebase secret and keep three workflows](/decisions/0026-firebase-credentials-and-workflow-consolidation.md) - Project-specific secret first with the generic one as fallback, credential validation before deploy, no generated workflows, `main` cleanup kept separate.
 * [0025 — Release v1.0.0 and CI/CD strategy](/decisions/0025-release-v1-and-ci-cd.md) - Version 1.0.0, preview/production workflows, rules deploy with hosting, main/tag after merge, raw layer untouched.
 * [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
 * [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.

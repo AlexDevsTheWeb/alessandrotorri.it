@@ -41,7 +41,7 @@ VITE_FIREBASE_APP_ID=
 | `npm run lint` | ESLint |
 | `npm run preview` | Preview the production build |
 
-CI runs lint, typecheck and build on every push and pull request. `deploy.yml` publishes to Firebase Hosting and deploys the Firestore rules on `main` / `v*` tags; `preview.yml` publishes a temporary preview channel for pull requests. Both need the `FIREBASE_SERVICE_ACCOUNT` repository secret. See [Release and deployment](docs/wiki/rules/release-deployment.md).
+CI runs lint, typecheck and build on every push and pull request. `deploy.yml` publishes to Firebase Hosting and deploys the Firestore rules on `main` / `v*` tags; `preview.yml` publishes a temporary preview channel for pull requests. Both read `FIREBASE_SERVICE_ACCOUNT_ALESSANDROTORRI_IT` first and fall back to `FIREBASE_SERVICE_ACCOUNT`. See [Release and deployment](docs/wiki/rules/release-deployment.md).
 
 ## Documentation
 

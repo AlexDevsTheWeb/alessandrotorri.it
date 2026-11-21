@@ -21,6 +21,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Sources
 
 * [Source summaries](/sources/index.md) - One page per ingested raw source or GitHub issue.
+* [2026-11-21 — Firebase Hosting and CI/CD fix](/sources/2026-11-21-firebase-ci-cd.md) - Deploy failed on a service-account 403, not duplicate workflows; either secret is accepted and validated.
 * [2026-11-19 — Release v1.0.0](/sources/2026-11-19-v1.0.md) - Release and CI/CD spec; verified facts, contradictions and the implemented workflows.
 * [2026-11-19 — UI and admin cleanup](/sources/2026-11-19-ui-and-admin-cleanup.md) - Featured banner/pair sizing, footer socials removed, serif logotype, single gallery edit path.
 * [2026-11-18 — Featured gallery divider](/sources/2026-11-18-featured-divider.md) - Featured galleries separated from the rest of the grid by a solid, centered `LUOGHI` divider.
@@ -45,6 +46,7 @@ OKF v0.2 knowledge bundle for the alessandrotorri.it photography portfolio. It c
 ## Decisions
 
 * [Decision index](/decisions/index.md) - All decisions, newest first.
+* [0026 — Accept either Firebase secret and keep three workflows](/decisions/0026-firebase-credentials-and-workflow-consolidation.md) - Project-specific secret first, generic fallback, credential validation, no generated workflows.
 * [0025 — Release v1.0.0 and CI/CD strategy](/decisions/0025-release-v1-and-ci-cd.md) - Version 1.0.0, preview/production workflows, rules deploy with hosting, main/tag after merge, raw layer untouched.
 * [0024 — Compact featured layout, serif logotype and one gallery edit path](/decisions/0024-featured-layout-logotype-admin-cleanup.md) - Single featured banner vs pair, footer socials removed, serif uppercase logotype, edit dialog removed.
 * [0023 — Divider between featured and other galleries](/decisions/0023-featured-gallery-divider.md) - Solid centered `LUOGHI` divider in the shared grid when both groups exist.
