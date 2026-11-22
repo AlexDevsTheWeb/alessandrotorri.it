@@ -16,6 +16,7 @@ dist-ssr
 .env.development
 .firebase-service-account.json
 .firebase/
+.agents/
 
 # Editor directories and files
 .vscode/*
